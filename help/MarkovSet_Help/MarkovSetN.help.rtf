@@ -1,0 +1,124 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fnil\fcharset77 Monaco;
+}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
+}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b\fs36 \cf0 MarkovSetN				
+\fs28 nth order markov set\
+
+\fs36 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b0\fs24 \cf0 superclass: LookupMarkovSet
+\f0\b\fs36 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b0\fs24 \cf0 \ul \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 \ulnone constant order set. for variable order see 
+\f0\b ShannonFinger
+\f1\b0 \
+uses an optimized identity lookup in which arrays of elements are stored internally as symbols.\ul \
+\
+\
+instance creation:\ulnone \
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b \cf0 	*new(args, order,  updateSeeds)\
+		\
+		
+\f1\b0 \
+		
+\f0\b args
+\f1\b0 \
+			a list of arrays that each represent \
+			one node in the set:\
+			
+\f0\b [[array_of_elements], [next_elements], [weigths]]
+\f1\b0 \
+			\
+			
+\f0\b array_of_elements\
+				
+\f1\b0 should be of size 'order'.\
+			\
+			
+\f0\b next_elements
+\f1\b0 \
+				the next node is searched by simple equality.\
+				if nil, this is a terminator node\
+			
+\f0\b weights
+\f1\b0 \
+				the array is normalized.\
+				if weigths is nil, equal weight is used\
+			\
+			if args is nil, the set is created and may be trained by the \
+			other methods.\
+		\
+		
+\f0\b order\
+			
+\f1\b0 the order of the set.\
+		\
+		
+\f0\b updateSeeds\
+			
+\f1\b0 if set to true, each element is always added to the seeds.\
+\
+\
+	
+\f0\b *fill( n, stream, order ) \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\b0 \cf0 	\
+		\
+		
+\f0\b n
+\f1\b0 			number of items to read\
+		
+\f0\b stream
+\f1\b0 		a function or stream that returns items to read\
+		
+\f0\b order
+\f1\b0 		order of the new set\
+	\
+	\
+	\
+other methods see superclass 
+\f0\b MarkovSet\
+
+\f1\b0 \
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f2\fs18 \cf2 // direct node definition\cf3 \
+(\
+m = \cf4 MarkovSetN\cf3 ([\
+			[[100, 120], [120, 130]],\
+			[[120, 100], [100, 1900]]\
+		], 2);\
+)\
+\
+8.do \{ m.next([100, 120]).postln \};\
+8.do \{ m.next([120, 100]).postln \};\
+\
+\cf2 // training by a stream\cf3 \
+\
+m = \cf4 MarkovSetN\cf3 .fill(100, \cf4 Pseq\cf3 ([1, 2, 3, 4, \cf4 Prand\cf3 ([5, 55, 555])], \cf4 inf\cf3 ).asStream, 2);\
+8.do \{ m.next([1,2]).postln \};\
+8.do \{ m.next([3,4]).postln \};\
+8.do \{ m.next([4,5]).postln \};\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1\fs24 \cf3 \
+\cf0 \
+		}

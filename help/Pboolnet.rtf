@@ -1,0 +1,200 @@
+{\rtf1\mac\ansicpg10000\cocoartf102
+{\fonttbl\f0\fswiss\fcharset77 Helvetica;\f1\fswiss\fcharset77 Helvetica-Bold;\f2\fnil\fcharset77 Monaco;
+}
+{\colortbl;\red255\green255\blue255;\red191\green0\blue0;\red0\green0\blue0;\red0\green0\blue191;
+\red0\green115\blue0;\red96\green96\blue96;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\fs24 \cf0 \
+
+\f1\b\fs36 Pboolnet
+\f0\b0\fs24 			
+\f1\b boolean network pattern
+\f0\b0 \
+\
+
+\f1\b Pboolnet.new(list, repeats, loops)
+\f0\b0 \
+\
+Boolean network pattern after:  [http://farben.latrobe.edu.au/mikropol/volume6/dorin_a/dorin_a.html]
+\f1\b \
+\
+list
+\f0\b0  - a list of pairs of initial states (0 or 1) and binary boolean operation selectors (e.g., \\and, \\or, \\xor).\
+
+\f1\b repeats
+\f0\b0  - number of times to repeat the pattern.\
+
+\f1\b loops
+\f0\b0  - number of times to loop a particular network configuration\
+\
+
+\f2\fs18 \cf2 // Print out the stream to demonstrate what it looks like\cf3 \
+\
+(\cf4 var\cf3  boolnet, stream;\
+boolnet = \cf4 Pboolnet\cf3 ([\
+	0, \cf5 \\and\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	1, \cf5 \\or\cf3 ,\
+	1, \cf5 \\or\cf3 ,\
+	0, \cf5 \\and\cf3 \
+], 2);\
+\
+stream = boolnet.asStream;\
+11.do(\{stream.next.postln\})\
+)\
+  \
+(\cf2 // same as above, but with a loop\cf3 \
+\cf4 var\cf3  boolnet, stream;\
+boolnet = \cf4 Pboolnet\cf3 ([\
+	0, \cf5 \\and\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	1, \cf5 \\or\cf3 ,\
+	1, \cf5 \\or\cf3 ,\
+	0, \cf5 \\and\cf3 \
+], 2, 2);\
+\
+stream = boolnet.asStream;\
+11.do(\{stream.next.postln\})\
+)\
+\
+(\cf2 // display some long evolutions\cf3 \
+\cf4 var\cf3  nodeFunc, boolnets, displayFunc;\
+\
+nodeFunc = \{\
+	\cf4 Array\cf3 .fill(7, \{\
+		[[0,1].choose, [\cf5 \\and\cf3 , \cf5 \\or\cf3 , \cf5 \\xor\cf3 , \cf5 \\not\cf3 ].choose]\
+	\}).flat\
+\};\
+\
+boolnets = \cf4 Array\cf3 .fill(4, \{\cf4 Pboolnet\cf3 (nodeFunc.value, \cf4 inf\cf3 )\});\
+\
+displayFunc = \{\cf4 arg\cf3  stream;\
+	105.do(\{\cf4 arg\cf3  i; \cf2 // 105 is divisible by 7\cf3 \
+		stream.next.post;\
+		((i+1)%7 == 0).if(\{\cf6 ""\cf3 .postln\});\
+	\})\
+\};\
+\
+boolnets.do(\{\cf4 arg\cf3  item;\
+	displayFunc.value(item.asStream);\
+	\cf6 "--------------"\cf3 .postln\
+\});\
+)\
+\
+sound examples\
+(\cf4 SynthDef\cf3 (\cf6 "sine"\cf3 , 	\{ \cf4 arg\cf3  out=0, freq=440, dur=0.05, amp=0.1;		\cf4 var\cf3  env;		env = \cf4 EnvGen\cf3 .kr(\cf4 Env\cf3 .perc(0.01, dur, amp), doneAction:2);		\cf4 Out\cf3 .ar(out, \cf4 SinOsc\cf3 .ar(freq, 0, env))	\}).store;)\
+(\cf2 // simple pattern\cf3 \
+\cf4 var\cf3  boolnet, pattern;\
+boolnet = \cf4 Pboolnet\cf3 ([\
+	0, \cf5 \\or\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	0, \cf5 \\and\cf3 ,\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 \
+], \cf4 inf\cf3 );\
+\
+pattern = \cf4 Pbind\cf3 (	\cf5 \\instrument\cf3 , \cf5 \\sine\cf3 ,\
+	\cf5 \\dur\cf3 , 0.1,\
+	\cf5 \\amp\cf3 , boolnet * 0.3\
+);\
+pattern.play\
+)\
+\
+(\cf2 // more complex -- has a Pseq for the boolean operation\cf3 \
+\cf4 var\cf3  boolnet, pattern;\
+boolnet = \cf4 Pboolnet\cf3 ([\
+	1, \cf4 Pseq\cf3 ([\cf5 \\xor\cf3 , \cf5 \\or\cf3 , \cf5 \\and\cf3 ], \cf4 inf\cf3 ),\
+	1, \cf4 Pseq\cf3 ([\cf5 \\and\cf3 ,\cf5 \\xor\cf3 ,\cf5 \\or\cf3 ], \cf4 inf\cf3 ),\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 \
+], \cf4 inf\cf3 , 2);\
+\
+pattern = \cf4 Pbind\cf3 (\
+	\cf5 \\instrument\cf3 , \cf5 \\sine\cf3 ,\
+	\cf5 \\freq\cf3 , 200,\
+	\cf5 \\dur\cf3 , 0.2,\
+	\cf5 \\amp\cf3 , boolnet * 0.3\
+);\
+pattern.play\
+)\
+\
+(\cf2 // play a couple of patterns in parallel\cf3 \
+\cf4 var\cf3  boolnet, pattern1, pattern2;\
+boolnet = \cf4 Pboolnet\cf3 ([\
+	0, \cf5 \\or\cf3 ,\
+	1, \cf4 Pseq\cf3 ([\cf5 \\and\cf3 ,\cf5 \\and\cf3 ,\cf5 \\or\cf3 ], \cf4 inf\cf3 ),\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	0, \cf5 \\and\cf3 ,\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 \
+], \cf4 inf\cf3 , 2);\
+\
+pattern1 = \cf4 Pbind\cf3 (\
+	\cf5 \\instrument\cf3 , \cf5 \\sine\cf3 ,\
+	\cf5 \\freq\cf3 , 550,\
+	\cf5 \\dur\cf3 , 0.3,\
+	\cf5 \\amp\cf3 , boolnet * 0.3\
+);\
+\
+boolnet = \cf4 Pboolnet\cf3 ([\
+	0, \cf5 \\or\cf3 ,\
+	1, \cf4 Pseq\cf3 ([\cf5 \\and\cf3 ,\cf5 \\and\cf3 ,\cf5 \\or\cf3 ], \cf4 inf\cf3 ),\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	0, \cf5 \\and\cf3 ,\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 \
+], \cf4 inf\cf3 , 2);\
+\
+pattern2 = \cf4 Pbind\cf3 (\
+	\cf5 \\instrument\cf3 , \cf5 \\sine\cf3 ,\
+	\cf5 \\freq\cf3 , 440,\
+	\cf5 \\dur\cf3 , 0.2,\
+	\cf5 \\amp\cf3 , boolnet * 0.1\
+);\
+\cf4 Ppar\cf3 ([\
+	pattern1,\
+	pattern2\
+]).play\
+)\
+\
+( \cf2 // use a boolnet with a Pmulp and a Paddp to make meoldies and rhythms\cf3 \
+\cf4 var\cf3  boolnet, pattern1, pattern2;\
+boolnet = \cf4 Pboolnet\cf3 ([\
+	1, \cf4 Pseq\cf3 ([\cf5 \\xor\cf3 , \cf5 \\or\cf3 , \cf5 \\and\cf3 ], \cf4 inf\cf3 ),\
+	1, \cf4 Pseq\cf3 ([\cf5 \\and\cf3 ,\cf5 \\xor\cf3 ,\cf5 \\not\cf3 ], \cf4 inf\cf3 ),\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	1, \cf5 \\and\cf3 ,\
+	1, \cf5 \\xor\cf3 ,\
+	1, \cf5 \\and\cf3 \
+], \cf4 inf\cf3 , 2);\
+\
+pattern1 = \cf4 Pbind\cf3 (\
+	\cf5 \\instrument\cf3 , \cf5 \\sine\cf3 ,\
+	\cf5 \\freq\cf3 , 500,\
+	\cf5 \\dur\cf3 , 0.4,\
+	\cf5 \\amp\cf3 , 0.5\
+);\
+\
+pattern1 = \cf4 Pmulp\cf3 (\
+	\cf5 \\amp\cf3 , boolnet * 0.1,\
+	pattern1\
+);\
+\
+pattern2 = \cf4 Pbind\cf3 (\
+	\cf5 \\instrument\cf3 , \cf5 \\sine\cf3 ,\
+	\cf5 \\degree\cf3 , boolnet * 0.1,\
+	\cf5 \\dur\cf3 , 0.2,\
+	\cf5 \\amp\cf3 , 0.5\
+);\
+	\
+\cf4 Ppar\cf3 ([pattern1, pattern2]).play\
+)}
