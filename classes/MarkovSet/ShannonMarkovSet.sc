@@ -60,7 +60,8 @@
 			lookUp.put(obj.asSymbol, index)
 		});
 	}		indexOf { arg obj;		^lookUp.at(obj.asSymbol)	}		chooseIndex {
-		if(notify) { "random lookup due to lack of key".postln };		^lookUp.choose	}		nextIndex { arg prevIndex, order=1;		var obj, index, list, randOffset, n;				if( order > 1) {			obj = data.at(prevIndex);			list = lookUp.keyAt(obj.asSymbol);			if(list.isNil) { ^prevIndex + 1 }; //nil: take next item			n = list.size;			if(maxSearchLength.notNil) { n = min(n, maxSearchLength) };			randOffset = n.rand;						n.do { arg i;				var tryIndex;				tryIndex = list.wrapAt(i + randOffset);				if(					(prevIndex != tryIndex) and: { 						this.fitKey(tryIndex, prevIndex, order)
+		if(notify) { "random lookup due to lack of key".postln };		^lookUp.choose	}		nextIndex { arg prevIndex, order=1;		var obj, index, list, randOffset, n;				if( order > 1) {			obj = data.at(prevIndex); // last data point			list = lookUp.keyAt(obj.asSymbol); // where is this point in the lookUp?			if(list.isNil) { ^prevIndex + 1 }; //nil: take next item			n = list.size;			if(maxSearchLength.notNil) { n = min(n, maxSearchLength) };			randOffset = n.rand;						n.do { arg i;				var tryIndex;				//tryIndex = list.wrapAt(i + randOffset);
+				tryIndex = list.choose;				if(					(prevIndex != tryIndex) and: { 						this.fitKey(tryIndex, prevIndex, order)
 					}
 				) 
 				{ 					^tryIndex + 1  				}			};			//^nil			^prevIndex + 1 // take next item		} {			obj = data.at(prevIndex+1);			^lookUp.at(obj.asSymbol);				};	}	}
