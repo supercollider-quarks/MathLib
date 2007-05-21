@@ -43,7 +43,7 @@
 					<< ">";
 					stream.nl;
 					10.do { stream << "<br>" };
-					stream << "<span width=250\">";
+					stream << "<span width=250\">";      //"
 					stream << " ... ";
 						pagelength.do { var word;
 							word = scream.next.asString;
