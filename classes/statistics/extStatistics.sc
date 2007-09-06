@@ -150,5 +150,16 @@
 		};
 		^sorted.array
 	}
+	
+	// Weighted mean and variance of a list of values.
+	// To estimate mean and variance from a histogram:
+	//    this = bin centres, weights = bin frequencies (heights)
+	wmean { |weights|
+		^this.collect({|val, index| val * weights[index]}).sum / weights.sum;
+	}
+	wvariance { |weights, wmean|
+		if(wmean.isNil, {wmean = this.wmean(weights)});
+		^this.collect({|val, index| (val - wmean).squared * weights[index]}).sum / weights.sum;
+	}
 
 }
