@@ -40,8 +40,9 @@
 				if(outval.isNil or: {index.isNil})
 						{ index = this.chooseIndex } 
 						{ index = this.nextIndex(index, orderStr.next) };
-				//index.postln;
+				
 				index = index ?? { "choose index!".postln; this.chooseIndex }; // ??
+				if(index.isNil) { inval = nil.yield };
 				outval = data[index];
 				outval.notNil
 			}, {
