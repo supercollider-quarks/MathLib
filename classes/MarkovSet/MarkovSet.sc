@@ -11,4 +11,4 @@
 		*/
 					
 	}
-		embedInStream { arg inval, repeats=inf;								var item,  buffer, key;				repeats.do {						key = seeds.choose; //get a	 seed name						"chose a seed at random".postln;						buffer = lookUpDict.at(key).asArray.copy; //find the array						buffer.do { inval = item.yield };											while {							item = this.get(key);							item.notNil								} { 							buffer.removeAt(0);							buffer = buffer.add(item);							key = buffer.asSymbol;										item.yield;						};					};					nil.yield;					^inval	 	 }}
+		embedInStream { arg inval, repeats=inf;								var item,  buffer, key;				repeats.do {						key = seeds.choose; //get a	 seed name						"chose a seed at random".postln;						buffer = lookUpDict.at(key).asArray.copy; //find the array						buffer.do { arg item; inval = item.yield };											while {							item = this.get(key);							item.notNil								} { 							buffer.removeAt(0);							buffer = buffer.add(item);							key = buffer.asSymbol;										item.yield;						};					};					nil.yield;					^inval	 	 }}
