@@ -1,4 +1,4 @@
-// some statistics, adc 2005.
+// some statistics, adc 2005, plus ds 2007.
 
 + Collection {
 			// same as sum, but sum initialized as float 0.0 to avoid numerical
@@ -161,5 +161,24 @@
 		if(wmean.isNil, {wmean = this.wmean(weights)});
 		^this.collect({|val, index| (val - wmean).squared * weights[index]}).sum / weights.sum;
 	}
-
+	
+	// Normalised autocorrelation, calculated for lags of zero up to "num"
+	autocorr { |num, mean, sd|
+		var data, sum, n;
+		n = this.size;
+		num  = num  ?? { n - 1 };
+		mean = mean ?? { this.mean };
+		sd   = sd   ?? { this.stdDev(mean) };
+		
+		data = this - mean;
+		
+		^num.collect{ |k|
+			sum = 0;
+			(0 .. n-k-1).do{ |t|
+				sum = sum + (data[t] * data[t+k]);
+			};
+			sum = sum / ((n-k) * sd);
+		};
+	}
+	
 }
