@@ -155,11 +155,11 @@
 	// To estimate mean and variance from a histogram:
 	//    this = bin centres, weights = bin frequencies (heights)
 	wmean { |weights|
-		^this.collect({|val, index| val * weights[index]}).sum / weights.sum;
+		^this.sum{|val, index| val * weights[index]} / weights.sum;
 	}
 	wvariance { |weights, wmean|
 		if(wmean.isNil, {wmean = this.wmean(weights)});
-		^this.collect({|val, index| (val - wmean).squared * weights[index]}).sum / weights.sum;
+		^this.sum{|val, index| (val - wmean) * (val - wmean) * weights[index]} / weights.sum;
 	}
 	
 	// Normalised autocorrelation, calculated for lags of zero up to "num"
