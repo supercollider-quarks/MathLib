@@ -66,10 +66,28 @@
 			{ ^this.at( index * (this.size - 1).round.asInteger) }
 	}
 
-			// expensive on large arrays! 
-			// better cache sorted copies and use atPercent.
+	/* naive method
 	percentile { |percent=#[0.25, 0.5, 0.75], interpol=true| 
-		^this.copy.sort.atPercent(percent, true)
+		^this.copy.sort.atPercent(percent, interpol)
+	}
+	*/
+	// Faster method
+	percentile { |percent=#[0.25, 0.5, 0.75], interpol=true|
+		var sorted, index, indexint;
+		sorted = this.copy;
+		// We don't actually sort the entire array since that may be expensive for large arrays.
+		// Instead we use Hoare's partitioning method to sort it "just enough"
+		percent.asArray.do{|pc|
+			index = pc * (this.size - 1);
+			indexint = index.floor.asInteger;
+			if(index == indexint){
+				sorted.hoareFind(indexint);
+			}{
+				sorted.hoareFind(indexint);
+				sorted.hoareFind(indexint + 1);
+			};
+		};
+		^sorted.atPercent(percent, interpol)
 	}
 			// median exists already, median2 interpolates.
 	median2 {
