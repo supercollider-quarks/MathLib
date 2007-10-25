@@ -97,39 +97,6 @@
 	trimedian { |interpol=true|
 		^this.percentile([0.25, 0.5, 0.5, 0.75], interpol).meanF;
 	}
-
-			// utility.
-	histo { arg steps=100, min, max; 
-		var freqs, freqIndex, lastIndex, range, outliers = 0; 
-		
-		min = min ?? { this.minItem };
-		max = max ?? { this.maxItem };
-		
-		freqs = Array.fill(steps, 0); 
-		lastIndex = steps - 1;
-		range = max - min; 
-		this.do({ arg el; 
-			freqIndex = ((el - min) / range * steps).trunc.asInteger;
-
-			if (freqIndex.inclusivelyBetween(0, lastIndex), { 
-				freqs[freqIndex] = freqs[freqIndex] + 1;
-			}, { 
-						// if max is derived from maxItem, count it in:
-				if (el == max) { 
-					freqs[steps-1] = freqs[steps-1] + 1;
-				} { 		// else it is an outlier.
-					outliers =  outliers + 1; 
-				//	("out :" + el).postln;
-				};
-			});
-		});
-		
-		if (outliers > 0, { 
-			("histo :" + outliers + "out of (histo) range values in collection.").inform; 
-		});
-
-		^freqs;
-	}
 }
 
 
