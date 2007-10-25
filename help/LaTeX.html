@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="824.41">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
+span.s1 {color: #606060}
+span.s2 {color: #0000bf}
+span.s3 {color: #007300}
+span.s4 {color: #000000}
+</style>
+</head>
+<body>
+<p class="p1"><br></p>
+<p class="p2">// numericalDict:</p>
+<p class="p1"><br></p>
+<p class="p3">d = (a: 100.2, b: 650.2, <span class="s1">"pi"</span>:pi, der:0.001, <span class="s1">"\\theta"</span>: <span class="s1">"theta"</span>);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s2">LaTeX</span>.numericalDict(d, <span class="s1">"key"</span>, <span class="s1">"value"</span>);</p>
+<p class="p3"><span class="s2">LaTeX</span>.numericalDict(d);</p>
+<p class="p1"><br></p>
+<p class="p2">// dict can be also an array with key value pairs:</p>
+<p class="p1"><br></p>
+<p class="p3">d = [a: 100.2, b: 650.2, <span class="s1">"pi"</span>:pi, der:0.001, <span class="s1">"\\theta"</span>: <span class="s1">"theta"</span>];</p>
+<p class="p1"><br></p>
+<p class="p2">// which is the same as:</p>
+<p class="p1"><br></p>
+<p class="p3">d = [ <span class="s3">\a</span>, 100.2, <span class="s3">\b</span>, 650.2, <span class="s1">"pi"</span>, 3.1415926535898, <span class="s3">\der</span>, 0.001, <span class="s1">"\\theta"</span>, theta ];</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p2">// tableDict:</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s2">LaTeX</span>.tableDict( (a: 100.2, b: 650.2, <span class="s1">"pi"</span>:pi, der:0.001, <span class="s1">"\\theta"</span>: <span class="s1">"\\theta + \\gamma"</span>), [<span class="s1">"key"</span>, <span class="s1">"val"</span>]);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s2">LaTeX</span>.tableDict(<span class="s2">Array</span>.iota(4, 4), [0, 2], <span class="s1">"c"</span>, <span class="s1">"|"</span>);</p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p1"><br></p>
+<p class="p3">a = [</p>
+<p class="p4"><span class="s4">[</span>"Minute"<span class="s4">, </span>"from Degree"<span class="s4">, </span>"to Degree"<span class="s4">, </span>"Number of Countries"<span class="s4">],</span></p>
+<p class="p3">[3.54, <span class="s1">"$0^o$"</span>, <span class="s1">"$45^o$"</span>, 67],</p>
+<p class="p4"><span class="s4">[5.02, </span>"$7^o$"<span class="s4">, </span>"$32^o$"<span class="s4">, 3]</span></p>
+<p class="p3">];</p>
+<p class="p1"><br></p>
+<p class="p3"><span class="s2">LaTeX</span>.tableDict(a, [1], <span class="s1">"c"</span>, <span class="s1">"|"</span>, <span class="s2">false</span>);</p>
+<p class="p1"><br></p>
+</body>
+</html>
