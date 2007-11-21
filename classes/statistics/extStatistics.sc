@@ -122,6 +122,44 @@
 		^num / denom
 	}
 	
+	// Order-Statistics Correlation Coefficient
+	// see Xu et al 2007, DOI 10.1109/TSP.2007.899374
+/*
+x = (0 .. 100);
+y = (0 .. 100);
+oscorr(x,y);
+x = (0 .. 100);
+y = (100 .. 0);
+oscorr(x,y);
+x = (0 .. 100);
+y = 100.dup(100) ++ 5;
+oscorr(x,y); // Strange result here! Perfect correlation, despite drastic difference
+x = (0 .. 100);
+y = 100.dup(98) ++ [5, 50, -50]; // Hmm
+oscorr(x,y);
+x = {100.rand}.dup(101)
+y = x
+y = x + {100.rand}.dup(101)
+y = x + {1000.rand}.dup(101)
+oscorr(x,y);
+*/
+	oscorr { |that|
+		// "this" is x, "that" is y
+		var xsorted, ysorted, yconcomitant, last;
+		
+		// Compiles x and y into vector values, then sorts purely using x values
+		#xsorted, yconcomitant = this.collect{|xitem, index| [xitem, that[index]]}.sort{ |a, b| a[0] <= b[0] }.flop;
+		// Sorts y, we don't need to know the concomitant x values for the calculation
+		ysorted = that.sort;
+		
+		last = this.lastIndex;
+		
+		^
+			(this.sumF{|xi, i| (xi - this[last - i]) * yconcomitant[i] })
+				/
+			(this.sumF{|xi, i| (xi - this[last - i]) * ysorted[i] })
+	}
+	
 		// return n sorted indices and values for a given sort function
 	nSorted { |n, func| 
 		var sorted, indexedArr;
