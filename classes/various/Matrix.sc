@@ -4,7 +4,7 @@
 
 // inserted Christofer Fraunberger's code for matrix class Multiplication for compatibility reasons.
 
-Matrix[slot] : Array {
+Matrix1[slot] : Array {
 
 	*newClear { arg rows=1, cols=1; // return (rows x cols) - zero matrix 
 		^super.fill(rows, { Array.newClear(cols).fill(0) });
