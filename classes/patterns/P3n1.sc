@@ -25,6 +25,10 @@ P3n1 : FilterPattern {
 			
 		};
 	}
+	
+	storeArgs {
+		^[pattern] ++ endWhen
+	}
 }
 
 
@@ -39,6 +43,7 @@ P3n1([101, 103]).asStream.nextN(10) // multichannel expansion
 
 
 // the more general formulation of the collatz problem, not in its 3n + 1 form
+// watch out for numerical overflow!
 
 Pcollatz : FilterPattern {
 	var <>rules, <>endCondition;
@@ -61,7 +66,7 @@ Pcollatz : FilterPattern {
 				if(x.isNil) { ^nil.alwaysYield }
 			} {
 				inval = x.yield;
-				x = func.(x, inval).unbubble
+				x = func.(x, inval).unbubble;
 			};
 		};
 	}
@@ -71,6 +76,10 @@ Pcollatz : FilterPattern {
 			if(key.(x)) { ^val.(x) };
 		};
 		^nil
+	}
+	
+	storeArgs {
+		^[pattern, rules, endCondition]
 	}
 }
 
@@ -91,11 +100,15 @@ a.asStream.nextN(18);
 // in: Theoretical Computer Science 326
 
 PcollatzLike : Pcollatz {
+	var <mod, <muls, <adds;
 	*new { arg pattern, mod = 2, muls = [1, 6], adds = [0, 4], endCondition = false;
-		^super.new(pattern, endCondition: endCondition).makeRule(mod, muls, adds)
+		^super.new(pattern, nil, endCondition).makeRule(mod, muls, adds)
 	}
 	
-	makeRule { arg mod, muls, adds;
+	makeRule { arg argMod, argMuls, argAdds;
+		muls = argMuls;
+		adds = argAdds;
+		mod = argMod;
 		mod.do { |i|
 			rules = rules.add( { |x| x % mod == i } );
 			rules = rules.add( { |x| 
@@ -106,6 +119,9 @@ PcollatzLike : Pcollatz {
 			} )
 		};
 		
+	}
+	storeArgs {
+		^[pattern, mod, muls, adds]
 	}
 }
 
@@ -144,5 +160,13 @@ Pdef(\x,
 );
 */
 
-
+/*
+a =  { |mod=2| PcollatzLike(5, mod, { 10.rand }.dup(mod), { 10.rand }.dup(mod)) };
+(
+x = a.value(5.rand + 2);
+x.postcs;
+y = x.asStream;
+y.nextN(100).postcs; "";
+)
+*/
 
