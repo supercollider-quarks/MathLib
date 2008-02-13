@@ -93,6 +93,7 @@ ScatterView {
 		};
 		
 		plot = GUI.userView.new(parent, bounds)
+			.relativeOrigin_(false)
 			.drawFunc_({|w|
 				var width, height, rect, pad = 10;
 				if (drawAxis) { pad = 60 };
@@ -110,7 +111,7 @@ ScatterView {
 					GUI.pen.lineTo(((w.bounds.left)@(w.bounds.top)) 
 							+ (0@w.bounds.height));
 					GUI.pen.lineTo((w.bounds.left)@(w.bounds.top));
-					GUI.pen.clip;
+					//GUI.pen.clip;
 					
 					// draw Background
 					GUI.pen.color = background;
@@ -181,21 +182,31 @@ ScatterView {
 					if (drawAxis) {
 						GUI.pen.moveTo((w.bounds.left+(pad/2))@(w.bounds.top+(pad/2)));
 						GUI.pen.lineTo((w.bounds.left+(pad/2))@(w.bounds.height-(pad/2)));
-						GUI.pen.lineTo((w.bounds.width)@(w.bounds.height-(pad/2)));
+						GUI.pen.lineTo(
+							(w.bounds.left-(pad/2)+w.bounds.width)@(w.bounds.height-(pad/2)));
 						specX.minval.round(0.001).asString
-							.drawAtPoint((pad/2+10)@(w.bounds.height-(pad/2)+10));
-						xAxisName.
-							drawAtPoint((w.bounds.width/2)@(w.bounds.height-(pad/2)+10));
+							.drawAtPoint(
+								(w.bounds.left+(pad/2)+10)@
+								(w.bounds.height-(pad/2)+10));
+						xAxisName
+							.drawAtPoint(
+								(w.bounds.left+(w.bounds.width/2))@
+								(w.bounds.height-(pad/2)+10));
 						specX.maxval.round(0.001).asString
-							.drawAtPoint((w.bounds.width)@(w.bounds.height-(pad/2)+10));
+							.drawAtPoint(
+								(w.bounds.left+10+w.bounds.width-20-(pad/2))@
+								(w.bounds.height-(pad/2)+10));
+
+
+
 						GUI.pen.rotate(-pi/2); 
 						GUI.pen.translate(w.bounds.height.neg, 0);
 						specY.minval.round(0.001).asString
-							.drawAtPoint((pad/2)@(pad/2));
+							.drawAtPoint((pad/2)@(w.bounds.left+(pad/2) -20));
 						yAxisName.
-							drawAtPoint((w.bounds.height/2)@(pad/2));
+							drawAtPoint((w.bounds.height/2)@(w.bounds.left+(pad/2) -20));
 						specY.maxval.round(0.001).asString
-							.drawAtPoint((w.bounds.height - (pad/2))@(pad/2));
+							.drawAtPoint((w.bounds.height - (pad/2))@(w.bounds.left+(pad/2) -20));
 						GUI.pen.translate(w.bounds.height, 0);
 						GUI.pen.rotate(pi/2);
 						GUI.pen.stroke;
