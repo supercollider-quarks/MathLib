@@ -111,7 +111,7 @@ ScatterView {
 					GUI.pen.lineTo(((w.bounds.left)@(w.bounds.top)) 
 							+ (0@w.bounds.height));
 					GUI.pen.lineTo((w.bounds.left)@(w.bounds.top));
-					//GUI.pen.clip;
+					GUI.pen.clip;
 					
 					// draw Background
 					GUI.pen.color = background;
