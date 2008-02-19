@@ -5,19 +5,22 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="824.41">
+<meta name="CocoaVersion" content="824.44">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
-p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
-p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bb0e03}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
 span.s1 {font: 18.0px Helvetica}
-span.s2 {color: #0000ff}
+span.s2 {color: #0013fe}
 span.s3 {color: #000000}
-span.s4 {color: #bf0000}
+span.s4 {color: #bb0e03}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -36,8 +39,14 @@ span.Apple-tab-span {white-space:pre}
 <p class="p5">a.variance</p>
 <p class="p4"><span class="s3">a.stdDev </span>// Standard deviation</p>
 <p class="p5">a.skew</p>
-<p class="p5">a.kurtosis</p>
+<p class="p6"><span class="s3">a.kurtosis </span>// Note: the formula needs checking</p>
 <p class="p5">a.trimedian</p>
+<p class="p2"><br></p>
+<p class="p3">Measures such as variance and skewness are commonly calculated on the assumption that the data is a sample from the true (larger) population which we wish to know about. The above measures apply in this case. The following alternatives are used when the data represents the entire population:</p>
+<p class="p2"><br></p>
+<p class="p5">a.variancePop</p>
+<p class="p4"><span class="s3">a.stdDevPop </span>// Standard deviation</p>
+<p class="p5">a.skewPop</p>
 <p class="p2"><br></p>
 <p class="p3"><b>percentile</b></p>
 <p class="p2"><br></p>
@@ -56,10 +65,26 @@ span.Apple-tab-span {white-space:pre}
 <p class="p5">a.histo(1000).plot</p>
 <p class="p2"><br></p>
 <p class="p3">The weighted mean and variance functions can be used to estimate the mean and variance if all you have is histogram-like data:</p>
-<p class="p6"><br></p>
+<p class="p7"><br></p>
 <p class="p4"><span class="s3">[2, 4, 6].wmean([1,1,2]) </span>// [2, 4, 6] is the bin positions, [1, 1, 2] the heights within each bin</p>
-<p class="p7">[2, 4, 6].wmean([1,1,4])</p>
+<p class="p5">[2, 4, 6].wmean([1,1,4])</p>
 <p class="p2"><br></p>
+<p class="p3"><b>Statistical measures of association</b></p>
+<p class="p2"><br></p>
+<p class="p4">// Pearson correlation:</p>
+<p class="p6"><span class="s3">corr(a, a) </span>// Should be perfect correlation with self, i.e. 1!</p>
+<p class="p6"><span class="s3">corr(a, {1.0.rand}.dup(a.size)) </span>// Should be very small correlation with indpendent random stuff</p>
+<p class="p8"><br></p>
+<p class="p6">// Kendall's W statistic: a non-parametric correlation test between separate raters' rankings of a common set of objects.</p>
+<p class="p6">// The input array should be an array-of-arrays, each of which is the same size and contains integer rankings.</p>
+<p class="p6">// The output varies from 0 (no inter-rater agreement) to 1 (perfect inter-rater agreement)</p>
+<p class="p6">// The list of rankings can range (0 .. N-1) or (1 .. N), that won't affect the statistic.</p>
+<p class="p6">// The example used in Kendall's original paper (W value should be around 0.16):</p>
+<p class="p9">[ [5,4,1,6,3,2], [2,3,1,5,6,4], [4,1,6,3,2,5] ].kendallW</p>
+<p class="p6">// If we generate data in which there's perfect agreement we should always get 1 for the W-value:</p>
+<p class="p9">(0..10).scramble.dup(5).postcs.kendallW</p>
+<p class="p10"><br></p>
+<p class="p2"><b></b><br></p>
 <p class="p3"><b>Autocorrelation</b></p>
 <p class="p2"><br></p>
 <p class="p4"><span class="s3">a.autocorr </span>// Normalised autocorrelation</p>

@@ -29,13 +29,24 @@
 		
 		^(this.sumF { |el| (el - mean).abs.squared } / (this.size - 1).max(1))
 	}
+	variancePop { arg mean;	// supply mean if known
+		mean = mean ?? { this.meanF };
+		
+		^(this.sumF { |el| (el - mean).abs.squared } / (this.size).max(1))
+	}
 	
 	stdDev { arg mean; ^this.variance(mean).sqrt; }
+	stdDevPop { arg mean; ^this.variancePop(mean).sqrt; }
 	
 	skew { arg mean;	// supply mean if known
 		mean = mean ?? { this.meanF };		
 	
 		^this.sumF({ |el| (el - mean).cubed }) / (this.size * this.stdDev(mean).cubed)
+	}
+	skewPop { arg mean;	// supply mean if known
+		mean = mean ?? { this.meanF };		
+	
+		^this.sumF({ |el| (el - mean).cubed }) / (this.size * this.stdDevPop(mean).cubed)
 	}
 	
 		// kurtosis is tails size : kurtosis > 0 is leptokurtic, i.e. large tails; 
@@ -44,7 +55,7 @@
 	kurtosis { arg mean;	// supply mean if known
 		mean = mean ?? { this.meanF };		
 		
-		^(this.sumF({ |el| (el - mean).squared.squared })
+		^(this.sumF({ |el| (el - mean).abs.squared.squared })
 		/ ((this.size - 1)  * this.variance.squared)) - 3
 	}
 		
@@ -121,6 +132,146 @@
 		);
 		^num / denom
 	}
+
+
+/*
+
+NOT SURE IF THE WILCOXONSR STUFF IS CORRECT - Different sources describe slightly different calculations.
+
+	// Wilcoxon Signed-Rank test 
+	// Non-parametric test for whether the PAIRED differences between two sets of values is of zero median.
+	// If onetailed==true, test is unidirectional: we're testing for whether the SECOND array ("that") is higher.
+	// See Mendenhall et al, "Mathematical Statistics with Applications", sec 15.4
+/*
+a = [78,24,64,45,64,52,30,50,64,50,78,22,84,40,90,72];
+b = [78,24,62,48,68,56,25,44,56,40,68,36,68,20,58,32];
+
+a = [135, 102, 108, 141, 131, 144];
+b = [129, 120, 112, 152, 135, 163];
+
+# w, n = wilcoxonSR(b, a);
+z = wilcoxonSRzScore([w, n]);
+*/
+	/*
+wilcoxonSR([2,3,4,5,6,7,8], [2,3,4,5,6,7,8]);
+wilcoxonSR([2,3,4,5,6,7,8], [2,3,4,5,6,7,8].reverse);
+wilcoxonSR({1.0.rand}.dup(10  ), {1.0.rand}.dup(10));
+wilcoxonSR({1.0.rand}.dup(100 ), {1.0.rand}.dup(100));
+wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000));
+wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) + 1);
+wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) + 100);
+wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 1);   
+wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100); 
+	*/
+	wilcoxonSR { |that, onetailed=false|
+		var diffs, absdiffs, indicator, ranks, i, j, statistic;
+		
+		diffs = (that - this).reject{|d| d==0 }; // zero-difference entries are filtered out
+		
+		// Sort according to ABSOLUTE value
+		diffs = diffs.sort{ |a, b| (a.abs) <= (b.abs) };
+		
+		// Now find rank - it's just like array-index except that for tie breaks you must choose the average
+		ranks = (0 .. diffs.size-1);
+		i=0;
+		while{i<diffs.size}{
+			j = i; // j is the starting position, i will be the finishing position
+			while{diffs[i+1].notNil and:{diffs[i+1] == diffs[i]}}{
+				i = i + 1;
+			};
+			if(j != i){ // We need to meanify
+				ranks[j..i] = ranks[j..i].mean
+			};
+			i = i + 1;
+		};
+		
+		"diffs".postln;
+		diffs.postln;
+		"ranks".postln;
+		(ranks+1).postln;
+		
+		statistic = diffs.sum{|diffval, diffindex|
+			// Indicator (the "if") makes it onetailed
+			// Rank indexed starting from 1 not zero.
+			if(diffval > 0, {ranks[diffindex]+1}, 0)
+		};
+		if(onetailed.not){
+			statistic = min(statistic,
+				diffs.sum{|diffval, diffindex|
+					// Indicator (the "if") makes it onetailed
+					// Rank indexed starting from 1 not zero.
+					if(diffval < 0, {ranks[diffindex]+1}, 0)
+				}
+			)
+		};
+		
+		// The size is returned since it may be less than the number of values you put in!
+		^[statistic, diffs.size]
+		
+	}
+	// For data more than, say, 25 points, we can calculate a z-score based on the normal distribution approximation
+	wilcoxonSRzScore {
+		var w, n, corrector, stdev;
+		
+		w = this[0];
+		n = this[0];
+		
+		if(n<26){ "wilcoxonSRzScore: this method should only be used with large N, e.g. over 25".warn };
+		
+		corrector = n * (n+1) / 4;
+		
+		stdev = sqrt((  n * (n+1) * (n+n+1)  )/24);
+		
+		^(w - corrector)/stdev;
+	}
+	
+*/
+	
+	// Kendall's W statistic
+	kendallW {
+		var m, n, s;
+		
+		m = this.size;    // m == number of raters
+		n = this[0].size; // n == number of objects ranked
+		
+		s = this.sum.variancePop * n; // Variance of sum-of-ranks (summed for each object) times n
+		
+		// The W statistic is:
+		^ 12.0 * s / ( (m * m) * (n * n * n - n) )
+	}
+	
+	
+	
+	// The Jarque-Bera test is a test of normality.
+	// See http://en.wikipedia.org/wiki/Jarque-Bera_test
+	jarqueBera { |skewness, kurtosis, n|
+		var mean;
+		// First derive the moments if needed
+		if(skewness.isNil){
+			if(kurtosis.isNil){
+				mean = this.mean;
+				skewness = this.skew(    mean);
+				kurtosis = this.kurtosis(mean);
+			}{
+				skewness = this.skew
+			}
+		}{
+			if(kurtosis.isNil){
+				kurtosis = this.kurtosis
+			}
+		};
+		if(n.isNil){ n = this.size };
+		
+		kurtosis = kurtosis - 3;
+		// Now here's the actual JB statistic
+		^(n / 6.0) * ( (skewness * skewness) + ((kurtosis*kurtosis)/4.0)  )
+	}
+/*
+a = {1.0.rand}.dup(10000) // Shouldn't pass the test
+a = {1.0.sum3rand}.dup(10000) // Should?
+a.jarqueBera
+// Now we need a function to assess the significance of the statistic's output value
+*/
 	
 	// Order-Statistics Correlation Coefficient
 	// see Xu et al 2007, DOI 10.1109/TSP.2007.899374
