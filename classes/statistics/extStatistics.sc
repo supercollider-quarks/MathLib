@@ -182,10 +182,10 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 			i = i + 1;
 		};
 		
-		"diffs".postln;
-		diffs.postln;
-		"ranks".postln;
-		(ranks+1).postln;
+		//"diffs".postln;
+		//diffs.postln;
+		//"ranks".postln;
+		//(ranks+1).postln;
 		
 		statistic = diffs.sum{|diffval, diffindex|
 			// Indicator (the "if") makes it onetailed
@@ -214,10 +214,10 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 		var w, n, corrector, stdev;
 		
 		w = this[0];
-		n = this[0];
+		n = this[1];
 		
-		if(n<16){ ("wilcoxonSRzScore: this approximation should only be used with large N, e.g. over 15."
-					+ "Recommend you calculate exact significance instead.").warn };
+		if(n<16){ ("wilcoxonSRzScore: N=%. this approximation should only be used with large N, e.g. over 15."
+					+ "Recommend you calculate exact significance instead.").format(n).warn };
 		
 		corrector = n * (n+1) / 4;
 		
