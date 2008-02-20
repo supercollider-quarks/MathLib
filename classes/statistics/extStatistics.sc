@@ -134,14 +134,11 @@
 	}
 
 
-/*
-
-NOT SURE IF THE WILCOXONSR STUFF IS CORRECT - Different sources describe slightly different calculations.
-
 	// Wilcoxon Signed-Rank test 
 	// Non-parametric test for whether the PAIRED differences between two sets of values is of zero median.
 	// If onetailed==true, test is unidirectional: we're testing for whether the SECOND array ("that") is higher.
 	// See Mendenhall et al, "Mathematical Statistics with Applications", sec 15.4
+	// Also http://www.fon.hum.uva.nl/Service/Statistics/Signed_Rank_Test.html
 /*
 a = [78,24,64,45,64,52,30,50,64,50,78,22,84,40,90,72];
 b = [78,24,62,48,68,56,25,44,56,40,68,36,68,20,58,32];
@@ -209,24 +206,26 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 		^[statistic, diffs.size]
 		
 	}
-	// For data more than, say, 25 points, we can calculate a z-score based on the normal distribution approximation
+	// For data more than, say, 15 points, we can calculate a z-score based on the normal distribution approximation.
+	// This formula is as on http://www.fon.hum.uva.nl/Service/Statistics/Signed_Rank_Test.html
+	// and should produce a Z on the Standard Normal Distribution, e.g. Prob(|Z|>=1.96) < 0.05
+	// Some other sources use slightly different calculations.
 	wilcoxonSRzScore {
 		var w, n, corrector, stdev;
 		
 		w = this[0];
 		n = this[0];
 		
-		if(n<26){ "wilcoxonSRzScore: this method should only be used with large N, e.g. over 25".warn };
+		if(n<16){ ("wilcoxonSRzScore: this approximation should only be used with large N, e.g. over 15."
+					+ "Recommend you calculate exact significance instead.").warn };
 		
 		corrector = n * (n+1) / 4;
 		
 		stdev = sqrt((  n * (n+1) * (n+n+1)  )/24);
 		
-		^(w - corrector)/stdev;
+		^(w - 0.5 - corrector)/stdev;
 	}
-	
-*/
-	
+		
 	// Kendall's W statistic
 	kendallW {
 		var m, n, s;
