@@ -69,6 +69,41 @@ LaTeX {
 		str = str ++ this.tabularFooter;
 		^str
 	}
+	
+	// Give it an array of (barlabel -> barvalue) Association items. 
+	// "shades" can be true to cycle through shades, or false, or a function that translates the bar's index to a shade number (numbers 1 through 8).
+	// LaTeX.barChart({100.0.rand}.dup(10).collect{|item, index| (("Item"+index) -> item) }, precision: 3)
+	*barChart { |vals, min=0, max, interval, shades=false, precision|
+		var str = "", tmp, precisionfunc;
+		
+		precisionfunc = if(precision.isNil){
+			{|val| val}
+		}{
+			{|val| val.asStringPrec(precision.asInteger)}
+		};
+		
+		if(min.isNil){ min = vals.collect(_.value).minItem; min = min.roundUp(min* -0.1)};
+		if(max.isNil){ max = vals.collect(_.value).maxItem; max = max.roundUp(max*  0.1)};
+		if(interval.isNil){ interval = (max - min) / 10};
+		
+		str = str ++ "\\begin{figure}\n\\begin{barenv}\n\\setyaxis{"++min++"}{"++max++"}{"++interval++"}\n";
+		
+		shades = shades.switch(
+			true, 
+			{{|index| index.wrap(0, 7)+1}},
+			false,
+			{1},
+			// default, return the user-specified function (or number, or whatever):
+			shades
+		);
+		
+		vals.do{|assoc, index|
+			str = str ++ "\\bar{"++precisionfunc.value(assoc.value)++"}{"++shades.value(index)++"}["++assoc.key++"]\n";
+		};
+		
+		str = str ++ "\\end{barenv}\n\\end{figure}\n";
+		^str;
+	}
 }
 
 /*
