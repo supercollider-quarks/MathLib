@@ -86,7 +86,7 @@ LaTeX {
 		if(max.isNil){ max = vals.collect(_.value).maxItem; max = max.roundUp(max*  0.1)};
 		if(interval.isNil){ interval = (max - min) / 10};
 		
-		str = str ++ "\\begin{figure}\n\\begin{barenv}\n\\setyaxis{"++min++"}{"++max++"}{"++interval++"}\n";
+		str = str ++ "\\begin{barenv}\n\\setyaxis{"++min++"}{"++max++"}{"++interval++"}\n";
 		
 		shades = shades.switch(
 			true, 
@@ -101,7 +101,7 @@ LaTeX {
 			str = str ++ "\\bar{"++precisionfunc.value(assoc.value)++"}{"++shades.value(index)++"}["++assoc.key++"]\n";
 		};
 		
-		str = str ++ "\\end{barenv}\n\\end{figure}\n";
+		str = str ++ "\\end{barenv}\n";
 		^str;
 	}
 }
