@@ -98,7 +98,7 @@ ScatterView2 {
 
 		selected = false!numItems;
 
-		plot = GUI.userView.new(parent,bounds);
+		plot = GUI.userView.new(parent,bounds).relativeOrigin_(true);
 
 		plot.drawFunc = {|view|
 			var mult = view.bounds.extent.asArray;
