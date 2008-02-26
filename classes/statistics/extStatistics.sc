@@ -239,8 +239,50 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 		^ 12.0 * s / ( (m * m) * (n * n * n - n) )
 	}
 	
-	
-	
+	// Given a list of values, returns their rank indices (starting at 1), assigning the mean rank in case of ties
+/*
+[5,3,7,6,8,8,5,4].rankVals
+[6.34, 7, 2.4, 5.5, 6.34].rankVals
+*/
+	rankVals { |greatestFirst=true|
+		var ranks, origIndices, vals, i, j;
+		
+		// An array of Association s in which the "value" is used as a key pointing to its original key
+		origIndices = this.collectAs({|item, index| item->index }, Array);
+		
+		// Association means we sort by the keys, i.e. the data values
+		origIndices = if(greatestFirst){
+			origIndices.sort{ |a,b| a.key >= b.key }
+		}{
+			origIndices.sort{ |a,b| a.key <= b.key }
+		};
+				
+		// We don't need the vals except to check for ties
+		vals = origIndices.collect(_.key);
+		// Then discard the values, now we just have the indices
+		origIndices = origIndices.collect(_.value);
+		
+		// Remember the ranks must start from 1
+		ranks = (1 .. this.size);
+		// Now we need to go through and assign mean ranks in case of ties
+		i=0;
+		while{i<this.size}{
+			j = i; // j is the starting position, i will be the finishing position
+			while{vals[i+1].notNil and:{vals[i+1] == vals[i]}}{
+				i = i + 1;
+			};
+			if(j != i){ // We need to meanify
+				ranks[j..i] = ranks[j..i].mean
+			};
+			i = i + 1;
+		};
+		
+		// Now again we need to sort back according to original indices
+		^ranks.collect{|rank, index| origIndices[index] -> rank}
+				.sort{ |a,b| a.key <= b.key }
+				.collect(_.value);
+	}
+		
 	// The Jarque-Bera test is a test of normality.
 	// See http://en.wikipedia.org/wiki/Jarque-Bera_test
 	jarqueBera { |skewness, kurtosis, n|
