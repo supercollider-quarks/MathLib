@@ -227,16 +227,25 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 	}
 		
 	// Kendall's W statistic
-	kendallW {
-		var m, n, s;
+	kendallW { |postChiSq=true|
+		var m, n, s, w;
 		
-		m = this.size;    // m == number of raters
-		n = this[0].size; // n == number of objects ranked
+		m = this.size.asFloat;    // m == number of raters
+		n = this[0].size.asFloat; // n == number of objects ranked
 		
-		s = this.sum.variancePop * n; // Variance of sum-of-ranks (summed for each object) times n
+		s = this.sumF.variancePop * n; // Variance of sum-of-ranks (summed for each object) times n
+		
+		//"m  = %, n = %, s = %".format(m,n,s).postln;
 		
 		// The W statistic is:
-		^ 12.0 * s / ( (m * m) * (n * n * n - n) )
+		w = 12.0 * s / ( (m * m) * (n * n * n - n) );
+		
+		if(postChiSq){
+			// Can use online tools to derive a p-value from this, e.g. http://faculty.vassar.edu/lowry/tabs.html#csq
+			"For Kendall's W = %, Chi-square = % (% d.f.)".format(w, m * (n-1) * w, n-1).postln;
+		};
+		
+		^w
 	}
 	
 	// Given a list of values, returns their rank indices (starting at 1), assigning the mean rank in case of ties
