@@ -1,4 +1,4 @@
-// some statistics, adc 2005, plus ds 2007.
+// some statistics, adc 2005, plus ds 2007/08.
 
 + Collection {
 			// same as sum, but sum initialized as float 0.0 to avoid numerical
@@ -221,7 +221,7 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 		
 		corrector = n * (n+1) / 4;
 		
-		stdev = sqrt((  n * (n+1) * (n+n+1)  )/24);
+		stdev = sqrt(  n * (n+1) * ((n+n+1).asFloat /24.0)); // NB division early helps prevent limit errors
 		
 		^(w - 0.5 - corrector)/stdev;
 	}
