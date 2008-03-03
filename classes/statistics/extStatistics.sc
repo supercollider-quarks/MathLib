@@ -219,9 +219,9 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 		if(n<16){ ("wilcoxonSRzScore: N=%. this approximation should only be used with large N, e.g. over 15."
 					+ "Recommend you calculate exact significance instead.").format(n).warn };
 		
-		corrector = n * (n+1) / 4;
+		corrector = n.asFloat * (n+1).asFloat / 4.0;
 		
-		stdev = sqrt(  n * (n+1) * ((n+n+1).asFloat /24.0)); // NB division early helps prevent limit errors
+		stdev = sqrt(  n.asFloat * (n+1).asFloat * ((n+n+1).asFloat /24.0)); // NB division early helps prevent limit errors in case of massiveness
 		
 		^(w - 0.5 - corrector)/stdev;
 	}
