@@ -132,8 +132,7 @@
 		);
 		^num / denom
 	}
-
-
+	
 	// Wilcoxon Signed-Rank test 
 	// Non-parametric test for whether the PAIRED differences between two sets of values is of zero median.
 	// If onetailed==true, test is unidirectional: we're testing for whether the SECOND array ("that") is higher.
@@ -351,7 +350,7 @@ oscorr(x,y);
 		// Compiles x and y into vector values, then sorts purely using x values
 		#xsorted, yconcomitant = this.collect{|xitem, index| [xitem, that[index]]}.sort{ |a, b| a[0] <= b[0] }.flop;
 		// Sorts y, we don't need to know the concomitant x values for the calculation
-		ysorted = that.sort;
+		ysorted = that.copy.sort; // NEED TO COPY for nondestructive! Grr
 		
 		last = this.lastIndex;
 		
