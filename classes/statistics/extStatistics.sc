@@ -348,16 +348,16 @@ oscorr(x,y);
 		var xsorted, ysorted, yconcomitant, last;
 		
 		// Compiles x and y into vector values, then sorts purely using x values
-		#xsorted, yconcomitant = this.collect{|xitem, index| [xitem, that[index]]}.sort{ |a, b| a[0] <= b[0] }.flop;
+		#xsorted, yconcomitant = this.collect{|xitem, index| [xitem, that[index]]}.sortBy(0).flop;
 		// Sorts y, we don't need to know the concomitant x values for the calculation
 		ysorted = that.copy.sort; // NEED TO COPY for nondestructive! Grr
 		
 		last = this.lastIndex;
 		
 		^
-			(this.sumF{|xi, i| (xi - this[last - i]) * yconcomitant[i] })
+			(xsorted.sumF{|xi, i| (xi - xsorted[last - i]) * yconcomitant[i] })
 				/
-			(this.sumF{|xi, i| (xi - this[last - i]) * ysorted[i] })
+			(xsorted.sumF{|xi, i| (xi - xsorted[last - i]) * ysorted[i] })
 	}
 	
 		// return n sorted indices and values for a given sort function
