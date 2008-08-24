@@ -5,13 +5,13 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="824.42">
+<meta name="CocoaVersion" content="824.48">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #0055f0}
-p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ac1e17; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #005ef0}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a82214; min-height: 12.0px}
 p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
 p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
 p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Monaco; min-height: 16.0px}
@@ -19,7 +19,7 @@ p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
 p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica; min-height: 17.0px}
 span.s1 {color: #000000}
 span.s2 {text-decoration: underline}
-span.s3 {color: #003ca9}
+span.s3 {color: #0042a9}
 span.s4 {font: 12.0px Helvetica}
 span.s5 {font: 14.0px Helvetica}
 span.Apple-tab-span {white-space:pre}
@@ -237,6 +237,8 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2"><b>- aNumber</b></p>
 <p class="p2"><b><span class="Apple-tab-span">	</span></b>returns subtraction with aNumber for each element</p>
 <p class="p3"><br></p>
+<p class="p2"><b>center(mean)</b></p>
+<p class="p2"><span class="Apple-tab-span">	</span>returns a matrix centred around the mean vector (which will be calculated for you if not supplied)</p>
 <p class="p3"><br></p>
 <p class="p6"><span class="s2">Return characteristic values</span></p>
 <p class="p3"><br></p>
@@ -244,14 +246,24 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2"><b><span class="Apple-tab-span">	</span></b>returns the sum of all elements</p>
 <p class="p3"><br></p>
 <p class="p2"><b>sumRow (row)</b></p>
-<p class="p2"><b><span class="Apple-tab-span">	</span></b>returns the sum of all elements of row</p>
-<p class="p3"><br></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b>returns the sum of all elements of desired row</p>
 <p class="p2"><b>sumCol (col)</b></p>
-<p class="p2"><b><span class="Apple-tab-span">	</span></b>returns the sum of all elements of column</p>
-<p class="p3"><br></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b>returns the sum of all elements of desired column</p>
+<p class="p2"><b>sumRows(function)</b></p>
+<p class="p2"><span class="Apple-tab-span">	</span>return an array giving the sum for every row</p>
+<p class="p2"><b>sumCols(function)</b></p>
+<p class="p2"><span class="Apple-tab-span">	</span>return an array giving the sum for every column</p>
+<p class="p3"><span class="Apple-tab-span">	</span></p>
 <p class="p2"><b>grammian</b></p>
 <p class="p2"><b><span class="Apple-tab-span">	</span></b>returns the grammian of a<span class="Apple-converted-space">  </span>matrix</p>
 <p class="p2"><span class="Apple-tab-span">	</span>(determinant of the gram matrix)</p>
+<p class="p3"><br></p>
+<p class="p2"><b>mean</b></p>
+<p class="p2"><b><span class="Apple-tab-span">	</span></b>returns the mean array, calculated over the rows</p>
+<p class="p2"><b>cov(mean)</b></p>
+<p class="p2"><span class="Apple-tab-span">	</span>returns the sample covariance, if rows represent observations</p>
+<p class="p2"><b>covML(mean)</b></p>
+<p class="p2"><span class="Apple-tab-span">	</span>returns the Maximum-Likelihood covariance estimate, if rows represent observations and the distribution is assumed to be Gaussian</p>
 <p class="p3"><br></p>
 <p class="p3"><br></p>
 <p class="p6"><span class="s2">Return characteristic values of square</span><span class="Apple-converted-space">  </span><span class="s2">matrices:</span></p>

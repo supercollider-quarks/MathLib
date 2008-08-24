@@ -3,6 +3,7 @@
 // 	bielefeld unversity 2006
 
 // inserted Christofer Fraunberger's code for matrix class Multiplication for compatibility reasons.
+// additional methods dan stowell 2008
 
 Matrix[slot] : Array {
 
@@ -534,6 +535,30 @@ Matrix[slot] : Array {
 		^(this.squared.flat == this.flat);
 	} 
 
+	sumCols { |function|
+		^this.asArray.sum(function)
+	}
+	sumRows { |function|
+		^this.asArray.collect{|row| row.sum(function) }
+	}
+	// mean/center/cov/covML uses the convention that rows are data points, cols are variables
+	mean {
+		^this.asArray.mean
+	}
+	center { |mean|
+		if(mean.isNil){ mean = this.mean };
+		^this - this.class.with(this.asArray.mean.dup(this.rows))
+	}
+	cov { |mean|
+		var centred;
+		centred = this.center(mean);
+		^(centred.flop * centred) / (this.rows - 1)
+	}
+	covML { |mean|
+		var centred;
+		centred = this.center(mean);
+		^(centred.flop * centred) / (this.rows)
+	}
 }
 
 
