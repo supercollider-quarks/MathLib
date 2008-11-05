@@ -82,7 +82,7 @@ MarkovSet  {
 		args.do({ arg item;
 			var key, next, weights;
 			#key, next, weights = item;
-			this.put(key, next.postln, weights)
+			this.put(key, next, weights)
 		});
 	}
 		
