@@ -126,9 +126,6 @@ WeighBag  {
 	collect { arg func; 
 		items = items.collect({ arg item, i; func.value(item, i) }); 
 	}
-	
-		// WeighBag should incorporate the weights transparently
-	choose { ^this.wchoose }
 	wchoose { 		
 		^items.wchoose(weights) 
 	}

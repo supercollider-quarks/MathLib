@@ -2,11 +2,11 @@ LaTeX {
 	
 	*lineEnd { ^"  \\\\  \n" }
 	*hline { ^"  \\hline  " }
-	*cline { arg which; ^which.collect { |x|Ê"\\cline{" ++ x ++ "-" ++ x ++ "}" }.join(" ") }
+	*cline { arg which; ^which.collect { |x|"\\cline{" ++ x ++ "-" ++ x ++ "}" }.join(" ") }
 	*tabletab { ^"\t&\t" }
 	
 	*math { arg str, flag=true;
-		^if(flag) {Ê"$" ++ str ++ "$" }Ê{ str };
+		^if(flag) { "$" ++ str ++ "$" }{ str };
 	}
 	
 	*row { arg obj, align="l", n=1;
@@ -37,8 +37,8 @@ LaTeX {
 		dict = this.asTable(dict);
 		str = this.tableHeader(dict.shape.at(1), align, separator);
 		dict.do {|x, i|
-			if(hlines.includes(i)) {Êstr = str ++ this.hline };
-			if(math) {Êx = x.collect(this.math(_)) };
+			if(hlines.includes(i)) {str = str ++ this.hline };
+			if(math) {x = x.collect(this.math(_)) };
 			str = str ++ x.collect(this.row(_), align).join(this.tabletab);
 			str = str ++ this.lineEnd;
 		};
@@ -49,7 +49,7 @@ LaTeX {
 	*numericalDict { arg dict, keyName, valName, math=true;
 		var str;
 		str = "\\begin{tabular}{c r @{.} l}";
-		if(keyName.notNil or: {ÊvalName.notNil }) {
+		if(keyName.notNil or: {valName.notNil }) {
 			str = str + this.math(keyName, math) + "&" 
 					++ this.row(this.math(valName, math), "c", 2) ++ this.lineEnd;
 			str = str ++ this.hline 

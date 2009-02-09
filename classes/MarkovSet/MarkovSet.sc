@@ -162,7 +162,7 @@ MarkovSet  {
 	parseFile { arg path, delimiter=$ , blockSize=0, completionFunc;
 			var source, stream, isRichText, doc, string;
 			isRichText = path.endsWith(".rtf") 
-				or: { path.endsWith(".html") } or: {Êpath.endsWith(".htm") };
+				or: { path.endsWith(".html") } or: {path.endsWith(".htm") };
 			protect {
 			if(isRichText){
 				source = Document.open(path);

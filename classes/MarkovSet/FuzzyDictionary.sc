@@ -56,13 +56,13 @@ FuzzySet : FuzzyDictionary {
 		reverseLookup = IdentityDictionary.new;
 	}
 
-	put {Êarg key, item; // any identical item is removed first
+	put {arg key, item; // any identical item is removed first
 		var set;
 		var oldkey = reverseLookup.removeAt(item);
 		oldkey !? { this.removeAt(oldkey, item) };
 		
 		set = this.keyAt(key);
-		if(set.isNil) {Ê
+		if(set.isNil) {
 			set = IdentitySet.new; 
 			this.keyPut(key, set) 
 		};
@@ -72,7 +72,7 @@ FuzzySet : FuzzyDictionary {
 	
 	remove { arg item;
 		var oldkey;
-		item ?? {Ê^this };
+		item ?? {^this };
 		oldkey = reverseLookup.removeAt(item);
 		oldkey !? { this.removeAt(oldkey, item) };
 		^nil
