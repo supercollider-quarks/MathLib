@@ -64,6 +64,10 @@ span.Apple-tab-span {white-space:pre}
 <p class="p5">a.histo(10).plot</p>
 <p class="p5">a.histo(1000).plot</p>
 <p class="p2"><br></p>
+<p class="p3">histoBands gives you the corresponding bin centers (same arguments as histo; argument 'center' determines whether you get the center value (default 0.5), the left (0.0) or right (1.0) edge of the bin, or anything in between). This can be useful for creating an annotated plot.</p>
+<p class="p2"><br></p>
+<p class="p5">a.histoBands</p>
+<p class="p2"><br></p>
 <p class="p3">The weighted mean and variance functions can be used to estimate the mean and variance if all you have is histogram-like data:</p>
 <p class="p7"><br></p>
 <p class="p4"><span class="s3">[2, 4, 6].wmean([1,1,2]) </span>// [2, 4, 6] is the bin positions, [1, 1, 2] the heights within each bin</p>
