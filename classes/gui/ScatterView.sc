@@ -181,9 +181,9 @@ ScatterView {
 						// draw axis
 					if (drawAxis) {
 						GUI.pen.moveTo((w.bounds.left+(pad/2))@(w.bounds.top+(pad/2)));
-						GUI.pen.lineTo((w.bounds.left+(pad/2))@(w.bounds.height-(pad/2)));
+						GUI.pen.lineTo((w.bounds.left+(pad/2))@(w.bounds.top+w.bounds.height-(pad/2)));
 						GUI.pen.lineTo(
-							(w.bounds.left-(pad/2)+w.bounds.width)@(w.bounds.height-(pad/2)));
+							(w.bounds.left-(pad/2)+w.bounds.width)@(w.bounds.top+w.bounds.height-(pad/2)));
 						specX.minval.round(0.001).asString
 							.drawAtPoint(
 								(w.bounds.left+(pad/2)+10)@
