@@ -5,22 +5,22 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="824.44">
+<meta name="CocoaVersion" content="824.48">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ad140d}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
 p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #001bb9}
-p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #2c7014}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #007300}
 span.s1 {font: 18.0px Helvetica}
-span.s2 {color: #001bb9}
+span.s2 {color: #0000bf}
 span.s3 {color: #000000}
 span.s4 {color: #606060}
-span.s5 {color: #ad140d}
-span.s6 {color: #2c7014}
+span.s5 {color: #bf0000}
+span.s6 {color: #007300}
 span.s7 {text-decoration: underline}
 span.Apple-tab-span {white-space:pre}
 </style>
@@ -302,7 +302,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">var</span> env;</p>
 <p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>env = <span class="s2">EnvGen</span>.kr(<span class="s2">Env</span>.perc(0.01, dur, 0.2), doneAction:2);</p>
 <p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">Out</span>.ar(out, <span class="s2">SinOsc</span>.ar(freq, 0, env))</p>
-<p class="p4"><span class="Apple-tab-span">	</span>}).store;</p>
+<p class="p4"><span class="Apple-tab-span">	</span>}).memStore;</p>
 <p class="p4">)</p>
 <p class="p2"><br></p>
 <p class="p2"><br></p>
@@ -522,7 +522,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s2">SinOsc</span>.ar(freq)<span class="Apple-converted-space"> </span></p>
 <p class="p4"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>* <span class="s2">XLine</span>.ar(amp, amp * 0.001, sustain, doneAction: 2)</p>
 <p class="p4"><span class="Apple-tab-span">	</span>);</p>
-<p class="p4">}).store;</p>
+<p class="p4">}).memStore;</p>
 <p class="p4">);</p>
 <p class="p2"><br></p>
 <p class="p4">u = { <span class="s2">|str|</span><span class="Apple-converted-space"> </span></p>
