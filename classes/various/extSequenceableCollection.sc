@@ -14,6 +14,10 @@ Dan Stowell 2009.
 		^this.class.meshgrid([this] ++ arrays)
 	}
 	
+	/*
+	a = Array.meshgrid([[1,2,3,4], [6,7,8,9,10]]).do(_.postln);""
+	a = Array.meshgrid([[1,2,3], [6,7,8], [10,12]]).do(_.postln);""
+	*/
 	*meshgrid {|arrays|
 		var less;
 	   ^if(arrays.size==1){
