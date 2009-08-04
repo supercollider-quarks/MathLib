@@ -362,7 +362,7 @@ Matrix[slot] : Array {
 			});
 			^result
 		},{
-			error("Matrix-mulMatrix: cols and rows don't fit.");
+			error("Matrix-mulMatrix: cols and rows don't fit. Matrix shapes: (%) (%)".format(this.shape, aMatrix.shape));
 			this.dump;
 			this.dumpBackTrace;
 			this.halt;
