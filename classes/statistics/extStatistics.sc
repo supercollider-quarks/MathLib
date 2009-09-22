@@ -133,6 +133,34 @@
 		^num / denom
 	}
 	
+	// Same as corr but Wikipedia says it has better numerical stability
+	// http://en.wikipedia.org/wiki/Correlation
+	/* NO WORKY
+	corr2 { |that|
+		var sum_sq_x = 0;
+		var sum_sq_y = 0;
+		var sum_coproduct = 0;
+		var mean_x = this[0];
+		var mean_y = that[0];
+		var sweep, delta_x, delta_y, pop_sd_x, pop_sd_y, cov_x_y;
+		var n = this.size;
+		(1 .. n-1).do{|i|
+			sweep = i / (i+1);
+			delta_x = this[i] - mean_x;
+			delta_y = that[i] - mean_y;
+			sum_sq_x      = sum_sq_x      + delta_x * delta_x * sweep;
+			sum_sq_y      = sum_sq_y      + delta_y * delta_y * sweep;
+			sum_coproduct = sum_coproduct + delta_x * delta_y * sweep;
+			mean_x = mean_x + (delta_x / (i+1));
+			mean_y = mean_y + (delta_y / (i+1));
+		};
+		pop_sd_x = sqrt( sum_sq_x / n );
+		pop_sd_y = sqrt( sum_sq_y / n );
+		cov_x_y = sum_coproduct / n;
+		^ cov_x_y / (pop_sd_x * pop_sd_y)
+	}
+	*/
+	
 	// Wilcoxon Signed-Rank test 
 	// Non-parametric test for whether the PAIRED differences between two sets of values is of zero median.
 	// If onetailed==true, test is unidirectional: we're testing for whether the SECOND array ("that") is higher.
@@ -290,7 +318,15 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 				.sort{ |a,b| a.key <= b.key }
 				.collect(_.value);
 	}
-		
+	
+	// Spearman's rho is the Pearson correlation applied to the ranks
+	/*
+	spearmanRho([106, 86, 100, 101, 99, 103, 97, 113, 112, 110], [7, 0, 27, 50, 28, 29, 20, 12, 6, 17]);  // -0.17575757575758
+	*/
+	spearmanRho { |that|
+		^corr(this.rankVals, that.rankVals)
+	}
+	
 	// The Jarque-Bera test is a test of normality.
 	// See http://en.wikipedia.org/wiki/Jarque-Bera_test
 	jarqueBera { |skewness, kurtosis, n|
@@ -404,4 +440,42 @@ oscorr(x,y);
 		};
 	}
 	
+}
+
+
++ SimpleNumber {
+	/*
+	0.1.binomial(2,3)
+	0.1.binomial(3,3)
+	0.1.binomial(2,3) + 0.1.binomial(3,3)
+	0.1.binomial((2..3), 3) // prob that it's either two or three, i.e. that it's >=2
+	0.1.binomial((2..3), 30)
+	0.1.binomial((2..30), 30)
+	0.0000001.binomial((5..10), 10)
+	
+	// Roll a die ten times. How likely are we to get 3 sixes?
+	(1/6).binomial(3, 10)
+	// ...or at least 3 sixes?
+	(1/6).binomial((3..10), 10)
+	*/
+	binomial { |numcorrect, numtrials|
+		var diff, nfac, xfac, dfac;
+		
+		if(numcorrect.isArray){
+			// probability that it's ANY of the options.
+			^numcorrect.asSet.asArray.sum{|ncor| this.binomial(ncor, numtrials)};
+		};
+		
+		diff = numtrials-numcorrect;
+		nfac = (1..numtrials).asFloat.product;
+		if(nfac==0){ nfac = 1 };
+		xfac = (1..numcorrect).asFloat.product;
+		if(xfac==0){ xfac = 1 };
+		dfac = (1..diff).asFloat.product;
+		if(dfac==0){ dfac = 1 };
+		
+		//"(% / % / %)".format(nfac, xfac, dfac).postln;
+		
+		^ (nfac / xfac / dfac) * (this ** numcorrect) * ((1-this) ** (numtrials-numcorrect))
+	}
 }
