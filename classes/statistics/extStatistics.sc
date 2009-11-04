@@ -440,6 +440,23 @@ oscorr(x,y);
 		};
 	}
 	
+	// Find the first principal component in a data distribution, using expectation-maximisation method. "e" is termination threshold.
+	// The data must already be centred (mean removed) and any scaling issues dealt with appropriately.
+	pc1 { |e=0.000000000001|
+		var dims = this[0].size, t={0.0}.dup(dims), tmag=0, tmag_old, p=this.choose, inc=inf;
+		while{ inc > e }{
+			t = this.sumF{|datum|
+				((datum * p).sumF * datum)
+			};
+			tmag_old = tmag;
+			tmag = t.sumF{|i| i*i}.sqrt;
+			//"t: %  (|t|: %)".format(t, tmag).postln;
+			p = t / tmag;
+			inc = tmag - tmag_old;
+			//"p: %  (inc: %)".format(p, inc).postln;
+		};
+		^p
+	}
 }
 
 

@@ -5,22 +5,23 @@
 <meta http-equiv="Content-Style-Type" content="text/css">
 <title></title>
 <meta name="Generator" content="Cocoa HTML Writer">
-<meta name="CocoaVersion" content="824.44">
+<meta name="CocoaVersion" content="824.48">
 <style type="text/css">
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bb0e03}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #b71505}
 p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bb0e03}
 p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
-p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000; min-height: 12.0px}
-p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
-p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bb0e03; min-height: 12.0px}
+p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
+p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
 span.s1 {font: 18.0px Helvetica}
-span.s2 {color: #0013fe}
+span.s2 {color: #001bfd}
 span.s3 {color: #000000}
-span.s4 {color: #bb0e03}
+span.s4 {color: #b71505}
+span.s5 {color: #0000bf}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -84,11 +85,19 @@ span.Apple-tab-span {white-space:pre}
 <p class="p6">// The output varies from 0 (no inter-rater agreement) to 1 (perfect inter-rater agreement)</p>
 <p class="p6">// The list of rankings can range (0 .. N-1) or (1 .. N), that won't affect the statistic.</p>
 <p class="p6">// The example used in Kendall's original paper (W value should be around 0.16):</p>
-<p class="p9">[ [5,4,1,6,3,2], [2,3,1,5,6,4], [4,1,6,3,2,5] ].kendallW</p>
+<p class="p5">[ [5,4,1,6,3,2], [2,3,1,5,6,4], [4,1,6,3,2,5] ].kendallW</p>
 <p class="p6">// If we generate data in which there's perfect agreement we should always get 1 for the W-value:</p>
-<p class="p9">(0..10).scramble.dup(5).postcs.kendallW</p>
-<p class="p10"><br></p>
-<p class="p2"><b></b><br></p>
+<p class="p5">(0..10).scramble.dup(5).postcs.kendallW</p>
+<p class="p7"><br></p>
+<p class="p9">// Principal Component Analysis:</p>
+<p class="p9">// The pc1 method finds the first principal component of a multidimensional data distribution.</p>
+<p class="p9">// It doesn't calculate the full PCA, but finds the first PC via expectation-maximisation.</p>
+<p class="p9">// The data must already be centred (mean removed) and any scaling issues dealt with appropriately.</p>
+<p class="p9">// The termination threshold can be set via an argument to pc1.</p>
+<p class="p10">~data = 10000.collect{ if(0.5.coin){[-1, -0.5]}{[1, 0.5]}.collect{<span class="s5">|v|</span> v + 0.95.sum3rand} };</p>
+<p class="p10"><span class="s5">GNUPlot</span>.new.scatter(~data)</p>
+<p class="p10">~data.pc1</p>
+<p class="p2"><br></p>
 <p class="p3"><b>Autocorrelation</b></p>
 <p class="p2"><br></p>
 <p class="p4"><span class="s3">a.autocorr </span>// Normalised autocorrelation</p>
