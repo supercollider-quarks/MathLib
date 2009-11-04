@@ -324,7 +324,7 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 	spearmanRho([106, 86, 100, 101, 99, 103, 97, 113, 112, 110], [7, 0, 27, 50, 28, 29, 20, 12, 6, 17]);  // -0.17575757575758
 	*/
 	spearmanRho { |that|
-		^corr(this.rankVals, that.rankVals)
+		^corr(this.rankVals.asFloat, that.rankVals.asFloat)
 	}
 	
 	// The Jarque-Bera test is a test of normality.
