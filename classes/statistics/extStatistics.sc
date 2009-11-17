@@ -326,6 +326,29 @@ wilcoxonSR({1.0.rand}.dup(1000), {1.0.rand}.dup(1000) - 100);
 	spearmanRho { |that|
 		^corr(this.rankVals.asFloat, that.rankVals.asFloat)
 	}
+
+	// Simple paired nonparametric test of difference.
+	// http://en.wikipedia.org/wiki/Sign_test
+	// Returns: [test statistic, adjusted count, p-value]
+	// Currently p-value calc only works for smallish total numbers - for larger numbers you'd use the normal approximation.
+	signtest { |that, twotailed=true|
+		var pval;
+		var signs = this.size.collect{|i| (this[i] - that[i]).sign};
+		var m = signs.count(_ != 0); // adjusted total excluding matches
+		var w = signs.count(_ > 0); // test statistic, follows 0.5 binomial distrib with under H0
+		if(w<(m*0.5)){w = m - w}; // ensure the statistic is in the top half, simplify signif test
+		
+		//if(m > 25){
+			// approximate by normal with mean np, variance np(1-p).
+			//z = (w - (m * 0.5)) / sqrt(m * 0.25);
+			// NOT DONE: hmm sc doesn't have a way to find values of normal cdf.
+		//}{
+			pval = 0.5.binomial((w..m), m);
+		//};
+		if(twotailed){pval = pval + pval};
+		^[w, m, pval]
+	}
+
 	
 	// The Jarque-Bera test is a test of normality.
 	// See http://en.wikipedia.org/wiki/Jarque-Bera_test
