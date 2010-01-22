@@ -13,7 +13,7 @@
 		^sum
 	}
 	
-	meanF { ^this.sumF / this.size }
+	meanF { | function | ^this.sumF(function) / this.size }
 	
 	geoMean { 
 		// 	this.product ** (this.size.reciprocal);	// fails for big arrays, 
