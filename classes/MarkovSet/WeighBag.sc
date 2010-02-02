@@ -126,9 +126,15 @@ WeighBag  {
 	collect { arg func; 
 		items = items.collect({ arg item, i; func.value(item, i) }); 
 	}
+	
 	wchoose { 		
 		^items.wchoose(weights) 
 	}
+	
+	choose { 		
+		^items.wchoose(weights) 
+	}
+
 	
 	
 	// returns an array of data each time it is called. [item, weight, number of items]
