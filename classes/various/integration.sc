@@ -5,11 +5,18 @@
 	integrate { |a, b, d = 1|
 		^(a, a+d .. b).mean(this.value(_))
 	}
-
+	
+	// Simpson's rule
 	
 	integrateSimp { |a, b|
 		^absdif(a, b) / 6.0 * (this.(a) + this.(b) + (4.0 * this.(a + b / 2)))
 	}
+	
+	
+	// William M. McKeeman: Algorithm 145: Adaptive numerical integration by Simpson's rule. 
+	// Commun. ACM 5(12): 604 (1962).
+	// better methods exist (e.g. Gaussian quadrature), but this is simple
+	// eventually it may be worthwhile to implement a primitive based on 	// the GNU Scientific Library
 	
 	integrateSimpA { |a, b, eps = 1e-10, sum|
 		var diff;
@@ -22,9 +29,9 @@
 			left + right + (diff / 15.0)
 		} {
 			eps = eps * 0.5;
-			this.integrateSimpAdap(a, c, eps, left)
+			this.integrateSimpA(a, c, eps, left)
 			+
-			this.integrateSimpAdap(c, b, eps, right)
+			this.integrateSimpA(c, b, eps, right)
 		}
 	}
 	
