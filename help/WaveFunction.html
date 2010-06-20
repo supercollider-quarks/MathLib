@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<title></title>
+<meta name="Generator" content="Cocoa HTML Writer">
+<meta name="CocoaVersion" content="949.54">
+<style type="text/css">
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 14.0px Helvetica}
+p.p5 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 9.0px Monaco; min-height: 12.0px}
+p.p6 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 12.0px Helvetica}
+p.p7 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p8 {margin: 0.0px 0.0px 0.0px 85.0px; text-indent: -85.0px; font: 12.0px Helvetica}
+p.p9 {margin: 0.0px 0.0px 0.0px 85.0px; text-indent: -85.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p10 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 14.0px Helvetica}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #625e4f; min-height: 12.0px}
+p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #5c362f}
+p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p14 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #5c362f; min-height: 12.0px}
+span.s1 {font: 18.0px Helvetica}
+span.s2 {color: #3d4d71}
+span.s3 {color: #0000ff}
+span.s4 {color: #0e4bcf}
+span.s5 {color: #0b399b}
+span.s6 {color: #0026af}
+span.s7 {color: #0000bf}
+span.s8 {color: #606060}
+span.Apple-tab-span {white-space:pre}
+</style>
+</head>
+<body>
+<p class="p1"><span class="s1"><b>WaveFunction<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>calculate a hydrogen wave function</b><span class="s1"><b><span class="Apple-tab-span">	</span></b></span></p>
+<p class="p2"><br></p>
+<p class="p1"><b>Inherits from: </b><a href="../../../../../Applications/SuperCollider/Help/Core/Object.html"><span class="s2"><b>Object</b></span></a></p>
+<p class="p3"><br></p>
+<p class="p1">Calculates the solutions of the Schroedinger equation for a hydrogen atom in spherical coordinates. The radial part is defined by the generalized Laguerre polynomials (see the class <a href="GenLaguerre.html"><span class="s3">GenLaguerre</span></a>) and the angular part by the spherical harmonics (see the class <a href="SpherHarmonic.html"><span class="s3">SpherHarmonic</span></a>).<span class="Apple-converted-space"> </span></p>
+<p class="p2"><br></p>
+<p class="p1">With the solutions are associated a set of three quantum numbers: n - the principal quantum number which takes on positive integer values from 0 up to infinity, l - the azimuthal quantum number which takes on positive integer values from 0 up to n - 1 and m - the magnetic quantum number which takes on integer values from -l up to +l.</p>
+<p class="p2"><br></p>
+<p class="p2"><br></p>
+<p class="p4"><b>Creation / Class Methods</b></p>
+<p class="p5"><br></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>*new(n, l, m)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Creates a new instance of WaveFunction.</p>
+<p class="p8"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>n,</b> <b>l, m </b>- All an instance of <a href="SC://Integer"><span class="s4">Integer</span></a>.</p>
+<p class="p9"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span><b>*calc(n, l, m, r, theta, phi)</b></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Calculates a hydrogen wave function for given integer values n, l and m and radius r, polar angle theta and azimuthal angle phi. Note that this method returns a complex valued function of type <a href="SC://Complex"><span class="s3">Complex</span></a>.</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>n,</b> <b>l,</b> <b>m </b>- All an instance of <a href="SC://Integer"><span class="s4">Integer</span></a>.</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>r, theta, phi </b>- All an instance of <a href="SC://SimpleNumber"><span class="s4">SimpleNumber</span></a>.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p8"><span class="Apple-tab-span">	</span><b>*calcAbsSquare(n, l, m, r, theta, phi)</b></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Calculates the absolute square of a hydrogen wave function for given integer values n, l and m and radius r, polar angle theta and azimuthal angle phi. This method returns the probability density of finding the electron at a particular point in space.</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>n,</b> <b>l,</b> <b>m </b>- All an instance of <a href="SC://Integer"><span class="s4">Integer</span></a>.</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><b>r, theta, phi </b>- All an instance of <a href="SC://SimpleNumber"><span class="s4">SimpleNumber</span></a>.</p>
+<p class="p7"><br></p>
+<p class="p10"><b>Instance Methods</b></p>
+<p class="p7"><span class="Apple-tab-span">	</span></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>setN(n)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Set the principal quantum number n of the wave function.<span class="Apple-converted-space"> </span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>getN(n)</b><span class="Apple-tab-span">	</span></p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Get the principal quantum number n of the wave function.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>setL(l)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Set the azimuthal quantum number l of the wave function.</p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span>getL(l)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Get the azimuthal quantum number l of the wave function.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>setM(m)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Set the magnetic quantum number m of the wave function.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>getM(m)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Get the magnetic quantum number m of the wave function.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>setNLM(n, l, m)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Set the principal quantum number n, azimuthal quantum number l and the magnetic quantum number m of the wave function.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>getNLM(n, l, m)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Get the principal quantum number n, azimuthal quantum number l and the magnetic quantum number m of the wave function.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>calc(r, theta, phi)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Calculate the wave function for r, theta and phi. R is the radius taking on positive real values from 0 to infinity, theta is the polar angle ranging from 0 to pi and phi is the azimuthal angle ranging from 0 to 2pi. Note that this method returns a complex valued function of type <a href="SC://Complex"><span class="s3">Complex</span></a>.</p>
+<p class="p7"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p6"><span class="Apple-tab-span">	</span><b>calcAbsSquare(r, theta, phi)</b></p>
+<p class="p7"><b><span class="Apple-tab-span">	</span></b></p>
+<p class="p6"><b><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b>Calculate the absolute square of the wave function for r, theta and phi. R is the radius taking on positive real values from 0 to infinity, theta is the polar angle ranging from 0 to pi and phi is the azimuthal angle ranging from 0 to 2pi. This method returns the probability density of finding the electron at a particular point in space.</p>
+<p class="p5"><span class="Apple-tab-span">	</span></p>
+<p class="p10"><b>Examples</b></p>
+<p class="p11"><br></p>
+<p class="p11"><br></p>
+<p class="p11"><br></p>
+<p class="p12">//Create an instance of WaveFunction with n = 2, l = 1, m = 0, r = 8, theta = 0.25pi and phi =<span class="Apple-converted-space"> </span></p>
+<p class="p12">//0.25pi</p>
+<p class="p13">a = <span class="s5">WaveFunction</span>.new(2, 1, 0);</p>
+<p class="p13">a.calc(8, 0.25pi, 0.25pi)</p>
+<p class="p3"><br></p>
+<p class="p12">//Also possible to calculate directly</p>
+<p class="p13"><span class="s5">WaveFunction</span>.calc(2, 1, 0, 8, 0.25pi, 0.25pi);</p>
+<p class="p3"><br></p>
+<p class="p12">//Graph a spherical ray of the probability density of the wave function for r running from 0 to 8<span class="Apple-converted-space"> </span></p>
+<p class="p12">//and theta and phi fixed at 0.25pi</p>
+<p class="p13">a = <span class="s5">WaveFunction</span>.new(2, 1, 0);</p>
+<p class="p13">1000.collect({ <span class="s6">|i|</span> i = (i / 999) * 8; a.calcAbsSquare(i, 0.25pi, 0.25pi) }).plot</p>
+<p class="p14"><br></p>
+<p class="p12">//Graph a cross-section of the probability density of the wave function in 2 dimensions for r<span class="Apple-converted-space"> </span></p>
+<p class="p12">//running from 0 to 8, theta fixed at 0.5pi and phi running from 0 to 2pi</p>
+<p class="p13">(</p>
+<p class="p13"><span class="s7">var</span> waveFunc = <span class="s7">WaveFunction</span>.new(2, 1, 0), res = 500, maxr = 8, dim = 200;</p>
+<p class="p3"><br></p>
+<p class="p13">w = <span class="s7">GUI</span>.window.new(<span class="s8">"Wave Function"</span>, <span class="s7">Rect</span>(100, 400, dim, dim)).front;</p>
+<p class="p13">w.view.background_(<span class="s7">Color</span>.black);</p>
+<p class="p3"><br></p>
+<p class="p13">w.drawHook = {</p>
+<p class="p13"><span class="Apple-tab-span">	</span>res.do({ <span class="s7">arg</span> i; i = i / (res-1);</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>res.do({ <span class="s7">arg</span> j; <span class="s7">var</span> radius, theta = 0.5pi, phi, val, xval, yval; j = j / (res-1);</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>radius = j * maxr;</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>phi = i * 2pi;</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>val = waveFunc.calcAbsSquare(radius, theta, phi) * 25e34;</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>xval = (j * dim) * cos(phi) + (dim * 0.5);</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>yval = (j * dim) * sin(phi) + (dim * 0.5);</p>
+<p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.width = 1;</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.strokeColor = <span class="s7">Color</span>.hsv(0.7 - (val * 0.22), 1-(val**4), val);</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.moveTo(xval@yval);</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.lineTo(xval@yval+1);</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.draw(2)</p>
+<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</p>
+<p class="p13"><span class="Apple-tab-span">	</span>})</p>
+<p class="p13">};</p>
+<p class="p13">w.refresh</p>
+<p class="p13">)</p>
+<p class="p14"><br></p>
+</body>
+</html>
