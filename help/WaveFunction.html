@@ -17,27 +17,27 @@ p.p7 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 12.0px Helve
 p.p8 {margin: 0.0px 0.0px 0.0px 85.0px; text-indent: -85.0px; font: 12.0px Helvetica}
 p.p9 {margin: 0.0px 0.0px 0.0px 85.0px; text-indent: -85.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p10 {margin: 0.0px 0.0px 0.0px 57.0px; text-indent: -57.0px; font: 14.0px Helvetica}
-p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #625e4f; min-height: 12.0px}
-p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #5c362f}
-p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
-p.p14 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #5c362f; min-height: 12.0px}
+p.p11 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #615e52; min-height: 12.0px}
+p.p12 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #a81b16}
+p.p13 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #001bb7}
+p.p14 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p15 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #4d3933; min-height: 12.0px}
 span.s1 {font: 18.0px Helvetica}
-span.s2 {color: #3d4d71}
-span.s3 {color: #0000ff}
-span.s4 {color: #0e4bcf}
-span.s5 {color: #0b399b}
-span.s6 {color: #0026af}
-span.s7 {color: #0000bf}
-span.s8 {color: #606060}
+span.s2 {color: #43506a}
+span.s3 {color: #003de0}
+span.s4 {color: #2958b9}
+span.s5 {color: #000000}
+span.s6 {color: #001bb7}
+span.s7 {color: #606060}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
 <body>
-<p class="p1"><span class="s1"><b>WaveFunction<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>calculate a hydrogen wave function</b><span class="s1"><b><span class="Apple-tab-span">	</span></b></span></p>
+<p class="p1"><span class="s1"><b>HydrogenWaveFunction<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></b></span><b>calculate a hydrogen wave function</b><span class="s1"><b><span class="Apple-tab-span">	</span></b></span></p>
 <p class="p2"><br></p>
-<p class="p1"><b>Inherits from: </b><a href="../../../../../Applications/SuperCollider/Help/Core/Object.html"><span class="s2"><b>Object</b></span></a></p>
+<p class="p1"><b>Inherits from: </b><a href="../../../Applications/SuperCollider/Help/Core/Object.html"><span class="s2"><b>Object</b></span></a></p>
 <p class="p3"><br></p>
-<p class="p1">Calculates the solutions of the Schroedinger equation for a hydrogen atom in spherical coordinates. The radial part is defined by the generalized Laguerre polynomials (see the class <a href="GenLaguerre.html"><span class="s3">GenLaguerre</span></a>) and the angular part by the spherical harmonics (see the class <a href="SpherHarmonic.html"><span class="s3">SpherHarmonic</span></a>).<span class="Apple-converted-space"> </span></p>
+<p class="p1">Calculates the solutions of the Schroedinger equation for a hydrogen atom in spherical coordinates. The radial part is defined by the generalized Laguerre polynomials (see the class <a href="naamloze map/GenLaguerre.html"><span class="s3">GenLaguerre</span></a>) and the angular part by the spherical harmonics (see the class <a href="naamloze map/SpherHarmonic.html"><span class="s3">SpherHarmonic</span></a>).<span class="Apple-converted-space"> </span></p>
 <p class="p2"><br></p>
 <p class="p1">With the solutions are associated a set of three quantum numbers: n - the principal quantum number which takes on positive integer values from 0 up to infinity, l - the azimuthal quantum number which takes on positive integer values from 0 up to n - 1 and m - the magnetic quantum number which takes on integer values from -l up to +l.</p>
 <p class="p2"><br></p>
@@ -109,45 +109,45 @@ span.Apple-tab-span {white-space:pre}
 <p class="p11"><br></p>
 <p class="p12">//Create an instance of WaveFunction with n = 2, l = 1, m = 0, r = 8, theta = 0.25pi and phi =<span class="Apple-converted-space"> </span></p>
 <p class="p12">//0.25pi</p>
-<p class="p13">a = <span class="s5">WaveFunction</span>.new(2, 1, 0);</p>
-<p class="p13">a.calc(8, 0.25pi, 0.25pi)</p>
+<p class="p13"><span class="s5">a = </span>HydrogenWaveFunction<span class="s5">.new(2, 1, 0);</span></p>
+<p class="p14">a.calc(8, 0.25pi, 0.25pi)</p>
 <p class="p3"><br></p>
 <p class="p12">//Also possible to calculate directly</p>
-<p class="p13"><span class="s5">WaveFunction</span>.calc(2, 1, 0, 8, 0.25pi, 0.25pi);</p>
+<p class="p14"><span class="s6">HydrogenWaveFunction</span>.calc(2, 1, 0, 8, 0.25pi, 0.25pi);</p>
 <p class="p3"><br></p>
 <p class="p12">//Graph a spherical ray of the probability density of the wave function for r running from 0 to 8<span class="Apple-converted-space"> </span></p>
 <p class="p12">//and theta and phi fixed at 0.25pi</p>
-<p class="p13">a = <span class="s5">WaveFunction</span>.new(2, 1, 0);</p>
-<p class="p13">1000.collect({ <span class="s6">|i|</span> i = (i / 999) * 8; a.calcAbsSquare(i, 0.25pi, 0.25pi) }).plot</p>
-<p class="p14"><br></p>
+<p class="p13"><span class="s5">a = </span>HydrogenWaveFunction<span class="s5">.new(2, 1, 0);</span></p>
+<p class="p14">1000.collect({ <span class="s6">|i|</span> i = (i / 999) * 8; a.calcAbsSquare(i, 0.25pi, 0.25pi) }).plot</p>
+<p class="p3"><br></p>
 <p class="p12">//Graph a cross-section of the probability density of the wave function in 2 dimensions for r<span class="Apple-converted-space"> </span></p>
 <p class="p12">//running from 0 to 8, theta fixed at 0.5pi and phi running from 0 to 2pi</p>
-<p class="p13">(</p>
-<p class="p13"><span class="s7">var</span> waveFunc = <span class="s7">WaveFunction</span>.new(2, 1, 0), res = 500, maxr = 8, dim = 200;</p>
+<p class="p14">(</p>
+<p class="p14"><span class="s6">var</span> waveFunc = <span class="s6">HydrogenWaveFunction</span>.new(2, 1, 0), res = 500, maxr = 8, dim = 200;</p>
 <p class="p3"><br></p>
-<p class="p13">w = <span class="s7">GUI</span>.window.new(<span class="s8">"Wave Function"</span>, <span class="s7">Rect</span>(100, 400, dim, dim)).front;</p>
-<p class="p13">w.view.background_(<span class="s7">Color</span>.black);</p>
+<p class="p14">w = <span class="s6">GUI</span>.window.new(<span class="s7">"Hydrogen Wave Function"</span>, <span class="s6">Rect</span>(100, 400, dim, dim)).front;</p>
+<p class="p14">w.view.background_(<span class="s6">Color</span>.black);</p>
 <p class="p3"><br></p>
-<p class="p13">w.drawHook = {</p>
-<p class="p13"><span class="Apple-tab-span">	</span>res.do({ <span class="s7">arg</span> i; i = i / (res-1);</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>res.do({ <span class="s7">arg</span> j; <span class="s7">var</span> radius, theta = 0.5pi, phi, val, xval, yval; j = j / (res-1);</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>radius = j * maxr;</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>phi = i * 2pi;</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>val = waveFunc.calcAbsSquare(radius, theta, phi) * 25e34;</p>
+<p class="p14">w.drawHook = {</p>
+<p class="p14"><span class="Apple-tab-span">	</span>res.do({ <span class="s6">arg</span> i; i = i / (res-1);</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>res.do({ <span class="s6">arg</span> j; <span class="s6">var</span> radius, theta = 0.5pi, phi, val, xval, yval; j = j / (res-1);</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>radius = j * maxr;</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>phi = i * 2pi;</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>val = waveFunc.calcAbsSquare(radius, theta, phi) * 25e34;</p>
 <p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>xval = (j * dim) * cos(phi) + (dim * 0.5);</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>yval = (j * dim) * sin(phi) + (dim * 0.5);</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>xval = (j * dim) * cos(phi) + (dim * 0.5);</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>yval = (j * dim) * sin(phi) + (dim * 0.5);</p>
 <p class="p3"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span></p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.width = 1;</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.strokeColor = <span class="s7">Color</span>.hsv(0.7 - (val * 0.22), 1-(val**4), val);</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.moveTo(xval@yval);</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.lineTo(xval@yval+1);</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s7">GUI</span>.pen.draw(2)</p>
-<p class="p13"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</p>
-<p class="p13"><span class="Apple-tab-span">	</span>})</p>
-<p class="p13">};</p>
-<p class="p13">w.refresh</p>
-<p class="p13">)</p>
-<p class="p14"><br></p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">GUI</span>.pen.width = 1;</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">GUI</span>.pen.strokeColor = <span class="s6">Color</span>.hsv(0.7 - (val * 0.22), 1-(val**4), val);</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">GUI</span>.pen.moveTo(xval@yval);</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">GUI</span>.pen.lineTo(xval@yval+1);</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="s6">GUI</span>.pen.draw(2)</p>
+<p class="p14"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>})</p>
+<p class="p14"><span class="Apple-tab-span">	</span>})</p>
+<p class="p14">};</p>
+<p class="p14">w.refresh</p>
+<p class="p14">)</p>
+<p class="p15"><br></p>
 </body>
 </html>
