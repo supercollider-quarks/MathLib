@@ -1,4 +1,4 @@
-WaveFunction { 
+HydrogenWaveFunction { 
 	var <>n, <>l, <>m, genLaguerre, spherHarmonic;
 		
 	*new { arg n, l, m;
