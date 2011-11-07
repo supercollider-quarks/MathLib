@@ -242,7 +242,7 @@ Polynomial[slot] : ArrayedCollection {
 					z = coefs.laguerre(Complex(-64, -64));
 					//Divide out the found root from the original polynomial
 					#err, coefs = coefs / Polynomial[z.neg, 1];
-					if(err.size > 0 and: { err[0].abs >= 1e-14 }, { 
+					if(err.size > 0 and: { err[0].magnitude >= 1e-14 }, { 
 						Error("Failed to find roots.").throw 
 					});
 					if(z.imag.abs < 1e-14, { z = z.real });
@@ -292,7 +292,7 @@ Polynomial[slot] : ArrayedCollection {
 				alpha = (z * alpha) + this[j];
 				j = j - 1
 			});
-			if(alpha.abs <= 1e-14, { // <-- probably have to change this...
+			if(alpha.magnitude <= 1e-14, { // <-- probably have to change this...
 				if(z.imag.abs < 1e-14, { ^z.real }, { ^z })
 			});
 			ca = beta.neg / alpha;
@@ -301,7 +301,7 @@ Polynomial[slot] : ArrayedCollection {
 			c1 = sqrt((n-1) * ((n*cb) - ca2));
 			cc1 = ca + c1;
 			cc2 = ca - c1;
-			if(cc1.abs > cc2.abs, { cc = cc1 }, { cc = cc2 });
+			if(cc1.magnitude > cc2.magnitude, { cc = cc1 }, { cc = cc2 });
 			cc = cc / n;
 			c2 = 1 / cc;
 			z = z + c2;
