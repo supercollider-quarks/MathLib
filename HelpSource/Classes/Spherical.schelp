@@ -8,10 +8,9 @@ Represents spherical coordinates.
 
 NOTE::
 Part of SpherCoords, a spherical and 3D cartesian coordinate support library.
-
+::
 subsection:: Credits
 Joseph Anderson, 2011 [j.anderson[at]ambisonictoolkit.net]
-::
 
 
 CLASSMETHODS::
