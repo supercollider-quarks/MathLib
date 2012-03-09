@@ -148,11 +148,11 @@ WeighBag  {
 	
 		
 	++ { arg bag;
-			var newitems, n, numbers;
+			var newitems, n, counts;
 			newitems = bag.items;
-			numbers = bag.numbers; 
+			counts = bag.counts; 
 			newitems.do({ arg item, i; 
-				this.add(item, numbers.at(i)) 
+				this.add(item, counts.at(i)) 
 				});
 			^this
 	}
