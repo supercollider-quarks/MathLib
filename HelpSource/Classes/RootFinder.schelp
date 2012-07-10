@@ -12,7 +12,7 @@ CODE::RootFinder:: requires the user to provide an analytic Jacobian (or the sin
 CLASSMETHODS::
 
 METHOD:: findRoot
-Find a root of MATH::N:: real-valued functions each containing MATH::M:: independent variables.
+Find a shared root of MATH::N:: real-valued functions each containing MATH::M:: independent variables.
 
 ARGUMENT:: func
 An (array of) instance(s) of link::Classes/AbstractFunction::, where each instance returns a single scalar value of type link::Classes/SimpleNumber::. These are the functions MATH::F_n \left(x\right):: to be minimized.
@@ -76,7 +76,7 @@ f collect: _.(x)
 
 // corresponds to the second example described above
 (
-var f,dfx0;
+var f,df,x0;
 
 // define the function
 f = { |x| 2*x-exp(x.neg) };
