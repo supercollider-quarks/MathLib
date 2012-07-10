@@ -20,7 +20,7 @@ RootFinder {
 		n = x0.size;
 						
 		(x0.size != func.size).if { 
-			Error("% funcs are supplied, please make sure x0 contains at least % single elements",func.size).throw
+			Error("please make sure x0 contains at least the same nr. of elements as func").throw
 		};
 		x0.isKindOf(Matrix).if {
 			(x0.shape[1] > x0.shape[0]).if { Error("column size of x0 can't be bigger than its row size\n").throw };
