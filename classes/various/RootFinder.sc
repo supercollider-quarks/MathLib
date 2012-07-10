@@ -43,12 +43,17 @@ RootFinder {
 					
 		({ stop.not }).while {
 			(ng <= opts[1]).if { 
+				postf("function converged to a solution x\n");
 				stop = true
 			} {
 				h = (a+mu*Matrix.newIdentity(n)).solve(g.getCol(0).neg,\gauss);
 				h = Matrix.newFrom(h.clump(1));
 				nh = h.norm; nx = opts[2]+x.norm;
-				(nh <= (opts[2]*nx)).if { stop = true } { (nh >= (nx*eps.reciprocal)).if { stop = true } }
+				(nh <= (opts[2]*nx)).if { 
+					"possible inaccuracy of solution -> change in x was smaller than the specified tolerance".warn; stop = true 
+				} { 
+					(nh >= (nx*eps.reciprocal)).if { "possible singular matrix".warn; stop = true } 
+				}
 			};
 			stop.not.if {
 				xnew = x+h; h = xnew-x; dl = 0.5*(h.flop*(mu*h-g))[0,0];
@@ -63,7 +68,7 @@ RootFinder {
 					mu = mu*nu; nu = 2*nu;
 				};
 				k = k+1;
-				(k > opts[3]).if { stop = true }
+				(k > opts[3]).if { "number of iterations exceeds kmax".warn; stop = true }
 			}
 		};
 		^x.getCol(0)
