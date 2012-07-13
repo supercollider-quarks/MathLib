@@ -30,13 +30,13 @@ RootFinder {
 		};
 		
 		formatMatrix = { |fm,xm,cs| var ft,jt;
-			ft = fm.performBinaryOp('value',xm.flop);
-			(fm.size > 1).if { ft = Matrix.newFrom(ft.clump(cs)) } { ft = Matrix.newFrom(ft) }
+			ft = fm.performBinaryOp('value',xm.asArray.flop);
+			ft = (fm.size > 1).if { Matrix.newFrom(ft.clump(cs)) } { Matrix.newFrom(ft) }
 		};
 		
 		f = formatMatrix.(func,x,1);
 		j = formatMatrix.(jacobian,x,n);
-						
+		
 		// initial values
 		a = j.flop*j; g = j.flop*f; fb = 0.5*(f.flop*f)[0,0]; ng = g.getCol(0).abs.maxItem; mu = opts[0]*a.getDiagonal.maxItem;
 		k = 1; nu = 2; nh = 0; stop = false;
