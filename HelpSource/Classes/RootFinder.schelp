@@ -23,6 +23,9 @@ An (array of) instance(s) of link::Classes/AbstractFunction::, where each instan
 ARGUMENT:: x0
 An (array of) instance(s) of link::Classes/SimpleNumber::. This denotes the initial guess MATH::x_0=\left[x_{0,1},x_{0,2},\dots,x_{0,M-1},x_{0,M}\right]:: for the location of the root.
 
+ARGUMENT:: param
+An optional link::Classes/Collection:: or single instance of link::Classes/SimpleNumber::. This may be used for supplying any additional function parameters.
+
 ARGUMENT:: opts
 An instance of link::Classes/Array:: holding 4 optional parameters which are used in the stopping criteria of the algorithm. The first parameter MATH::\tau:: is a number between  MATH::1\times10^{-8}:: and MATH::1::. Smaller values apply if it is assumed that MATH::x_0:: is already close to MATH::x_r::. The second parameter MATH::\epsilon_1:: is used in the stoping criterion MATH::\Vert F'\left(x\right)\Vert \leq \epsilon_1::, the third parameter MATH::\epsilon_2:: is used in the stopping criterion MATH::\Vert h\Vert \leq \epsilon_2 \Vert x\Vert::, and the fourth parameter MATH::k_\text{max}:: denotes the maximum nr. of iterations so that the algorithm stops as soon as the iteration count MATH::k:: satisfies the condition MATH::k \geq k_\text{max}::.
 
