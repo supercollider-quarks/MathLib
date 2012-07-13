@@ -8,7 +8,7 @@
  */
 RootFinder {
 	
-	*findRoot { arg func,jacobian,x0,opts=[1e-04,1e-06,1e-12,500];
+	*findRoot { arg func,jacobian,x0,param,opts=[1e-04,1e-06,1e-12,500];
 		var n,x,xnew,j,jn,a,g,f,fb,fbn,fn,df,ng,mu,k,nu,nh,nx,stop,h,dl,eps=2.2204e-16,formatMatrix;
 		
 		(func.isNil or: { jacobian.isNil } or: { x0.isNil }).if { Error("please supply a valid func, jacobian and x0 arguments").throw };
@@ -29,14 +29,14 @@ RootFinder {
 			x = Matrix.newFrom(x0.clump(1))
 		};
 		
-		formatMatrix = { |fm,xm,cs| var ft,jt;
-			ft = fm.performBinaryOp('value',xm.asArray.flop);
+		formatMatrix = { |fm,xm,pm,cs| var ft,jt;
+			ft = fm collect: _.(xm.asArray.flop.flatten,pm);
 			ft = (fm.size > 1).if { Matrix.newFrom(ft.clump(cs)) } { Matrix.newFrom(ft) }
 		};
 		
-		f = formatMatrix.(func,x,1);
-		j = formatMatrix.(jacobian,x,n);
-		
+		f = formatMatrix.(func,x,param,1);
+		j = formatMatrix.(jacobian,x,param,n);
+			
 		// initial values
 		a = j.flop*j; g = j.flop*f; fb = 0.5*(f.flop*f)[0,0]; ng = g.getCol(0).abs.maxItem; mu = opts[0]*a.getDiagonal.maxItem;
 		k = 1; nu = 2; nh = 0; stop = false;
@@ -57,8 +57,8 @@ RootFinder {
 			};
 			stop.not.if {
 				xnew = x+h; h = xnew-x; dl = 0.5*(h.flop*(mu*h-g))[0,0];
-				fn = formatMatrix.(func,xnew,1);
-				jn = formatMatrix.(jacobian,xnew,n);
+				fn = formatMatrix.(func,xnew,param,1);
+				jn = formatMatrix.(jacobian,xnew,param,n);
 				fbn = 0.5*(fn.flop*fn)[0,0]; df = fb-fbn;
 				(dl > 0 and: { df > 0 }).if {
 					x = xnew; fb = fbn; j = jn; f = fn;
