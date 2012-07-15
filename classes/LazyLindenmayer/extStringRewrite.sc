@@ -97,7 +97,7 @@
 								= current.matchRules(rules, count, level, rules);
 							
 							if(rewritten.isNil) {
-								if(offset == 0) {Ê
+								if(offset == 0) {
 									inval = current[0].yield;
 								}
 							} {
@@ -152,14 +152,14 @@
 		b = this.indexOf($>);
 		
 		if(a.isNil and: { b.isNil }) { ^this }; // contextFree		
-		x = this.delimit { |x| x === $< or: {Êx === $> } };
+		x = this.delimit { |x| x === $< or: {x === $> } };
 		if(a.isNil) { // only >
 		 	rewriteMask = "%";
 		 	key = x.join;
 		 	dropSize = b;
 		}{
 			if(b.isNil) { // only <
-				rewriteMask = x[0]Ê++ "%";
+				rewriteMask = x[0]++ "%";
 				key = x.join;
 				dropSize = key.size;
 			}{
@@ -177,7 +177,7 @@
 	}
 	
 	rewritingRuleSize { ^this.size }
-	rewritingContextFree {Ê^true }
+	rewritingContextFree {^true }
 	
 }
 
@@ -195,7 +195,7 @@
 	asRewritingRule { ^this }
 
 	rewritingRuleSize { ^this.first.size }
-	rewritingContextFree {Ê^false }
+	rewritingContextFree {^false }
 }
 
 

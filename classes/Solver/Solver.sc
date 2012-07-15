@@ -1,4 +1,4 @@
-// Miguel Negr‹o (c) 2009
+// Miguel Negro (c) 2009
 // www.friendlyvirus.org/artists/zlb/
 // GPLv2 -http://www.gnu.org/licenses/old-licenses/gpl-2.0.html.
 
@@ -49,7 +49,7 @@ Solver : Object {
 		if(af.size == 0)
 		{
 			order = (af.def.numArgs-1);
-			f = ((order-1).collect{ |i| { arg... args; args[i+2]Ê} })
+			f = ((order-1).collect{ |i| { arg... args; args[i+2]} })
 				++ [{ arg... args; af.(*args) }];
 			f = f.as(NFunc);
 		}
@@ -59,7 +59,7 @@ Solver : Object {
 			order = ((af[0].def.numArgs-1)/af.size).asInteger.postln;
 			f = af.collect{ |func,k| 
 				//postln("function: "++ k);
-				(((order-1).collect{ |i| { arg... args; args[i+2+(k*order)]Ê} })
+				(((order-1).collect{ |i| { arg... args; args[i+2+(k*order)]} })
 				++ [{ arg... args; func.(*args) }]) 
 			}.as(SystemNFunc);
 		}		
