@@ -1,7 +1,7 @@
 CLASS:: Spherical
 summary:: Spherical coordinates
 categories:: Math
-related:: Cartesian, Polar, Point
+related:: Classes/Cartesian, Classes/Polar, Classes/Point
 
 DESCRIPTION::
 Represents spherical coordinates.

@@ -1,7 +1,7 @@
 CLASS:: Cartesian
 summary:: Cartesian point in 3D space
 categories:: Geometry
-related:: Spherical, Point, Polar
+related:: Classes/Spherical, Classes/Point, Classes/Polar
 
 DESCRIPTION::
 Defines a point in 3D Cartesian space.
