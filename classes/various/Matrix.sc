@@ -46,15 +46,15 @@ Matrix[slot] : Array {
 	}
 	*newDFT { arg n;
 		var dft;
-		dft = sqrt(n).reciprocal*super.fill(n, { |r|
-			Array.fill(n, { |c| Polar(1, -2pi*r*c/n) })
+		dft = sqrt(n).reciprocal * super.fill(n, { |r|
+			Array.fill(n, { |c| Polar(1, -2pi * r * c / n) })
 		});
 		^dft
 	}
 	*newIDFT { arg n;
 		var idft;
-		idft = sqrt(n)*n.reciprocal*super.fill(n, { |r|
-			Array.fill(n, { |c| Polar(1, 2pi*r*c/n) })
+		idft = sqrt(n) * n.reciprocal * super.fill(n, { |r|
+			Array.fill(n, { |c| Polar(1, 2pi * r * c / n) })
 		});
 		^idft
 	}
