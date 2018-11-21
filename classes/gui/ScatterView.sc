@@ -5,16 +5,16 @@ and later...
 
 (C) 2018 Jonathan Reus / IEM Graz
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-    For more details see: https://www.gnu.org/licenses/
+For more details see: https://www.gnu.org/licenses/
 **********************************************************************/
 
 
@@ -25,29 +25,56 @@ A simple 2-dimensional scatterplot with coordinate axes.
 
 @usage
 
+(
+// Generate some toy data with a linear relationship
 n = 100;
 x = Array.series(n, 0.0, 100 / n) + Array.fill(n, {rrand(-10.0, 10.0)}).round(0.01);
 y = Array.series(n, 1.0, 100 / n) + Array.fill(n, {rrand(-10.0, 10.0)}).round(0.01);
 p = x.collect {|item,i| [item, y[i]] }; // as points
 
+// Plot
 b = Rect(0,0, 800, 600);
 w = Window.new(bounds: b);
 j = ScatterView.new(w, b, p, [0,100].asSpec, [0,100].asSpec);
-j.drawAxis_(true).symbolColor_(Color.blue).drawMethod_(\fillOval).symbolSize_(5@5);
+j.symbolColor_(Color.blue).drawMethod_(\fillOval).symbolSize_(5@5);
 w.front;
+);
+
+// Show axis, grid and value labels
+j.drawAxes_(true).drawGrid_(true).drawValues_(true).refresh;
+
+// Visual style
+j.axisColor_(Color.gray(0.3)).gridColor_(Color.red).valuesColor_(Color.gray(0.7)).backgroundColor_(Color.black).refresh;
+
+
+// Adjust axes & scale
+j.setAxes([-50, 150, \lin].asSpec, [-50,150,\lin].asSpec).symbolSize_(3@3).drawValues_(false).refresh;
+j.setAxes([1, 150, \exp].asSpec, [0, 100,\lin].asSpec).symbolSize_(5@5).drawGridValues_(true).refresh;
+
 
 */
 ScatterView {
-	var <plot, <>background;
-	var <>highlightColor, <highlightItem, <>highlightSize, <>isHighlight, <>drawAxis, <>drawValues;
+	var <plot, <>backgroundColor;
+	var <>highlightColor, <highlightItem, <>highlightSize, <>isHighlight;
+	var <>drawAxes, <>drawGrid, <>drawGridValues, <>drawValues;
+	var <>xGridResolution, <>yGridResolution;
+	var <>axisColor,<>gridColor, <>valuesColor;
 	var <>xAxisName, <>yAxisName;
 	var <symbolSize, <>symbolColor, <>drawMethod = \lineTo;
-	var <adjustedData, <>specX, <>specY;
+
+	var <normalizedData; // data normalized to 0-1 for projection on to the view
+	var <originalData, <specX, <specY;
 
 	*new {|parent, bounds, data, specX, specY|
 		^super.new.initPlot(
 			parent, bounds, data, specX, specY
 		)
+	}
+
+	setAxes {|xspec,yspec|
+		specX = xspec ? specX;
+		specY = yspec ? specY;
+		this.normalizeData;
 	}
 
 	highlightItem_{|item|
@@ -56,7 +83,7 @@ ScatterView {
 	}
 
 	highlightItemRel_{|val|
-		this.highlightItem = (val * (adjustedData.size-1)).asInteger;
+		this.highlightItem = (val * (normalizedData.size-1)).asInteger;
 	}
 
 	highlightRange{|start, end|
@@ -65,8 +92,8 @@ ScatterView {
 
 	highlightRangeRel{|start, end|
 		var startIndex, endIndex;
-		startIndex = (start * (adjustedData.size-1)).asInteger;
-		endIndex = (end * (adjustedData.size-1)).asInteger;
+		startIndex = (start * (normalizedData.size-1)).asInteger;
+		endIndex = (end * (normalizedData.size-1)).asInteger;
 		this.highlightItem = (startIndex .. endIndex);
 	}
 
@@ -75,10 +102,15 @@ ScatterView {
 	}
 
 	data_{|data|
-		adjustedData = data.collect {|item|
+		originalData = data.shallowCopy;
+		this.normalizeData;
+		highlightItem = min(highlightItem, (normalizedData.size-1));
+	}
+
+	normalizeData {
+		normalizedData = originalData.collect {|item|
 			[specX.unmap(item[0]), specY.unmap(item[1])];
 		};
-		highlightItem = min(highlightItem, (adjustedData.size-1));
 	}
 
 	symbolSize_{|point|
@@ -101,16 +133,23 @@ ScatterView {
 
 		this.symbolSize = 1;
 		symbolColor = symbolColor ? Color.black;
+		axisColor = axisColor ? Color.black;
+		valuesColor = valuesColor ? Color.black;
+		gridColor = gridColor ? Color.gray(0.5);
 
-		background = Color.white;
+		backgroundColor = Color.white;
 		highlightColor = Color.red;
 		highlightItem = 0;
 		highlightSize = (2@2);
 		isHighlight = false;
-		drawAxis = false;
+		drawAxes = false;
+		drawGrid = false;
+		drawGridValues = true;
 		drawValues = false;
 		xAxisName= "X";
 		yAxisName= "Y";
+		xGridResolution = 5;
+		yGridResolution = 5;
 
 		this.data_(data);
 
@@ -131,137 +170,177 @@ ScatterView {
 			};
 		};
 
-		plot = UserView.new(parent, bounds)
-			//.relativeOrigin_(false)
-			.drawFunc_({|w|
-				var width, height, rect, pad = 10;
-				if (drawAxis) { pad = 60 };
+		plot = UserView.new(parent, bounds).drawFunc_({|w|
+			var width, height, left, top, rect, pad = 10;
+			if (drawAxes) { pad = 60 };
 
-				width =  w.bounds.width  - pad;
-				height = w.bounds.height - pad;
-
-				Pen.use{
-					// clipping into the boundingbox
-					Pen.moveTo((w.bounds.left)@(w.bounds.top));
-					Pen.lineTo(((w.bounds.left)@(w.bounds.top))
-							+ (w.bounds.width@0));
-					Pen.lineTo(((w.bounds.left)@(w.bounds.top))
-							+ (w.bounds.width@w.bounds.height));
-					Pen.lineTo(((w.bounds.left)@(w.bounds.top))
-							+ (0@w.bounds.height));
-					Pen.lineTo((w.bounds.left)@(w.bounds.top));
-					Pen.clip;
-
-					// draw Background
-					Pen.color = background;
-					Pen.addRect(w.bounds);
-					Pen.fill;
-
-					// draw data
-					Pen.color = symbolColor;
-					if (possibleMethods.includes(drawMethod), {
-						Pen.beginPath;
-						adjustedData.do{|item, i|
-							rect = Rect(
-								(   item[0]  * width)  - (symbolSize.x/2) + (pad/2),
-								((1-item[1]) * height) - (symbolSize.y/2) + (pad/2),
-								symbolSize.x, symbolSize.y
-							);
-							Pen.perform(
-								drawMethod,
-								(Rect(w.bounds.left, w.bounds.top, 0, 0) + rect)
-							);
-						}
-					},{ // else draw lines
-						Pen.width = symbolSize.x;
-						// move to first position;
-						if (adjustedData.notNil) {
-							Pen.moveTo(
-								((adjustedData[0][0]  * width) + (pad/2))
-								 @
-								 (((1-adjustedData[0][1]) * height) + (pad/2))
-							   	  +
-								  (w.bounds.left@w.bounds.top)
-							);
-						};
-						// draw lines
-						adjustedData.do{|item, i|
-							Pen.lineTo(
-								((item[0]  * width) + (pad/2))
-								 @
-								 (((1-item[1]) * height) + (pad/2))
-							 	  +
-							 	  (w.bounds.left@w.bounds.top)
-							)
-						};
-						if(drawMethod == \fill, {Pen.fill},{Pen.stroke});
-					});
-
-					// highlight datapoint
-					if(isHighlight) {
-						highlightItem.do{|item|
-							cross.value((Rect(
-								(adjustedData[item][0]  * width)
-								 -
-								 (highlightSize.x/2) + (pad/2),
-								((1-adjustedData[item][1]) * height)
-								 -
-								 (highlightSize.y/2)
-								  +
-								  (pad/2),
-								highlightSize.x, highlightSize.y)
-								  +
-								  Rect(w.bounds.left, w.bounds.top, 0, 0)),
-								symbolSize,
-								highlightColor
-							);
-						}; // od
-					};
-					// draw axis
-					if (drawAxis) {
-						Pen.moveTo((w.bounds.left+(pad/2))@(w.bounds.top+(pad/2)));
-						Pen.lineTo((w.bounds.left+(pad/2))@(w.bounds.top+w.bounds.height-(pad/2)));
-						Pen.lineTo(
-							(w.bounds.left-(pad/2)+w.bounds.width)@(w.bounds.top+w.bounds.height-(pad/2)));
-						specX.minval.round(0.001).asString
-							.drawAtPoint(
-								(w.bounds.left+(pad/2)+10)@
-								(w.bounds.height-(pad/2)+10));
-						xAxisName
-							.drawAtPoint(
-								(w.bounds.left+(w.bounds.width/2))@
-								(w.bounds.height-(pad/2)+10));
-						specX.maxval.round(0.001).asString
-							.drawAtPoint(
-								(w.bounds.left+10+w.bounds.width-20-(pad/2))@
-								(w.bounds.height-(pad/2)+10));
+			width =  w.bounds.width  - pad;
+			height = w.bounds.height - pad;
+			left = w.bounds.left + (pad/2);
+			top = w.bounds.top + (pad/2);
 
 
+			Pen.use{
+				// clipping into the boundingbox
+				Pen.moveTo((w.bounds.left)@(w.bounds.top));
+				Pen.lineTo(((w.bounds.left)@(w.bounds.top))
+					+ (w.bounds.width@0));
+				Pen.lineTo(((w.bounds.left)@(w.bounds.top))
+					+ (w.bounds.width@w.bounds.height));
+				Pen.lineTo(((w.bounds.left)@(w.bounds.top))
+					+ (0@w.bounds.height));
+				Pen.lineTo((w.bounds.left)@(w.bounds.top));
+				Pen.clip;
 
-						Pen.rotate(-pi/2);
-						Pen.translate(w.bounds.height.neg, 0);
-						specY.minval.round(0.001).asString
-							.drawAtPoint((pad/2)@(w.bounds.left+(pad/2) -20));
-						yAxisName.
-							drawAtPoint((w.bounds.height/2)@(w.bounds.left+(pad/2) -20));
-						specY.maxval.round(0.001).asString
-							.drawAtPoint((w.bounds.height - (pad/2))@(w.bounds.left+(pad/2) -20));
-						Pen.translate(w.bounds.height, 0);
-						Pen.rotate(pi/2);
-						Pen.stroke;
-					};
-						// draw values
-					if (drawValues) {
-						adjustedData.do{|item, i|
-							data.at(i).round(0.001).asString.drawAtPoint(
-								((item[0]  * width) + (pad/2))
-								@
-								(((1-item[1]) * height) + (pad/2) + 10)
-							)
-						}
+				// draw Background
+				Pen.color = backgroundColor;
+				Pen.addRect(w.bounds);
+				Pen.fill;
+
+				// draw data
+				Pen.color = symbolColor;
+				if (possibleMethods.includes(drawMethod), {
+					Pen.beginPath;
+					normalizedData.do{|item, i|
+						rect = Rect(
+							(   item[0]  * width)  - (symbolSize.x/2) + (pad/2),
+							((1-item[1]) * height) - (symbolSize.y/2) + (pad/2),
+							symbolSize.x, symbolSize.y
+						);
+						Pen.perform(
+							drawMethod,
+							(Rect(w.bounds.left, w.bounds.top, 0, 0) + rect)
+						);
 					}
-				}; // end Pen.use
-			});
+				},{ // else draw lines
+					Pen.width = symbolSize.x;
+					// move to first position;
+					if (normalizedData.notNil) {
+						Pen.moveTo(
+							((normalizedData[0][0]  * width) + (pad/2))
+							@
+							(((1-normalizedData[0][1]) * height) + (pad/2))
+							+
+							(w.bounds.left@w.bounds.top)
+						);
+					};
+					// draw lines
+					normalizedData.do{|item, i|
+						Pen.lineTo(
+							((item[0]  * width) + (pad/2))
+							@
+							(((1-item[1]) * height) + (pad/2))
+							+
+							(w.bounds.left@w.bounds.top)
+						)
+					};
+					if(drawMethod == \fill, {Pen.fill},{Pen.stroke});
+				});
+
+				// highlight datapoint
+				if(isHighlight) {
+					highlightItem.do{|item|
+						cross.value((Rect(
+							(normalizedData[item][0]  * width)
+							-
+							(highlightSize.x/2) + (pad/2),
+							((1-normalizedData[item][1]) * height)
+							-
+							(highlightSize.y/2)
+							+
+							(pad/2),
+							highlightSize.x, highlightSize.y)
+						+
+						Rect(w.bounds.left, w.bounds.top, 0, 0)),
+						symbolSize,
+						highlightColor
+						);
+					}; // od
+				};
+
+				// draw grid
+				if (drawGrid) {
+					var xspacing, yspacing;
+					Pen.color = gridColor; // TODO: the drawing API ignores this command, why?
+
+					xspacing = width / xGridResolution;
+					yspacing = height / xGridResolution;
+					xGridResolution.do {|i|
+						var val, pos;
+						val = specX.minval + (((specX.maxval - specX.minval) / xGridResolution) * (i+1));
+						pos = (specX.unmap(val) * width) + (pad/2);
+
+						Pen.line(pos@top, pos@(top+height));
+
+						if(drawGridValues && (i != (xGridResolution-1))) {
+							val.round(0.001).asString.drawAtPoint((pos-8)@(top+height+2));
+						};
+					};
+
+					yGridResolution.do {|i|
+						var val, pos;
+						val = specY.minval + (((specY.maxval - specY.minval) / yGridResolution) * (i+1));
+						pos = ((1.0-specY.unmap(val)) * height) + (pad/2);
+
+						Pen.line(left@pos, (left+width)@pos);
+
+						if(drawGridValues && (i != (yGridResolution-1))) {
+							Pen.rotate(-pi/2);
+							val.round(0.001).asString.drawAtPoint((pos.neg - 8)@(left-17));
+							Pen.rotate(pi/2);
+
+						};
+					};
+
+				};
+
+				// draw axis
+				if (drawAxes) {
+					Pen.color = axisColor;
+					Pen.moveTo((w.bounds.left+(pad/2))@(w.bounds.top+(pad/2)));
+					Pen.lineTo((w.bounds.left+(pad/2))@(w.bounds.top+w.bounds.height-(pad/2)));
+					Pen.lineTo(
+						(w.bounds.left-(pad/2)+w.bounds.width)@(w.bounds.top+w.bounds.height-(pad/2)));
+					specX.minval.round(0.001).asString
+					.drawAtPoint(
+						(w.bounds.left+(pad/2)+5)@
+						(w.bounds.height-(pad/2)+10));
+					xAxisName
+					.drawAtPoint(
+						(w.bounds.left+(w.bounds.width/2))@
+						(w.bounds.height-(pad/2)+10));
+					specX.maxval.round(0.001).asString
+					.drawAtPoint(
+						(w.bounds.left+10+w.bounds.width-20-(pad/2))@
+						(w.bounds.height-(pad/2)+10));
+
+
+
+					Pen.rotate(-pi/2);
+					Pen.translate(w.bounds.height.neg, 0);
+					specY.minval.round(0.001).asString
+					.drawAtPoint((pad/2)@(w.bounds.left+(pad/2) -20));
+					yAxisName.
+					drawAtPoint((w.bounds.height/2)@(w.bounds.left+(pad/2) -20));
+					specY.maxval.round(0.001).asString
+					.drawAtPoint((w.bounds.height - (pad/2))@(w.bounds.left+(pad/2) -20));
+					Pen.translate(w.bounds.height, 0);
+					Pen.rotate(pi/2);
+					Pen.stroke;
+				};
+				// draw values
+				if (drawValues) {
+					Pen.color = valuesColor;
+					normalizedData.do{|item, i|
+						data.at(i).round(0.001).asString.drawAtPoint(
+							((item[0]  * width) + (pad/2))
+							@
+							(((1-item[1]) * height) + (pad/2) + 10)
+						)
+					}
+				}
+			}; // end Pen.use
+		});
 	}
 	canFocus_ { arg state = false;
 		plot.canFocus_(state);
@@ -300,12 +379,12 @@ j.symbolColor_(Color.black).drawMethod_(\fillRect).symbolSize_(5@5);
 w.front;
 
 Tdef('animate', {
-	var i = 0;
-	inf.do {
-		j.rot(i, i, 0).refresh;
-		i = i + 0.03;
-		0.05.wait;
-	};
+var i = 0;
+inf.do {
+j.rot(i, i, 0).refresh;
+i = i + 0.03;
+0.05.wait;
+};
 }).play(AppClock);
 
 */
@@ -347,7 +426,7 @@ ScatterView3d {
 		};
 		scatterView.data = this.pr_project;
 
-//		highlightItem = min(highlightItem, (adjustedData.size-1));
+		//		highlightItem = min(highlightItem, (normalizedData.size-1));
 	}
 
 	refresh {
@@ -409,8 +488,8 @@ ScatterView3d {
 		scatterView.highlightSize_(size);
 	}
 
-	background_{|val|
-		scatterView.background = val;
+	backgroundColor_{|val|
+		scatterView.backgroundColor_(val);
 	}
 
 	resize{
