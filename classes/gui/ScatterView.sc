@@ -5,6 +5,9 @@ and later...
 
 (C) 2018 Jonathan Reus / IEM Graz
 
+Views for Cartesian point / scatterplots
+
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -16,6 +19,122 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 For more details see: https://www.gnu.org/licenses/
 **********************************************************************/
+
+
+
+/*
+@class ScatterPlotter
+
+A higher level view abstraction that manages multiple scatterplots on a single graph.
+All scatterplots share a single axis specification and commands for drawing / showing axes.
+
+@usage
+
+n = 100;
+x = Array.series(n, 0, 100 / n) + Array.fill(n, {rrand(-15.0, 15.0)});
+y = Array.series(n, 0, 100 / n) + Array.fill(n, {rrand(-15.0, 15.0)});
+p = x.collect {|item,i| [item, y[i]] };
+x = Array.series(n, 0, 100 / n) + Array.fill(n, {rrand(-15.0, 15.0)});
+y = Array.series(n, 0, 100 / n).reverse + Array.fill(n, {rrand(-15.0, 15.0)});
+q = x.collect {|item,i| [item, y[i]] };
+
+w = Window.new("X Scatter", 800@600);
+j = ScatterPlotter.new(w, 800@600, p, [0,100].asSpec, [0,100].asSpec);
+j.drawAxes_(true).drawGrid_(true).drawMethod_(\fillOval).symbolSize_(5@5);
+w.front;
+
+j.addPlot(q);
+j.addPlot([[0,0],[100,100]]);
+j.backgroundColor_(Color.black).axisColor_(Color.gray);
+j.symbolColor_(Color.blue,0);
+j.symbolColor_(Color.green,1);
+j.symbolColor_(Color.red,2).drawMethod_(\lineTo,2).symbolSize_(1,2);
+j.setAxes([1,100,\exp].asSpec, [1,100,\exp].asSpec);
+
+// different random distributions
+o = ScatterPlotter.new(nil, 800@400, Array.fill(100, {|i| [0.5.gauss(0.17), 0.3]}));
+o.drawMethod_(\fillOval).drawAxes_(true).symbolSize_(3@3);
+o.addPlot(Array.fill(100, {|i| [(0.5.bilinrand + 0.5), 0.5]}));
+o.addPlot(Array.fill(100, {|i| [(0.5.sum3rand + 0.5), 0.7]}));
+o.front;
+*/
+ScatterPlotter : CompositeView {
+	var <scatterviews; // list of plots, plot 0 is where axes and grids are drawn.
+
+	*new {|parent, bounds, data, specX, specY|
+		^super.new(parent, bounds).init(data, specX, specY);
+	}
+
+	init {|data, specX, specY|
+		var firstplot;
+		scatterviews = List.new;
+		firstplot = ScatterView.new(this, this.bounds, data, specX, specY);
+		scatterviews.add(firstplot);
+		^this
+	}
+
+	drawAxes_ {|bool| scatterviews.do {|plot| plot.drawAxes_(bool).refresh }; ^this; }
+	drawAxes { ^scatterviews[0].drawAxes; }
+
+	drawGrid_ {|bool| scatterviews[0].drawGrid_(bool).refresh; ^this; }
+	drawGrid { ^scatterviews[0].drawGrid; }
+
+	gridResolution_ {|dim| scatterviews[0].gridResolution_(dim).refresh; ^this; }
+	gridResolution { ^scatterviews[0].gridResolution; }
+
+	axisColor_ {|color| scatterviews[0].axisColor_(color).refresh; ^this; }
+	axisColor { ^scatterviews[0].axisColor; }
+
+
+	gridColor_ {|color| scatterviews[0].gridColor_(color).refresh; ^this; }
+	gridColor { ^scatterviews[0].gridColor; }
+
+	xAxisName_ {|name| scatterviews[0].xAxisName_(name).refresh; ^this; }
+	xAxisName { ^scatterviews[0].xAxisName; }
+
+	yAxisName_ {|name| scatterviews[0].yAxisName_(name).refresh; ^this; }
+	yAxisName { ^scatterviews[0].yAxisName; }
+
+
+	drawGridValues_ {|bool| scatterviews[0].drawGridValues_(bool).refresh; ^this; }
+	drawGridValues { ^scatterviews[0].drawGridValues; }
+
+	backgroundColor_ {|bgcolor| scatterviews[0].backgroundColor_(bgcolor).refresh; ^this; }
+	backgroundColor { ^scatterviews[0].backgroundColor; }
+
+	getPlot {|idx=0| ^scatterviews.at(idx); }
+	deletePlot {|idx| if(idx != 0) { scatterviews.removeAt(idx); } }
+
+	addPlot {|data|
+		var newplot;
+		newplot = ScatterView.new(this, this.bounds, data, scatterviews[0].specX, scatterviews[0].specY);
+		newplot.backgroundColor_(Color.clear).drawMethod_(scatterviews[0].drawMethod);
+		newplot.symbolColor_(Color.rand(0.0, 0.95)).symbolSize_(scatterviews[0].symbolSize);
+		newplot.drawAxes_(scatterviews[0].drawAxes).axisColor_(Color.clear);
+		scatterviews.add(newplot);
+		this.refresh;
+		^newplot;
+	}
+
+	setAxes {|xspec, yspec|
+		scatterviews.do {|plot, idx|
+			plot.setAxes(xspec, yspec);
+			plot.refresh;
+		};
+	}
+
+	data {|idx=0| ^scatterviews[idx].originalData }
+	data_ {|thedata, idx=0, constrainToBounds=false|
+		scatterviews[idx].data_(thedata, constrainToBounds).refresh;
+		^this;
+	}
+
+	drawValues_ {|bool, idx=0| scatterviews[idx].drawValues_(bool).refresh; ^this; }
+	valuesColor_ {|color, idx=0| scatterviews[idx].valuesColor_(color).refresh; ^this; }
+	symbolColor_ {|color, idx=0| scatterviews[idx].symbolColor_(color).refresh; ^this; }
+	symbolSize_ {|dim, idx=0| scatterviews[idx].symbolSize_(dim).refresh; ^this; }
+	drawMethod_ {|method, idx=0| scatterviews[idx].drawMethod_(method).refresh; ^this; }
+}
 
 
 /*
@@ -59,12 +178,13 @@ ScatterView : View {
 	var <>axisColor,<>gridColor, <>valuesColor;
 	var <>xAxisName, <>yAxisName;
 	var <symbolSize, <>symbolColor, <>drawMethod = \lineTo;
+	var <>constrainToBounds;
 
 	var <normalizedData; // data normalized to 0-1 for projection on to the view
 	var <originalData, <specX, <specY;
 
-	*new {|parent, bounds, data, specX, specY|
-		^super.new(parent, bounds).initPlot(data, specX, specY);
+	*new {|parent, bounds, data, specX, specY, constrainToBounds=false|
+		^super.new(parent, bounds).initPlot(data, specX, specY, constrainToBounds);
 	}
 
 	*drawMethods { ^[\fillRect, \fillOval, \strokeOval, \strokeRect] }
@@ -99,15 +219,21 @@ ScatterView : View {
 		plot.refresh;
 	}
 
-	data_{|data|
+	data_{|data, constrainToBounds=false|
 		originalData = data.shallowCopy;
-		this.normalizeData;
+		this.normalizeData(constrainToBounds);
 		highlightItem = min(highlightItem, (normalizedData.size-1));
 	}
 
-	normalizeData {
-		normalizedData = originalData.collect {|item|
-			[specX.unmap(item[0]), specY.unmap(item[1])];
+	normalizeData {|constrainToBounds|
+		if(constrainToBounds) {
+			normalizedData = originalData.collect {|item|
+				[specX.unmap(item[0]), specY.unmap(item[1])];
+			};
+		} {
+			normalizedData = originalData.collect {|item|
+				[specX.warp.unmap(item[0]), specY.warp.unmap(item[1])];
+			};
 		};
 	}
 
@@ -120,7 +246,7 @@ ScatterView : View {
 	resize_{arg resize;
 		plot.resize_(resize)
 	}
-	initPlot {arg data, argSpecX, argSpecY;
+	initPlot {arg data, argSpecX, argSpecY, constrainToBounds;
 
 		var widthSpec, heightSpec, cross;
 		var possibleMethods;
@@ -148,7 +274,7 @@ ScatterView : View {
 		yAxisName= "Y";
 		gridResolution = 5@5;
 
-		this.data_(data);
+		this.data_(data,constrainToBounds);
 
 		cross = {|rect, width, color|
 			var dx, dy, extX, extY;
@@ -528,109 +654,3 @@ ScatterView3d : View {
 		};
 	}
 }
-
-/*
-@class ScatterPlotter
-
-A higher level view abstraction that manages multiple scatterplots on a single graph.
-All scatterplots share a single axis specification and commands for drawing / showing axes.
-
-@usage
-
-n = 100;
-x = Array.series(n, 0, 100 / n) + Array.fill(n, {rrand(-15.0, 15.0)});
-y = Array.series(n, 0, 100 / n) + Array.fill(n, {rrand(-15.0, 15.0)});
-p = x.collect {|item,i| [item, y[i]] };
-x = Array.series(n, 0, 100 / n) + Array.fill(n, {rrand(-15.0, 15.0)});
-y = Array.series(n, 0, 100 / n).reverse + Array.fill(n, {rrand(-15.0, 15.0)});
-q = x.collect {|item,i| [item, y[i]] };
-
-w = Window.new("X Scatter", 800@600);
-j = ScatterPlotter.new(w, 800@600, p, [0,100].asSpec, [0,100].asSpec);
-j.drawAxes_(true).drawGrid_(true).drawMethod_(\fillOval).symbolSize_(5@5);
-w.front;
-
-j.addPlot(q);
-j.addPlot([[0,0],[100,100]]);
-j.backgroundColor_(Color.black).axisColor_(Color.gray);
-j.symbolColor_(Color.blue,0);
-j.symbolColor_(Color.green,1);
-j.symbolColor_(Color.red,2).drawMethod_(\lineTo,2).symbolSize_(1,2);
-j.setAxes([1,100,\exp].asSpec, [1,100,\exp].asSpec);
-
-*/
-ScatterPlotter : CompositeView {
-	var <scatterviews; // list of plots, plot 0 is where axes and grids are drawn.
-
-	*new {|parent, bounds, data, specX, specY|
-		^super.new(parent, bounds).init(data, specX, specY);
-	}
-
-	init {|data, specX, specY|
-		var firstplot;
-		scatterviews = List.new;
-		firstplot = ScatterView.new(this, this.bounds, data, specX, specY);
-		scatterviews.add(firstplot);
-		^this
-	}
-
-	drawAxes_ {|bool| scatterviews.do {|plot| plot.drawAxes_(bool).refresh }; ^this; }
-	drawAxes { ^scatterviews[0].drawAxes; }
-
-	drawGrid_ {|bool| scatterviews[0].drawGrid_(bool).refresh; ^this; }
-	drawGrid { ^scatterviews[0].drawGrid; }
-
-	gridResolution_ {|dim| scatterviews[0].gridResolution_(dim).refresh; ^this; }
-	gridResolution { ^scatterviews[0].gridResolution; }
-
-	axisColor_ {|color| scatterviews[0].axisColor_(color).refresh; ^this; }
-	axisColor { ^scatterviews[0].axisColor; }
-
-
-	gridColor_ {|color| scatterviews[0].gridColor_(color).refresh; ^this; }
-	gridColor { ^scatterviews[0].gridColor; }
-
-	xAxisName_ {|name| scatterviews[0].xAxisName_(name).refresh; ^this; }
-	xAxisName { ^scatterviews[0].xAxisName; }
-
-	yAxisName_ {|name| scatterviews[0].yAxisName_(name).refresh; ^this; }
-	yAxisName { ^scatterviews[0].yAxisName; }
-
-
-	drawGridValues_ {|bool| scatterviews[0].drawGridValues_(bool).refresh; ^this; }
-	drawGridValues { ^scatterviews[0].drawGridValues; }
-
-	backgroundColor_ {|bgcolor| scatterviews[0].backgroundColor_(bgcolor).refresh; ^this; }
-	backgroundColor { ^scatterviews[0].backgroundColor; }
-
-	getPlot {|idx=0| ^scatterviews.at(idx); }
-	deletePlot {|idx| if(idx != 0) { scatterviews.remove(idx); } }
-
-	addPlot {|data|
-		var newplot;
-		newplot = ScatterView.new(this, this.bounds, data, scatterviews[0].specX, scatterviews[0].specY);
-		newplot.backgroundColor_(Color.clear).drawMethod_(scatterviews[0].drawMethod);
-		newplot.symbolColor_(Color.rand(0.0, 0.95)).symbolSize_(scatterviews[0].symbolSize);
-		newplot.drawAxes_(scatterviews[0].drawAxes).axisColor_(Color.clear);
-		scatterviews.add(newplot);
-		this.refresh;
-		^newplot;
-	}
-
-	setAxes {|xspec, yspec|
-		scatterviews.do {|plot, idx|
-			plot.setAxes(xspec, yspec);
-			plot.refresh;
-		};
-	}
-
-	drawValues_ {|bool, idx=0| scatterviews[idx].drawValues_(bool).refresh; ^this; }
-	valuesColor_ {|color, idx=0| scatterviews[idx].valuesColor_(color).refresh; ^this; }
-	symbolColor_ {|color, idx=0| scatterviews[idx].symbolColor_(color).refresh; ^this; }
-	symbolSize_ {|dim, idx=0| scatterviews[idx].symbolSize_(dim).refresh; ^this; }
-	drawMethod_ {|method, idx=0| scatterviews[idx].drawMethod_(method).refresh; ^this; }
-}
-
-
-
-
