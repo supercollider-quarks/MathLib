@@ -122,8 +122,10 @@ Matrix[slot] : Array {
 		});
 	}
 	// single elements
-	at { arg row, col;
-		^super.at(row).at(col);
+	at { arg row, col=nil;
+		var r = super.at(row);
+		if(col.notNil) { r = r.at(col) };
+		^r;
 	}
 	get { arg row, col; // same as at
 		^super.at(row).at(col);

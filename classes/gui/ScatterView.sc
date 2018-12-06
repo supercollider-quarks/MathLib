@@ -60,13 +60,15 @@ o.front;
 */
 ScatterPlotter : CompositeView {
 	var <scatterviews; // list of plots, plot 0 is where axes and grids are drawn.
+	var <>constrainToAxes; // boolean, if true points are constrained to visible axes
 
-	*new {|parent, bounds, data, specX, specY|
-		^super.new(parent, bounds).init(data, specX, specY);
+	*new {|parent, bounds, data, specX, specY, constrain=false|
+		^super.new(parent, bounds).init(data, specX, specY, constrain);
 	}
 
-	init {|data, specX, specY|
+	init {|data, specX, specY, constrain|
 		var firstplot;
+		constrainToAxes = constrain;
 		scatterviews = List.new;
 		firstplot = ScatterView.new(this, this.bounds, data, specX, specY);
 		scatterviews.add(firstplot);
@@ -118,9 +120,13 @@ ScatterPlotter : CompositeView {
 
 	setAxes {|xspec, yspec|
 		scatterviews.do {|plot, idx|
-			plot.setAxes(xspec, yspec);
+			plot.setAxes(xspec, yspec, constrainToAxes);
 			plot.refresh;
 		};
+	}
+
+	setAxesLabels {|xlabel, ylabel|
+		scatterviews[0].xAxisName_(xlabel).yAxisName_(ylabel).refresh;
 	}
 
 	data {|idx=0| ^scatterviews[idx].originalData }
@@ -189,10 +195,10 @@ ScatterView : View {
 
 	*drawMethods { ^[\fillRect, \fillOval, \strokeOval, \strokeRect] }
 
-	setAxes {|xspec,yspec|
+	setAxes {|xspec,yspec,constrainToBounds|
 		specX = xspec ? specX;
 		specY = yspec ? specY;
-		this.normalizeData;
+		this.normalizeData(constrainToBounds);
 	}
 
 	highlightItem_{|item|
