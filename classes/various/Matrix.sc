@@ -34,6 +34,13 @@ Matrix[slot] : Array {
 			n.do({ arg i; ident.put(i,i,1) });
 		^ident;
 	}
+	*newDiagonal { arg array;
+		var m = Matrix.newClear(array.size, array.size);
+
+		array do: { |value, i| m.put(i, i, value) };
+
+		^m;
+	}
 	*fill { arg rows, cols, func;
 		var matrix;
 		matrix = this.newClear(rows, cols);
