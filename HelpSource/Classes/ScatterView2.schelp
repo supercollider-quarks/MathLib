@@ -1,0 +1,112 @@
+TITLE:: ScatterView2
+summary:: Plot a collection of points in 2D
+categories:: GUI>Accessories, Libraries>MathLib>ScatterViews
+related:: Reference/plot, Classes/ScatterView, Classes/ScatterView3d, Classes/Matrix
+
+DESCRIPTION::
+Plot a collection of points in 2D
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+
+CLASSMETHODS::
+
+METHOD:: new
+
+ARGUMENT:: parent
+Parent view or window
+
+ARGUMENT:: bounds
+The bounds, a link::Classes/Rect::
+
+ARGUMENT:: data
+An array of [[x0,y0], [x1,y1], ...[xN,yN]]
+
+argument:: specX
+ControlSpec with min/max of the plotted range of dimension X
+
+argument:: specY
+ControlSpec with min/max of the plotted range of dimension Y
+
+
+INSTANCEMETHODS::
+
+METHOD:: data
+Set data array.
+
+argument:: data
+An array of [[x0,y0], [x1,y1], ...[xN,yN]]
+
+
+METHOD:: refresh
+Refresh the view. You will need to call this after making any changes to data or settings.
+
+
+METHOD:: drawMethod
+Get or set the shape that will be drawn for each point.
+
+argument:: method
+One of: [\fillRect, \fillOval, \lineTo]
+
+
+METHOD:: background
+Get or set background-color
+
+
+PRIVATE:: initPlot, prSelect
+
+
+EXAMPLES::
+
+code::
+(
+// three dimensional dataset
+d = ({1.0.rand}!9000).clump(3);
+
+w = SCWindow.new("ScatterView Example");
+v = ScatterView2(w, Rect(10, 10, 380, 380), d);
+v.selectionMode = \nextNeighbour;
+v.background = Color.black;
+w.front;
+)
+
+v.selectModes.add(\abc -> ((1..100)))
+v.selectionMode = \abc;
+
+v.selectionMode = \nextNeighbour;
+
+v.selectModes.add(\nextNeighbour -> {|view, data, pos, itemSize|
+	var threshold, index, selected;
+
+	threshold = itemSize*2;
+	index = data.detectIndex{|item|
+		(item - pos).abs.sum <= threshold;
+	};
+	index
+})
+
+
+v.select((1..900))
+v.selection
+v.selectionMode = \surrounding;
+v.selectRegion = 0.021
+v.itemSize = 5
+
+v.data = d;
+v.action = {|indices|
+	indices.postln;
+	d[indices].postln
+}
+
+
+v.colorFunc = {|idx, selected|
+	selected.if({Color.red}, {Color.hsv(d[idx][2], 1, 0.2)})
+}
+
+v.colorFunc = Color.red(1, 0.5)
+::
+
+
+section:: Authors
+Till Bovermann, 2005.

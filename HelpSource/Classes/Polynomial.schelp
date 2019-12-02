@@ -1,0 +1,208 @@
+TITLE:: Polynomial
+summary:: various methods for polynomial math operations
+categories:: Math, Libraries>MathLib>Polynomials & Special
+related:: Classes/GenLaguerre, Classes/RootFinder
+
+DESCRIPTION::
+A class which makes possible various elementary polynomial math operations. Included are arithmetic methods like multiplication and division, (complex) root finding and evaluation at a specific point for arbitrary degree polynomials. All methods should work for real as well as complex coefficients.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+NOTE::
+for all binary arithmetic operations to give valid results, it is necessary that both coefficient arrays are of the same size. This means that in some cases it will be necessary to pad a coefficient array with zeros until it matches the other coefficient array in size. See the code::/:: operation for an example.
+::
+
+
+CLASSMETHODS::
+
+METHOD:: newFrom
+Creates a new instance of Polynomial. Returned is a polynomial of a degree equal to the number of coefficients minus one.
+
+code::
+a = Polynomial.newFrom([1, 2, 1])	//2nd degree polynomial
+b = Polynomial.newFrom([0, 2, 1])	//Another 2nd degree polynomial with a_0 coefficient equal to 0
+c = Polynomial.newFrom([1, 2, 0])	//1st degree polynomial, since a_2 coefficient is 0
+::
+
+ARGUMENT:: aCollection
+The coefficients need to be supplied in increasing order: a_0, a_1, a_2 ... a_n-1, a_n
+
+
+METHOD:: expandBinomialFactors
+Expands an array of first degree binomial factors.
+
+code::
+(
+a = Polynomial.newFrom([2, 2]);
+b = Polynomial.newFrom([3, 3]);
+c = Polynomial.newFrom([4, 4]);
+
+Polynomial.expandBinomialFactors([a, b, c])
+)
+::
+
+ARGUMENT:: factors
+Factors to expand.
+
+
+
+INSTANCEMETHODS::
+
+METHOD:: species
+Synomyn for link::Classes/Object#-class::.
+
+code::
+a = Polynomial.newFrom([0, 2, 0, 0, 6, 0, 0]);
+a.species;
+a.class;
+::
+
+
+METHOD:: degree
+Returns the degree of the polynomial.
+
+code::
+a = Polynomial.newFrom([0, 2, 0, 0, 6, 0, 0]);
+a.degree;
+::
+
+
+METHOD:: isMonomial
+Returns code::true:: if the polynomial is a monomial.
+
+code::
+Polynomial.newFrom([0, 0, 2, 0, 0]).isMonomial;
+::
+
+
+METHOD:: isBinomial
+Returns code::true:: if the polynomial is a binomial.
+
+code::
+Polynomial.newFrom([0, 2, 0, 0, 6]).isBinomial;
+::
+
+
+METHOD:: *
+Calculate the product of two polynomials by convolving the original coefficient sequences.
+
+code::
+// Real example
+Polynomial.newFrom([1, 2, 3, 4, 5]) * Polynomial.newFrom([5, 4, 3, 2, 1]);
+
+// Complex example
+a = Polynomial.newFrom([Complex(2, 2.2), Complex(2.5, 5), Complex(7, 4)]);
+a * a.performUnaryOp(\conjugate);
+::
+
+
+METHOD:: /
+Divide two polynomials using synthetic division. The degree of the numerator polynomial needs to be greater than or equal to the degree of the denominator polynomial.
+
+code::
+a = Polynomial.newFrom([Complex(2, 1), Complex(0.2, -0.436), Complex(-1.9, -5)]);
+b = Polynomial.newFrom([Complex(-5, 4), Complex(3.5, 1.2)]);
+#r, q = a / b;
+
+// Check if we get back the original polynomial
+// Notice padding of the remainder in order to get a valid result
+(b * q) + r.addAll([0, 0]);
+::
+
+returns:: An Array containing the remainder in the first slot and the quotient in the second slot, where: P(z) / D(z) = Q(z) + R(z) / D(z)
+
+
+METHOD:: pow
+Calculate the n'th power of a polynomial. Negative, complex or fractional powers are allowed for binomials with the a_0 coefficient equal to one in order to calculate the binomial series which converges for: |z| < 1
+
+code::
+Polynomial.newFrom([1, 1]).pow(0.5)  //Binomial series: (1 + x)^0.5
+::
+
+
+METHOD:: eval
+Evaluate the polynomial at the (complex) point x.
+
+code::
+// Real
+Polynomial.newFrom([0.2, 0.1, 0.3, 0.5]).eval(1.0);
+
+// Complex
+Polynomial.newFrom([0.2, 0.1, 0.3, 0.5]).eval(Complex.new(1.0, 0.0));
+::
+
+
+METHOD:: evalDerivs
+Evaluate the polynomial and all of its derivatives at the (complex) point x.
+
+code::
+// Real
+Polynomial.newFrom([0.2, 0.1, 0.3, 0.5]).evalDerivs(1.0);
+
+// Complex
+Polynomial.newFrom([0.2, 0.1, 0.3, 0.5]).evalDerivs(Complex.new(1.0, 0.0));
+::
+
+returns:: An Array containing the results. Slot zero contains the function value and subsequent slots are filled with the values of all existing derivatives.
+
+
+METHOD:: findRoots
+Find all the roots of the polynomial.
+
+code::
+a = Polynomial.newFrom([80, 4, -24, -1, 1]);
+b = a.findRoots;
+
+//Check if the roots we found make sense
+c = ([b.neg, [1, 1, 1, 1]].lace(8).reshape(4, 2).collect(_ .as(Polynomial)));
+Polynomial.expandBinomialFactors(c)
+::
+
+ARGUMENT:: method
+Root finding method.
+table::
+    ## code::\laguerre:: || link::https://en.wikipedia.org/wiki/Laguerre%27s_method##Laguerre's method::
+    ## code::\eigenvalue:: || link::https://en.wikipedia.org/wiki/Eigenvalue_algorithm##Eigenvalue algorithm::
+::
+
+DISCUSSION::
+
+link::https://en.wikipedia.org/wiki/Laguerre%27s_method##Laguerre's method:: works for polynomials with real as well as complex coefficients.
+
+Another option is to use the link::https://en.wikipedia.org/wiki/Eigenvalue_algorithm##Eigenvalue algorithm:: to form the companion matrix which eigenvalues coincide with the roots of the polynomial. Although this method is more reliable than the first one, it is considerably slower and only works for polynomials with real coefficients.
+
+
+PRIVATE:: binPow, binPowFrac, laguerre, eigenvalue
+
+
+EXAMPLES::
+
+code::
+// Two alternative methods for dividing polynomials
+a = Polynomial.newFrom([2, 3, 4, 1]);		// P(x) = 2 + 3*x + 4*x^2 + x^3
+b = Polynomial.newFrom([4, 5, 6, 0]);		// P(x) = 4 + 5*x + 6*x^2
+
+
+// First example: remainder and quotient are of the same order (standard behaviour)
+#r, q = a / b;
+
+// Get back original polynomial
+((b[0..b.size-2] * q.add(0)) + r.addAll([0, 0]));
+
+
+// Second example: quotient contains powers x^0 up to x^k and remainder starts from power x^(k+1)
+b = b.insert(0, b.removeAt(b.size-1));
+
+// We need to reverse the coefficients so that the powers are in increasing order again
+#r, q = (a.reverse / b.reverse).performUnaryOp(\reverse);
+
+// Adjust degree of the remainder (must be 3rd degree in this case)
+q.size.do({ r = r.insert(0, 0) });
+
+// Get back original polynomial
+((b[1..b.size-1] * q.add(0)) + r)
+::
+
+
+section:: Authors
+Michael Dzjaparidze, 2010.
