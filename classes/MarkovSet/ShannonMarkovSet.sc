@@ -236,7 +236,7 @@ ShannonFinger : ShannonMarkovSet {
 ClearList : List {
 	var <size = 0;
 	
-	*new{ arg size; ^this.newClear(size); }
+	*new { arg size; ^this.newClear(size); }
 	add { arg item; array = array.put(size, item); size = size + 1 }
 	put { arg i, item;
 		array.put(i, item); 
