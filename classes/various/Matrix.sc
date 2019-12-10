@@ -146,7 +146,7 @@ Matrix[slot] : Array {
 		},{
 			(vals.size).min(this.cols).do({ arg col;
 				this.put(row, col, vals.at(col))
-			});"Warning: wrong number of vals".postln;
+			});"Warning: wrong number of vals: % received and % expected".format(vals.size, this.cols).postln;
 		})
 	}
 	putCol { arg col, vals;
@@ -157,7 +157,7 @@ Matrix[slot] : Array {
 		},{
 			(vals.size).min(this.rows).do({ arg row;
 				this.put(row, col, vals.at(row))
-			});"Warning: wrong number of vals".postln;
+			});"Warning: wrong number of vals: % received and % expected".format(vals.size, this.cols).postln;
 		});
 	}
 
@@ -183,7 +183,7 @@ Matrix[slot] : Array {
 		this.putCol(posA, this.getCol(posB) );
 		this.putCol(posB, colA);
 	}
-	collect { arg func;
+	collectRowsCols { arg func;
 		var res; res = Matrix.newClear(this.rows, this.cols);
 		this.rows.do({ arg row;
 			this.cols.do({ arg col;
@@ -193,16 +193,43 @@ Matrix[slot] : Array {
 		^res;
 	}
 
+	// collect rows, where row length of the matrix is arbitrary
+	collectRows {arg func;
+		var res, firstRow;
+		if(this.rows<1) { ^this };
+		firstRow = func.value(this.at(0),0);
+		res = Matrix.newClear(this.rows, firstRow.size);
+		res.putRow(0, firstRow);
+		this.rows.do({arg row;
+			if(row>0) { res.putRow(row, func.value(this.at(row))) };
+		});
+		^res;
+	}
+
+	// collect columns, where column length of the new matrix is arbitrary
+	collectCols {arg func;
+		var res, firstCol;
+		if(this.cols<1) { ^this };
+		firstCol = func.value(this.getCol(0), 0);
+		res = Matrix.newClear(firstCol.size, this.cols);
+		res.putCol(0, firstCol);
+		this.cols.do({arg col;
+			if(col>0) { res.putCol(col, func.value(this.getCol(col))) };
+		});
+		^res;
+	}
+
 	addRow { arg rowVals;
 		var res;
-		if( (rowVals.flat.size == this.cols)
-		.and(rowVals.every({arg element; element.isNumber}) ),{
+		if( (this.rows == 0).or((rowVals.flat.size == this.cols)
+			.and(rowVals.every({arg element; element.isNumber}))), {
 			res = this.copy;
 			res = res.add(rowVals);
-			^res},{
+			^res }, {
 			error("wrong type or size in Matrix-addRow");this.halt;
 		});
 	}
+
 	insertRow { arg col, rowVals;
 		var res;
 		if( (rowVals.flat.size == this.cols)
@@ -215,8 +242,8 @@ Matrix[slot] : Array {
 	}
 	addCol { arg colVals;
 		var res;
-		if( (colVals.flat.size == this.rows)
-		.and(colVals.every({arg element; element.isNumber}) ),{
+		if( (this.rows == 0).or((colVals.flat.size == this.rows)
+			.and(colVals.every({arg element; element.isNumber}))), {
 			res = Matrix.newClear(this.rows, this.cols+1);
 			res.rows.do({ arg row;
 				var rowArray;
@@ -224,7 +251,7 @@ Matrix[slot] : Array {
 				rowArray = rowArray.add(colVals.at(row));
 				res.putRow( row, rowArray);
 			});
-			^res},{
+			^res}, {
 			error("wrong type or size in Matrix-addCol");this.halt;
 		});
 	}
