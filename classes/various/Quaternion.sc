@@ -113,20 +113,17 @@ Quaternion {
 
 	// roll
 	tilt {
-		^atan2((2 * (a * b + (c * d))), (1 - (2*(b.squared + c.squared))))
+		^atan2((2 * (a * b - (c * d))), (1 - (2*(b.squared + c.squared))))
 	}
 
 	// pitch
 	tumble {
-		var x, ang, val;
-		val = (2 * (a * c - (b * d))).clip(-1.0, 1.0);
-		ang = asin(val);
-		^ang
+		^asin((2 * (a * c + (b * d))).clip(-1.0, 1.0));
 	}
 
 	// yaw
 	rotate {
-		^atan2((2 * (a * d + (c * b))), (1 - (2*(d.squared + c.squared))))
+		^atan2((2 * (a * d - (c * b))), (1 - (2*(d.squared + c.squared))))
 	}
 }
 
