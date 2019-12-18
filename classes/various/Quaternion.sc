@@ -121,18 +121,6 @@ Quaternion {
 		var x, ang, val;
 		val = (2 * (a * c - (b * d))).clip(-1.0, 1.0);
 		ang = asin(val);
-		// select which axis is our reference for tumble (used to determine the quadrant)
-		x = ((this.rotate < 0.5pi) and: (this.rotate > -0.5pi)).if({
-			(1 - (2*(d.squared + c.squared)))
-		}, {
-			(1 - (2*(b.squared + c.squared)))
-		});
-		case(
-			{x.isNegative and: ang.isNegative.not},
-			{ang = pi - ang},
-			{x.isNegative and: ang.isNegative},
-			{ang = ang.neg - pi},
-		);
 		^ang
 	}
 
