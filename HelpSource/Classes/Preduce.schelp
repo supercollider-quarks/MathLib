@@ -1,0 +1,74 @@
+TITLE:: Preduce
+summary:: reduces a list of patterns to a single one using an operator
+categories:: Streams-Patterns-Events>Patterns, Libraries>MathLib>Patterns
+related:: Classes/Pattern, Classes/Pperform
+
+DESCRIPTION::
+reduces a list of patterns to a single one using an operator
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+
+ARGUMENT:: selectorPattern
+a pattern of symbols (binary operators) or functions of two arguments
+
+ARGUMENT::  ... patterns
+a pattern of objects responding to the selector.
+
+
+
+
+EXAMPLES::
+
+code::
+// perform a sequence of addition and subtraction
+(
+a = Preduce(Pseq(['+', '-'], 16), Pseq([0, 1, 2, 3], inf), Pseq([3, 4, 5], inf));
+x = a.asStream;
+x.nextN(20);
+)
+
+// duplicate and multiply
+(
+a = Preduce(Pseq(['dup', '*'], 8), Pseq([0, 1, 2, 3], inf), Pseq([3, 4, 5, 6], inf));
+x = a.asStream;
+x.nextN(20);
+)
+
+// reduce 8 patterns to one.
+(
+b = { Pshuf([-2, -1, 1, 2, 0], inf) }.dup(8);
+a = Preduce(Pseq(['+', '-'], inf), *b);
+x = a.asStream;
+x.nextN(20);
+)
+::
+
+SUBSECTION:: set theory examples
+
+code::
+// an array of sets
+k = [[0, 3, 4], [0, 5, 7], [1, 3, 4], [-3, 4, 5]].collect(_.as(Set));
+
+
+// combine the array with a scrambled version of itself.
+// set operations: union (|) intersection (&) and symmetric difference (--)
+
+a = Preduce(Pseq(['|', '&', '--'], 3), Pseq(k, inf), Pseq(k.scramble, inf));
+x = a.asStream;
+
+x.nextN(16)
+
+
+(
+Pbind(
+	\strum, 0.3,
+	\degree, a.setConvert.trace,
+	\dur, 1
+).play;
+)
+::

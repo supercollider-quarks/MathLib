@@ -1,0 +1,53 @@
+TITLE:: LaTeX
+summary:: LaTeX code for tables and charts
+categories:: Utilities, Libraries>MathLib>LaTeX
+
+DESCRIPTION::
+Produces link::https://www.latex-project.org##LaTeX:: code for tables and charts
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+EXAMPLES::
+
+SUBSECTION:: numericalDict
+
+code::
+d = (a: 100.2, b: 650.2, "pi":pi, der:0.001, "\\theta": "theta");
+
+LaTeX.numericalDict(d, "key", "value");
+LaTeX.numericalDict(d);
+
+// dict can be also an array with key value pairs:
+d = [a: 100.2, b: 650.2, "pi":pi, der:0.001, "\\theta": "theta"];
+
+// which is the same as:
+d = [ \a, 100.2, \b, 650.2, "pi", 3.1415926535898, \der, 0.001, "\\theta", "theta" ];
+::
+
+
+SUBSECTION:: tableDict
+
+code::
+LaTeX.tableDict( (a: 100.2, b: 650.2, "pi":pi, der:0.001, "\\theta": "\\theta + \\gamma"), ["key", "val"]);
+LaTeX.tableDict(Array.iota(4, 4), [0, 2], "c", "|");
+
+a = [
+	["Minute", "from Degree", "to Degree", "Number of Countries"],
+	[3.54, "$0^o$", "$45^o$", 67],
+	[5.02, "$7^o$", "$32^o$", 3]
+];
+
+LaTeX.tableDict(a, [1], "c", "|", false);
+::
+
+
+SUBSECTION:: barChart
+
+code::
+// Give it an array of (barlabel -> barvalue) Association items.
+// "shades" can be true to cycle through shades, or false, or a function that translates the bar's index to a shade number (numbers 1 through 8).
+LaTeX.barChart({100.0.rand}.dup(10).collect{|item, index| (("Item"+index) -> item) }, precision: 3);
+LaTeX.barChart({100.0.rand}.dup(10).collect{|item, index| (("Item"+index) -> item) }, precision: 2, shades: true);
+LaTeX.barChart({100.0.rand}.dup(10).collect{|item, index| (("Item"+index) -> item) }, precision: 4, shades: true, min: -30, max: 100, interval: 10);
+::

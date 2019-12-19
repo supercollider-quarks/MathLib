@@ -1,0 +1,105 @@
+TITLE:: Quaternion
+summary:: quaternion number
+categories:: Math, Libraries>MathLib>Cartesian &c.
+related:: Classes/Complex
+
+DESCRIPTION::
+A class representing link::https://en.wikipedia.org/wiki/Quaternion##quaternion numbers::.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Create a new quaternion with the given scalar and vector parts.
+
+ARGUMENT:: a
+scalar part
+
+ARGUMENT:: b
+vector part b
+
+ARGUMENT:: c
+vector part c
+
+ARGUMENT:: d
+vector part d
+
+returns:: a new instance of Quaternion.
+
+
+METHOD:: rand
+Create a new quaternion with scalar and vector parts randomly choosen between strong::min:: and strong::max::.
+
+ARGUMENT:: min
+minimum value
+
+ARGUMENT:: max
+maximum value
+
+returns:: a new instance of Quaternion.
+
+
+INSTANCEMETHODS::
+
+METHOD:: a
+Return the scalar part.
+
+METHOD:: b
+Return the vector part b.
+
+METHOD:: c
+Return the vector part c.
+
+
+METHOD:: d
+Return the vector part d.
+
+
+METHOD:: coordinates
+Return the scalar and vector parts.
+
+
+METHOD:: conjugate
+Return the conjugate of q is the quaternion
+
+
+METHOD:: norm
+Return the square root of the product of a quaternion with its conjugate.
+
+
+METHOD:: distance
+Return the distance between two quaternions.
+
+
+
+
+EXAMPLES::
+
+code::
+Quaternion(1, 1, 1, 1) * Quaternion(1, 1, 1, 1);
+
+
+a = Quaternion(1, 1, 1, 1);
+a.conjugate;
+a.conjugate.conjugate;
+
+
+b = Quaternion.rand(-10, 10);
+c = Quaternion.rand(-10, 10);
+
+norm(b * c) == (norm(b) * norm(c)); // true
+
+// true - within precision
+b.reciprocal.reciprocal;
+b;
+
+
+
+i = Quaternion(0, 1, 0, 0);
+j = Quaternion(0, 0, 1, 0);
+k = Quaternion(0, 0, 0, 1);
+
+(i * i) == (j * j) // true
+::
