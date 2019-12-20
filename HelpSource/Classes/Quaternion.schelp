@@ -73,6 +73,16 @@ METHOD:: distance
 Return the distance between two quaternions.
 
 
+METHOD:: rotate
+Return the rotation (yaw) Euler angle in radians. Returns values between -pi and pi (-180 and 180 degrees).
+
+
+METHOD:: tilt
+Return the tilt (roll) Euler angle in radians. Returns values between -pi and pi (-180 and 180 degrees).
+
+
+METHOD:: tumble
+Return the tumble (pitch) Euler angle in radians. Returns values between -0.5pi and 0.5pi (-90 and 90 degrees).
 
 
 EXAMPLES::
