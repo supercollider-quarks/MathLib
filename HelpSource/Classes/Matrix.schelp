@@ -1,27 +1,17 @@
-CLASS:: Matrix
+TITLE:: Matrix
 summary:: an ordered 2-dimensional array of numbers
-categories:: Linear Algebra
+categories:: Math, Linear Algebra, Libraries>MathLib>Matrix
 related:: Classes/Spherical, Classes/Point, Classes/Polar
 
 DESCRIPTION::
-original class by sc.solar
 
-Matrices are 2-dimensional Arrays whose slots may only contain (at the moment 'real' ) numbers.
-Their shape is fully described by the number of rows and columns(cols). Each element can be
-adressed by 2 indices (row,col), where row (col) ranges between 0 and rows-1 (cols-1).
-For a lesson on matrices, read your math books from school.
-Or this reference if you like it the hard way:
+Matrices are a 2-dimensional link::Classes/Array:: whose slots may only contain (at the moment 'real' ) numbers. Their shape is fully described by the number of rows and columns(cols). Each element can be adressed by 2 indices (row,col), where row (col) ranges between 0 and rows-1 (cols-1). For a lesson on matrices, read your math books from school. Or this reference if you like it the hard way:
     LINK::http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/intro.html#Intro::
 
-Array2D
-Matrix uses an array-of-rows–notation. This is the same concept as found in LINK::Classes/Array2D::.
-As a subclass of Array, Matrix responds to far more methods than given in
-this helpfile. Be aware of strange results when using them. This is meant to support only the basic matrix
-manipulations. Most of this is not designed for realtime action. To slow, not optimized.
+strong::Array2D::
+Matrix uses an array-of-rows–notation. This is the same concept as found in LINK::Classes/Array2D::. As a subclass of link::Classes/Array::, Matrix responds to far more methods than given in this helpfile. Be aware of strange results when using them. This is meant to support only the basic matrix manipulations. Most of this is not designed for realtime action. Too slow, not optimized.
 
-Suggestions, bugs, improvements to
-	sc.solar(at)studiobeige.de or
-	tboverma(at)techfak.uni-bielefeld.de
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
 
 
 CLASSMETHODS::
@@ -599,3 +589,11 @@ METHOD:: min
 METHOD:: max
 
 RETURNS:: new matrices
+
+
+section:: Authors
+
+list::
+    ## sc.solar(at)studiobeige.de (Original author)
+    ## Till Bovermann
+::

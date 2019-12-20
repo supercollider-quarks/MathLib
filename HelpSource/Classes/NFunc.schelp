@@ -1,0 +1,32 @@
+TITLE:: NFunc
+summary:: a multi-dimensional function: f:R^n -> R^m
+categories:: Math, Libraries>MathLib>Solvers
+related:: Classes/Solver, Classes/SystemNFunc
+
+DESCRIPTION::
+
+Represents a multi-dimensional functions as an array of functions. The number of arguments in each function and the number of arguments passed to .value should be the same.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+(
+a = [
+	{ |x,y| x+y },
+	{ |x,y| x-y }
+	].as(NFunc);
+a.value(1,2)
+)
+::
+
+section:: Authors
+Miguel Negro, 2009.

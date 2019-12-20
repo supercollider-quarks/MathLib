@@ -1,0 +1,81 @@
+TITLE:: MarkovSetN
+summary:: nth order markov set
+categories:: Collections>Unordered, Libraries>MathLib>Markov & Fuzzy
+related:: Classes/MarkovSet, Classes/ShannonMarkovSet, Classes/ShannonFinger
+
+DESCRIPTION::
+Constant order set. For variable order see link::Classes/ShannonFinger::. Uses an optimized identity lookup in which arrays of elements are stored internally as symbols.
+
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+
+ARGUMENT:: args
+A list of arrays that each represent one node in the set:
+
+strong::[[array_of_elements], [next_elements], [weigths]]::
+
+
+table::
+    ## strong::array_of_elements:: || Should be of size strong::order::
+    ## strong::next_elements:: || The next node is searched by simple equality. If code::nil::, this is a terminator node
+    ## strong::weights:: || The array is normalized. If weigths is code::nil::, equal weight is used.
+::
+
+If args is code::nil::, the set is created and may be trained by the other methods.
+
+ARGUMENT:: order
+The order of the set.
+
+ARGUMENT:: updateSeeds
+If set to code::true::, each element is always added to the seeds
+
+
+METHOD:: fill
+
+ARGUMENT:: n
+Number of items to read.
+
+ARGUMENT:: stream
+A function or stream that returns items to read.
+
+ARGUMENT:: order
+Order of the new set.
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+subsection:: direct node definition
+
+code::
+(
+m = MarkovSetN([
+	[[100, 120], [120, 130]],
+	[[120, 100], [100, 1900]]
+], 2);
+)
+
+8.do { m.next([100, 120]).postln };
+8.do { m.next([120, 100]).postln };
+::
+
+subsection:: training by a stream
+
+code::
+m = MarkovSetN.fill(100, Pseq([1, 2, 3, 4, Prand([5, 55, 555])], inf).asStream, 2);
+
+8.do { m.next([1,2]).postln };
+8.do { m.next([3,4]).postln };
+8.do { m.next([4,5]).postln };
+::
+
+
+section:: Authors
+Julian Rohrhuber, 2004, 2007.

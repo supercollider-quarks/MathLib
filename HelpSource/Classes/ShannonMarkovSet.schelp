@@ -1,0 +1,56 @@
+TITLE:: ShannonMarkovSet
+summary:: shannon implementation of a markov set
+categories:: Collections>Unordered, Libraries>MathLib>Markov & Fuzzy
+related:: Classes/MarkovSet, Classes/MarkovSetN, Classes/ShannonFinger
+
+DESCRIPTION::
+The basic shannon implementation of a markov set is to simply leave the data as it is and to iterate over it by doing random jumps and looking for the next matching item. The item that follows that one is the next item of the chain. As this requires searching the data, which can be of very irregular efficiency, this current implementation uses an identity dictionary to find the indices of items in constant time. Higher order is slightly more costly, but still this is a major speed increase.
+
+This implementation allows to vary the order at each step and it is very fast in reading. In difference to link::Classes/MarkovSet:: and link::Classes/MarkovSetN:: it can only read data as a chain, not as single nodes. Also it does not compress data, as the standard implementation does.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+subsection:: shannon markov
+
+code::
+a = ShannonMarkovSet.new(800);
+s = Pseq([0,1,2,3]+10,inf).asStream;
+(
+120.do({ arg i;
+	a.put(i,s.next)
+})
+);
+
+v = a.asStream(3);
+10.do({ v.next.postln });
+
+a.next(11).postln;
+
+a.data;
+
+x = 5;
+a.nextIndex(x).postln;
+::
+
+subsection:: empty set test
+
+code::
+a = ShannonMarkovSet(256);
+a.chooseIndex.postln;
+a.nextIndex(0).postln;
+v = a.asStream(8,1);
+v.next.postln;
+::
+
+
+section:: Authors
+Julian Rohrhuber, et al, 2003.
