@@ -305,6 +305,45 @@ Matrix[slot] : Array {
 	sub { arg row, col; // return submatrix to element(row,col)
 		^this.removeRow(row).removeCol(col);
 	}
+	// return a sub matrix
+	getSub { |rowStart = 0, colStart = 0, rowLength, colHeight|
+		var width, height, mtx, maxw, maxh;
+
+		maxw = this.cols - rowStart;
+		maxh = this.rows - colStart;
+
+		width = rowLength ? maxw;
+		height = colHeight ? maxh;
+
+		if(((width > maxw) or: (height > maxh)), {
+			format("dimensions of requested sub-matrix exceed bounds: "
+				"you asked for %x%, remaining space after starting index is %x%",
+				rowLength, colHeight, maxw, maxh
+			).throw
+		});
+
+		mtx = Matrix.newClear(height, width);
+
+		(colStart..colStart + height - 1).do({ |row, i|
+			mtx.putRow(i,
+				this.getRow(row).drop(rowStart).keep(width)
+			)
+		});
+
+		^mtx
+	}
+	// post a sub matrix, formatted for viewing
+	postSub { |rowStart = 0, colStart = 0, rowLength, colHeight, round = 0.001|
+		var pmtx, maxstrlen = 0, temp;
+
+		pmtx = this.getSub(rowStart, colStart, rowLength, colHeight).round(round);
+		pmtx.doMatrix({ |item| maxstrlen = max(maxstrlen, item.asString.size) });
+
+		pmtx.rowsDo({ |rowArray, i|
+			rowArray.collect({ |item| item.asString.padLeft(maxstrlen) }).postln;
+			"".postln // space it out vertically
+		})
+	}
 	asArray { var array; array = Array.new; // return an array of rows
 		this.rows.do({ arg i; array = array.add(this.getRow(i)) });
 		^array;
@@ -620,4 +659,3 @@ Matrix[slot] : Array {
 // added inserRow, insertCol
 // getDiagonal also for nonsquare matrices
 // trace gets square restriction from getDiagonal
-
