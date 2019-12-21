@@ -181,6 +181,30 @@ Matrix[slot] : Array {
 		this.putCol(posA, this.getCol(posB) );
 		this.putCol(posB, colA);
 	}
+	/*
+	Michael McCrea, 2019.
+	*/
+	// this is a destructive operation:
+	// force values to zero that are within threshold distance (positive or negative)
+	zeroWithin { |within = (-180.dbamp)|
+		this.rowsDo({ |rArray, ri|
+			rArray.do({ |item, ci|
+				this.put(
+					ri,
+					ci,
+					if(item.abs <= within, {
+						if(item.isInteger, {  // there could be more cases...
+							0
+						}, {
+							0.0
+						})
+					}, {
+						item
+					})
+				)
+			})
+		})
+	}
 	collect { arg func;
 		var res; res = Matrix.newClear(this.rows, this.cols);
 		this.rows.do({ arg row;
@@ -620,4 +644,3 @@ Matrix[slot] : Array {
 // added inserRow, insertCol
 // getDiagonal also for nonsquare matrices
 // trace gets square restriction from getDiagonal
-
