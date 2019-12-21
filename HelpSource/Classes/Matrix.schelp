@@ -165,6 +165,20 @@ function is passed three arguments: item, row,col;
 ARGUMENT::
 function
 
+method::colsDo
+Iterate over the columns. Each column will be passed to strong::func:: in turn.
+code::
+a = Matrix.newIdentity(4);
+a.colsDo({ |item, i| format("Col %: ", i).post; (item * i).postln;});
+::
+
+method::rowsDo
+Iterate over the rows. Each row will be passed to strong::func:: in turn.
+code::
+a = Matrix.newIdentity(4);
+a.rowsDo({ |item, i| format("Row %: ", i).post; (item * i).postln;});
+::
+
 
 subsection:: Changing Matrices
 
