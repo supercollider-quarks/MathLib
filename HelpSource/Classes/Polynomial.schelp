@@ -45,6 +45,14 @@ ARGUMENT:: factors
 Factors to expand.
 
 
+METHOD:: newReverseBessel
+Instance a reverse Bessel polynomial of the given degree. FOOTNOTE::https://en.wikipedia.org/wiki/Bessel_polynomials::
+
+NOTE::Coefficients are instanced as link::Classes/Float:: to avoid numerical overflow.::
+
+ARGUMENT:: degree
+Polynomial degree
+
 
 INSTANCEMETHODS::
 
@@ -205,4 +213,4 @@ q.size.do({ r = r.insert(0, 0) });
 
 
 section:: Authors
-Michael Dzjaparidze, 2010.
+Michael Dzjaparidze, 2010. Joseph Anderson, 2019.
