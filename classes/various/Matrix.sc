@@ -10,15 +10,19 @@ Matrix[slot] : Array {
 	*newClear { arg rows=1, cols=1; // return (rows x cols) - zero matrix
 		^super.fill(rows, { Array.newClear(cols).fill(0) });
 	}
-	*with { arg array; // return matrix from 2D array (array of rows)
-		var rows;
-		if((array.flat == array.flop.flop.flat)
-		.and(array.flatten.every({arg element; element.isNumber})) ,{
+	*with { |array| // return matrix from 2D array (array of rows)
+		var shapes, shapeTest, numTest, rows;
+
+		shapes = (array.asArray).collect(_.shape).flatten;
+		shapeTest = shapes.every(_ == shapes[0]);
+		numTest = { array.flatten.every(_.isNumber) };
+
+		if((shapeTest and: numTest), {
 			rows = array.size;
-			^super.fill(rows, {arg col; array.at(col) });
-		},{
-			error("wrong type of argument in Meta_Matrix-with");this.halt
-		});
+			^super.fill(rows, { |col| array[col] })
+			}, {
+				error("wrong type of argument in Meta_Matrix-with");this.halt
+		})
 	}
 	*withFlatArray { arg rows, cols, array; // return (rows x cols) - matrix from one slot array
 		if((array.size == (rows*cols) )
@@ -620,4 +624,3 @@ Matrix[slot] : Array {
 // added inserRow, insertCol
 // getDiagonal also for nonsquare matrices
 // trace gets square restriction from getDiagonal
-
