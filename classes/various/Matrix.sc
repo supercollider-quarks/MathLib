@@ -44,6 +44,28 @@ Matrix[slot] : Array {
 		});
 		^matrix
 	}
+	// Joseph Anderson, 2019.
+	*newDiagonal { |diagonal|
+		var matrix;
+		/*
+		assume Float or Integer
+
+		More comprehensive testing and casting could be done here, including
+		test for Complex. Doing so would imply reviewing whether currently
+		implemented Matrix methods otherwise support operations with complex
+		values.
+		*/
+		diagonal.any({ |item| item.isFloat }).if({  // test for Float
+			matrix = super.fill(diagonal.size, {  // empty: 0.0
+				Array.newClear(diagonal.size).fill(0.0)
+			});
+			diagonal.do({ |item, i| matrix.put(i, i, item.asFloat) });  // fill with Float
+		}, {  // otherwise... assume Integer, and cast
+			matrix = Matrix.newClear(diagonal.size, diagonal.size);  // empty: 0
+			diagonal.do({ |item, i| matrix.put(i, i, item.asInteger) });  // fill with Integer
+		});
+		^matrix
+	}
 	*newDFT { arg n;
 		var dft;
 		dft = sqrt(n).reciprocal * super.fill(n, { |r|
@@ -620,4 +642,3 @@ Matrix[slot] : Array {
 // added inserRow, insertCol
 // getDiagonal also for nonsquare matrices
 // trace gets square restriction from getDiagonal
-
