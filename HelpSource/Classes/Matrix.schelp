@@ -53,6 +53,19 @@ CODE::Matrix.newIdentity(3).postln;::
 ARGUMENT::
 n
 
+METHOD:: newDiagonal
+
+Create a new square link::https://en.wikipedia.org/wiki/Diagonal_matrix##diagonal matrix::.
+
+code::
+Matrix.newDiagonal(Array.series(8));  // Integer
+Matrix.newDiagonal(Array.series(8.0));  // Float
+::
+
+ARGUMENT:: diagonal
+
+An array of values with which to fill the diagonal.
+
 METHOD:: newDFT
 Create a new discrete Fourier transform matrix of shape (n,n).
 CODE::Matrix.newDFT(3).postln;::
