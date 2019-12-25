@@ -315,6 +315,24 @@ col
 
 RETURNS:: a new matrix from column
 
+METHOD:: getSub
+get a sub-matrix from within matrix.
+
+ARGUMENT:: rowStart
+Row index to begin copying.
+
+ARGUMENT:: colStart
+Column index to begin copying.
+
+ARGUMENT:: rowLength
+The number of elements to copy from each row.
+
+ARGUMENT:: colHeight
+The number of elements to copy from each column.
+
+returns:: a new matrix
+
+
 METHOD:: addRow
 add a row (values) to the matrix and return.
 receiver is unchanged.
