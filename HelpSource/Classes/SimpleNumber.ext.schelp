@@ -1,6 +1,55 @@
 INSTANCEMETHODS::
 
-subsection:: conversion 
+subsection:: conversion
 
 method:: asCartesian
 returns:: this as link::Classes/Cartesian::. x = y = z = this.
+
+
+subsection:: Extensions by MathLib
+
+method:: thresh2
+Bilateral thresholding.
+
+argument:: thresh
+
+When the code::input.abs < thresh::, the output is forced to code::0::.
+Should be a positive value.
+
+argument:: adverb
+
+Optional, for processing Collections. See link::Reference/Adverbs::.
+
+discussion::
+code::
+(
+// Integer Array
+var in = (3..-3);
+var t  = in.thresh(2);
+var t2 = in.thresh2(2);
+var fmt = { |v| v.asString.padLeft(2) };
+postf(
+	"input:   %\nthresh:  %\nthresh2: %\n\n",
+	*[in, t, t2].collect(_.collect(fmt.(_)))
+);
+
+// Float Array
+in = 7.collect{ bilinrand(5.5).round(1e-3) };
+t  = in.thresh(2);
+t2 = in.thresh2(2);
+fmt = { |v| v.asString.padRight(5).padLeft(6) };
+postf(
+	"input:   %\nthresh:  %\nthresh2: %\n\n",
+	*[in, t, t2].collect(_.collect(fmt.(_)))
+);
+""
+)
+
+( // UGen
+{ [
+	LFSaw.ar,
+	LFSaw.ar.thresh(0.4),
+	LFSaw.ar.thresh2(0.4)
+] }.plot
+)
+::

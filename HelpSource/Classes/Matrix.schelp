@@ -441,6 +441,30 @@ mean
 
 RETURNS:: a matrix centred around the mean vector (which will be calculated for you if not supplied)
 
+METHOD:: thresh2
+Bilateral thresholding.
+
+ARGUMENT::thresh
+
+When the code::input.abs < thresh::, the output is forced to code::0::.
+Should be a positive value.
+
+ARGUMENT::adverb
+
+Optional, for processing Collections. See link::Reference/Adverbs::.
+
+DISCUSSION::
+code::
+(
+var m = Matrix.with(Array.rand(9, -9, 9).clump(3));
+var t = m.thresh(3);
+var t2 = m.thresh2(3);
+" original".postln; m.postmln;
+" thresh".postln;   t.postmln;
+" thresh2".postln;  t2.postmln;
+"";
+)
+::
 
 subsection:: Return Characteristic Values
 
