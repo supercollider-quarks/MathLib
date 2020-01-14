@@ -1,0 +1,21 @@
+TITLE:: RK4
+summary:: numerical algorithm for solving ordinary differential equations
+categories:: Math, Libraries>MathLib>Solvers
+related:: Classes/Solver, Classes/Euler, Classes/RK2, Classes/RK3, Classes/NFunc, Classes/SystemNFunc
+
+DESCRIPTION::
+Implements the Runge-Kutta order 4 algoritm: http://en.wikipedia.org/wiki/Runge-kutta.
+
+NOTE::This is considered a very good and robust algorithm.::
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+
+section:: Authors
+Miguel Negro, 2009.

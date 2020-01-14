@@ -1,9 +1,11 @@
-CLASS:: RootFinder
+TITLE:: RootFinder
 summary:: a multi-dimensional root finder
-categories:: Math
+categories:: Math, Libraries>MathLib>Solvers
 
 DESCRIPTION::
-A multi-dimensional root finder based on the STRONG::Levenberg-Marquardt:: optimization algorithm footnote::The SC code is based on the MATLAB implementation of the algorithm found at http://www2.imm.dtu.dk/~hbn/Software/::. The LM algorithm is an iterative technique that finds a local minimum of a function that is expressed as the sum of squares of nonlinear functions. It has become a standard technique for nonlinear least-squares problems and can be thought of as a combination of steepest descent and the Gauss-Newton method. When the current solution is far from the correct one, the algorithm behaves like a steepest descent method: slow, but guaranteed to converge. When the current solution is close to the correct solution, it becomes a Gauss-Newton method footnote::http://www.ics.forth.gr/~lourakis/levmar/::.
+A multi-dimensional root finder based on the emphasis::Levenberg-Marquardt:: optimization algorithm footnote::The SC code is based on the MATLAB implementation of the algorithm found at http://www2.imm.dtu.dk/~hbn/Software/::. The emphasis::LM:: algorithm is an iterative technique that finds a local minimum of a function that is expressed as the sum of squares of nonlinear functions. It has become a standard technique for nonlinear emphasis::least-squares:: problems and can be thought of as a combination of steepest descent and the emphasis::Gauss-Newton:: method. When the current solution is far from the correct one, the algorithm behaves like a steepest descent method: slow, but guaranteed to converge. When the current solution is close to the correct solution, it becomes a emphasis::Gauss-Newton:: method footnote::http://www.ics.forth.gr/~lourakis/levmar/::.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
 
 NOTE::
 CODE::RootFinder:: requires the user to provide an analytic Jacobian (or the single analytic derivative in the case of one function and one independent variable) in order to work. See the examples below.

@@ -1,0 +1,217 @@
+TITLE:: ScatterView
+summary:: Plot a collection of points in 2D
+categories:: GUI>Accessories, Libraries>MathLib>ScatterViews
+related:: Reference/plot, Classes/ScatterView2, Classes/ScatterView3d, Classes/Matrix
+
+DESCRIPTION::
+Plot a collection of points in 2D
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+
+CLASSMETHODS::
+
+METHOD:: new
+
+ARGUMENT:: parent
+Parent view or window
+
+ARGUMENT:: bounds
+The bounds, a link::Classes/Rect::
+
+ARGUMENT:: data
+An array of [[x0,y0], [x1,y1], ...[xN,yN]]
+
+argument:: specX
+ControlSpec with min/max of the plotted range of dimension X
+
+argument:: specY
+ControlSpec with min/max of the plotted range of dimension Y
+
+
+INSTANCEMETHODS::
+
+
+METHOD:: data
+Get or set data array.
+
+argument:: data
+An array of [[x0,y0], [x1,y1], ...[xN,yN]]
+
+
+METHOD:: refresh
+Refresh the view. You will need to call this after making any changes to data or settings.
+
+
+METHOD:: drawMethod
+Set the shape that will be drawn for each point.
+
+argument:: method
+One of: [\fillRect, \fillOval, \lineTo]
+
+
+METHOD:: symbolColor
+Color of the shape plotted for each point
+
+
+METHOD:: isHighlight
+Switch for highlight on/off
+
+
+METHOD:: highlightItem
+Set item to be highlighted. Index could be either index or array of indices.
+
+
+METHOD:: highlightRange
+Highlight multiple points
+
+argument:: start
+Integer index in data array
+
+argument:: end
+Integer index in data array
+
+
+METHOD:: highlightColor
+Set color of highlighted item
+
+
+METHOD:: highlightSize
+Set highlight extend
+
+
+METHOD:: background
+set background-color
+
+
+
+PRIVATE:: initPlot
+
+
+EXAMPLES::
+
+code::
+// you may want to use Swing or Cocoa
+SwingOSC.default.boot
+GUI.swing
+
+
+(
+var data = 1000.collect{ [1.0.rand, exprand(0.01, 1)]};
+w = GUI.window.new(bounds: Rect(40, 40, 800, 800)).front;
+a = ScatterView(w, Rect(10, 10, 760, 760), data, [0,1].asSpec, [0,1].asSpec);
+a.drawAxis_(true).drawMethod_(\fillOval)
+.symbolColor_(Color.blue(0.5, 0.5)).symbolSize_(5)
+.xAxisName_("uniform").yAxisName_("exponential");
+)
+
+(
+var numItems = 630;
+w = GUI.window.new(bounds: Rect(40, 40, 800, 150)).front;
+a = ScatterView(w, Rect(10, 10, 760, 100), {|i| [sin(i/50), sin(0.05*i)]}!numItems, [-1,1].asSpec, [-1,1].asSpec);
+a.isHighlight = true;
+GUI.slider.new(w, Rect(10, 120, 760, 20)).action_{|me|
+	a.highlightItemRel = me.value;
+	a.refresh;
+	// a.highlightItem = (me.value*numItems).asInteger.min(numItems-1);
+};
+a.drawMethod = \lineTo;
+a.symbolColor = Color.blue(0.7, 0.3);
+a.highlightSize = 10@10;
+a.refresh;
+)
+
+
+a.highlightItem = (1, 3..99);
+w.refresh;
+a.highlightRangeRel(0, 0.3);
+w.refresh;
+a.highlightRange(0, 100);
+w.refresh;
+
+(
+a.symbolSize = 30@3;
+a.drawMethod = \strokeOval;
+a.isHighlight = false;
+w.refresh;
+)
+
+a.symbolColor = Color.red(0.2, 0.2);
+w.refresh
+
+// dynamics
+(
+l = {inf.do{|i|
+	a.symbolSize = (cos(i*0.1)*40+3)@(cos(i*0.1+1)*40+3);
+	{w.refresh}.defer;
+	0.1.wait;
+}}.fork
+)
+l.stop;
+// end dynamics
+
+(
+a.background = Color.gray(1,0.5);
+a.isHighlight = true;
+a.highlightSize = 6000@500;
+a.highlightColor = Color.green;
+a.symbolSize = 1;
+a.drawMethod = \lineTo;
+w.refresh;
+)
+
+
+// reset the Data
+(
+a.data = {|i| [cos(i/50), sin(0.05*i)]}!150;
+w.refresh;
+)
+
+// use other drawMethods
+a.drawMethod = \fillOval;
+w.refresh
+
+
+// use two views stacked
+(
+var numItems = 630;
+w = SCWindow.new(bounds: Rect(40, 40, 800, 150)).front;
+a = ScatterView(w, Rect(10, 10, 760, 100), {|i| [sin(i/50), sin(0.05*i)]}!numItems, [-1,1].asSpec, [-1,1].asSpec);
+b = ScatterView(w, Rect(10, 10, 760, 100), {|i| [sin(i/21), sin(0.05*i)]}!numItems, [-1,1].asSpec, [-1,1].asSpec);
+a.background = Color.gray(0, 0);
+a.isHighlight = true;
+SCSlider(w, Rect(10, 120, 760, 10)).action_{|me|
+	a.highlightItemRel = me.value;
+	w.refresh;
+	//a.highlightItem = (me.value*numItems).asInteger.min(numItems-1);
+};
+a.drawMethod = \lineTo;
+a.symbolColor = Color.blue(0.7, 0.3);
+a.highlightSize = 10@10;
+w.refresh;
+)
+
+
+
+
+(
+var numItems = 630;
+w = SCWindow.new(bounds: Rect(40, 40, 800, 150)).front;
+a = ScatterView(w, Rect(10, 10, 760, 100), {|i| [sin(i/50), sin(0.05*i)]}!numItems, [-1,1].asSpec, [-1,1].asSpec);
+a.isHighlight = true;
+SCRangeSlider(w, Rect(10, 120, 760, 10)).action_{|me|
+	a.highlightRangeRel(me.lo, me.hi);
+	w.refresh;
+	// a.highlightItem = (me.value*numItems).asInteger.min(numItems-1);
+};
+a.drawMethod = \lineTo;
+a.symbolColor = Color.blue(0.7, 0.3);
+a.highlightSize = 10@10;
+w.refresh;
+)
+::
+
+
+section:: Authors
+Till Bovermann, 2005.

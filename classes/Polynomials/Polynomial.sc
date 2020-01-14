@@ -110,6 +110,18 @@ Polynomial[slot] : ArrayedCollection {
 		if(constant.imag.abs < 1e-14, { constant = constant.real });
 		^(constant * c.multiplyFactors)
 	}
+
+	// Joseph Anderson, 2019.
+	*newReverseBessel { |degree|
+		var n = degree;
+		var coeffs;
+
+		coeffs = (n + 1).collect({ |k|
+			((2 * n) - k).asFloat.factorial / (pow(2, n - k) * k.asFloat.factorial * (n - k).asFloat.factorial)
+		});
+
+		^this.newFrom(coeffs)
+	}
 	
 	isMonomial { var count = 0, i;
 		i = 0; 

@@ -1,0 +1,226 @@
+TITLE:: Pboolnet
+summary:: Boolean network pattern
+categories:: Streams-Patterns-Events>Patterns>List, Libraries>MathLib>Patterns
+related:: Classes/Pattern
+
+DESCRIPTION::
+Boolean network pattern after: http://farben.latrobe.edu.au/mikropol/volume6/dorin_a/dorin_a.html
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+
+ARGUMENT:: nodes
+A list of pairs of initial states (0 or 1) and binary boolean operation selectors (e.g., code::\and::, code::\or::, code::\xor::).
+
+ARGUMENT:: repeats
+Number of times to repeat the pattern.
+
+ARGUMENT:: loops
+Number of times to loop a particular network configuration.
+
+
+EXAMPLES::
+
+subsection:: Print out the stream to demonstrate what it looks like
+
+code::
+(
+var boolnet, stream;
+boolnet = Pboolnet([
+	0, \and,
+	1, \and,
+	1, \or,
+	1, \or,
+	0, \and
+], 2);
+
+stream = boolnet.asStream;
+11.do({stream.next.postln})
+)
+::
+
+subsection:: same as above, but with a loop
+
+code::
+(
+var boolnet, stream;
+boolnet = Pboolnet([
+	0, \and,
+	1, \and,
+	1, \or,
+	1, \or,
+	0, \and
+], 2, 2);
+
+stream = boolnet.asStream;
+11.do({stream.next.postln})
+)
+::
+
+subsection:: display some long evolutions
+
+code::
+(
+var nodeFunc, boolnets, displayFunc;
+
+nodeFunc = {
+	Array.fill(7, {
+		[[0,1].choose, [\and, \or, \xor, \not].choose]
+	}).flat
+};
+
+boolnets = Array.fill(4, {Pboolnet(nodeFunc.value, inf)});
+
+displayFunc = {arg stream;
+	105.do({arg i; // 105 is divisible by 7
+		stream.next.post;
+		((i+1)%7 == 0).if({"".postln});
+	})
+};
+
+boolnets.do({arg item;
+	displayFunc.value(item.asStream);
+	"--------------".postln
+});
+)
+::
+
+subsection:: sound examples
+
+code::
+// synth
+(
+SynthDef("sine", { arg out=0, freq=440, dur=0.05, amp=0.1;
+	var env;
+	env = EnvGen.kr(Env.perc(0.01, dur, amp), doneAction:2);
+	Out.ar(out, SinOsc.ar(freq, 0, env))
+}).store;
+)
+
+(
+// simple pattern
+var boolnet, pattern;
+boolnet = Pboolnet([
+	0, \or,
+	1, \and,
+	1, \xor,
+	1, \and,
+	0, \and,
+	1, \xor,
+	1, \and
+], inf);
+
+pattern = Pbind(	\instrument, \sine,
+	\dur, 0.1,
+	\amp, boolnet * 0.3
+);
+pattern.play
+)
+
+(
+// more complex -- has a Pseq for the boolean operation
+var boolnet, pattern;
+boolnet = Pboolnet([
+	1, Pseq([\xor, \or, \and], inf),
+	1, Pseq([\and,\xor,\or], inf),
+	1, \xor,
+	1, \and,
+	1, \and,
+	1, \xor,
+	1, \and
+], inf, 2);
+
+pattern = Pbind(
+	\instrument, \sine,
+	\freq, 200,
+	\dur, 0.2,
+	\amp, boolnet * 0.3
+);
+pattern.play
+)
+
+(
+// play a couple of patterns in parallel
+var boolnet, pattern1, pattern2;
+boolnet = Pboolnet([
+	0, \or,
+	1, Pseq([\and,\and,\or], inf),
+	1, \xor,
+	1, \and,
+	0, \and,
+	1, \xor,
+	1, \and
+], inf, 2);
+
+pattern1 = Pbind(
+	\instrument, \sine,
+	\freq, 550,
+	\dur, 0.3,
+	\amp, boolnet * 0.3
+);
+
+boolnet = Pboolnet([
+	0, \or,
+	1, Pseq([\and,\and,\or], inf),
+	1, \xor,
+	1, \and,
+	0, \and,
+	1, \xor,
+	1, \and
+], inf, 2);
+
+pattern2 = Pbind(
+	\instrument, \sine,
+	\freq, 440,
+	\dur, 0.2,
+	\amp, boolnet * 0.1
+);
+Ppar([
+	pattern1,
+	pattern2
+]).play
+)
+
+(
+// use a boolnet with a Pmulp and a Paddp to make meoldies and rhythms
+var boolnet, pattern1, pattern2;
+boolnet = Pboolnet([
+	1, Pseq([\xor, \or, \and], inf),
+	1, Pseq([\and,\xor,\not], inf),
+	1, \xor,
+	1, \and,
+	1, \and,
+	1, \xor,
+	1, \and
+], inf, 2);
+
+pattern1 = Pbind(
+	\instrument, \sine,
+	\freq, 500,
+	\dur, 0.4,
+	\amp, 0.5
+);
+
+pattern1 = Pmulp(
+	\amp, boolnet * 0.1,
+	pattern1
+);
+
+pattern2 = Pbind(
+	\instrument, \sine,
+	\degree, boolnet * 0.1,
+	\dur, 0.2,
+	\amp, 0.5
+);
+
+Ppar([pattern1, pattern2]).play
+)
+::
+
+
+section:: Authors
+Julian Rohrhuber, 2005.

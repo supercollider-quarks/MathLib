@@ -10,15 +10,19 @@ Matrix[slot] : Array {
 	*newClear { arg rows=1, cols=1; // return (rows x cols) - zero matrix
 		^super.fill(rows, { Array.newClear(cols).fill(0) });
 	}
-	*with { arg array; // return matrix from 2D array (array of rows)
-		var rows;
-		if((array.flat == array.flop.flop.flat)
-		.and(array.flatten.every({arg element; element.isNumber})) ,{
+	*with { |array| // return matrix from 2D array (array of rows)
+		var shapes, shapeTest, numTest, rows;
+
+		shapes = (array.asArray).collect(_.shape).flatten;
+		shapeTest = shapes.every(_ == shapes[0]);
+		numTest = { array.flatten.every(_.isNumber) };
+
+		if((shapeTest and: numTest), {
 			rows = array.size;
-			^super.fill(rows, {arg col; array.at(col) });
-		},{
-			error("wrong type of argument in Meta_Matrix-with");this.halt
-		});
+			^super.fill(rows, { |col| array[col] })
+			}, {
+				error("wrong type of argument in Meta_Matrix-with");this.halt
+		})
 	}
 	*withFlatArray { arg rows, cols, array; // return (rows x cols) - matrix from one slot array
 		if((array.size == (rows*cols) )
@@ -41,6 +45,28 @@ Matrix[slot] : Array {
 			cols.do({ arg col;
 				matrix.put(row, col, func.value(row, col))
 			});
+		});
+		^matrix
+	}
+	// Joseph Anderson, 2019.
+	*newDiagonal { |diagonal|
+		var matrix;
+		/*
+		assume Float or Integer
+
+		More comprehensive testing and casting could be done here, including
+		test for Complex. Doing so would imply reviewing whether currently
+		implemented Matrix methods otherwise support operations with complex
+		values.
+		*/
+		diagonal.any({ |item| item.isFloat }).if({  // test for Float
+			matrix = super.fill(diagonal.size, {  // empty: 0.0
+				Array.newClear(diagonal.size).fill(0.0)
+			});
+			diagonal.do({ |item, i| matrix.put(i, i, item.asFloat) });  // fill with Float
+		}, {  // otherwise... assume Integer, and cast
+			matrix = Matrix.newClear(diagonal.size, diagonal.size);  // empty: 0
+			diagonal.do({ |item, i| matrix.put(i, i, item.asInteger) });  // fill with Integer
 		});
 		^matrix
 	}
@@ -333,6 +359,45 @@ Matrix[slot] : Array {
 
 	sub { arg row, col; // return submatrix to element(row,col)
 		^this.removeRow(row).removeCol(col);
+	}
+	// return a sub matrix
+	getSub { |rowStart = 0, colStart = 0, rowLength, colHeight|
+		var width, height, mtx, maxw, maxh;
+
+		maxw = this.cols - rowStart;
+		maxh = this.rows - colStart;
+
+		width = rowLength ? maxw;
+		height = colHeight ? maxh;
+
+		if(((width > maxw) or: (height > maxh)), {
+			format("dimensions of requested sub-matrix exceed bounds: "
+				"you asked for %x%, remaining space after starting index is %x%",
+				rowLength, colHeight, maxw, maxh
+			).throw
+		});
+
+		mtx = Matrix.newClear(height, width);
+
+		(colStart..colStart + height - 1).do({ |row, i|
+			mtx.putRow(i,
+				this.getRow(row).drop(rowStart).keep(width)
+			)
+		});
+
+		^mtx
+	}
+	// post a sub matrix, formatted for viewing
+	postSub { |rowStart = 0, colStart = 0, rowLength, colHeight, round = 0.001|
+		var pmtx, maxstrlen = 0, temp;
+
+		pmtx = this.getSub(rowStart, colStart, rowLength, colHeight).round(round);
+		pmtx.doMatrix({ |item| maxstrlen = max(maxstrlen, item.asString.size) });
+
+		pmtx.rowsDo({ |rowArray, i|
+			rowArray.collect({ |item| item.asString.padLeft(maxstrlen) }).postln;
+			"".postln // space it out vertically
+		})
 	}
 	asArray { var array; array = Array.new; // return an array of rows
 		this.rows.do({ arg i; array = array.add(this.getRow(i)) });
@@ -649,4 +714,3 @@ Matrix[slot] : Array {
 // added inserRow, insertCol
 // getDiagonal also for nonsquare matrices
 // trace gets square restriction from getDiagonal
-

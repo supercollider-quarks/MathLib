@@ -1,0 +1,72 @@
+TITLE:: Bessel
+summary:: Bessel functions of the first kind
+categories:: Math, Libraries>MathLib>Polynomials & Special
+related:: Guides/Tour-of-Special-Functions#Bessel%20Functions
+
+DESCRIPTION::
+Calculates link::https://en.wikipedia.org/wiki/Bessel_function#Bessel_functions_of_the_first_kind:_Jα#Bessel Functions of the First Kind::. This creates a table, so looking up many different n values is efficient.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+NOTE::
+The functionality found here may be superseded by link::Classes/SimpleNumber#Bessel%20Functions#Bessel Functions::
+::
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Create new Bessel functions, for x
+All calculations are for J[n](x)
+
+
+INSTANCEMETHODS::
+
+METHOD:: j0
+Returns 0th order Bessel function of the first kind
+
+code::
+b = Bessel(5); // 5 is the x value
+b.j0; // 0 is the n value, so this returns J[0](5)
+
+// Compare to BOOST
+cylBesselJ(0, 5);
+::
+
+METHOD:: j1
+Returns 1st order Bessel function of the first kind
+
+code::
+b = Bessel(5); // 5 is the x value
+b.j1; // 1 is the n value, so this returns J[1](5)
+
+// Compare to BOOST
+cylBesselJ(1, 5);
+::
+
+METHOD:: jn
+Calculate nth order Bessel function of the first kind
+
+code::
+b = Bessel(5); // 5 is the x value
+b.jn(2); // 2 is the n value, so this calculates J[2](5)
+
+// Compare to BOOST
+cylBesselJ(2, 5);
+::
+
+
+METHOD:: x
+Returns x
+
+code::
+b = Bessel(5); // 5 is the x value
+b.x;
+::
+
+
+PRIVATE:: init, pr_besselasympt0, pr_besselasympt1, pr_calc_j0, pr_calc_j1
+
+
+section:: Authors
+Charles C Hutchins, 2009.
