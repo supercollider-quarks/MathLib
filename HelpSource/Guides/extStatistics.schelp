@@ -1,0 +1,102 @@
+title:: Additional statistics methods for arrays
+summary:: Additional statistics methods for arrays
+categories:: Libraries>MathLib>Statistics
+keyword::MathLib
+
+
+link::Guides/MathLib:: provides additional methods for link::Classes/Collection:: and link::Classes/SequenceableCollection::.
+
+Here's a pseudo-normal distribution which we'lll analyse in the following
+code::
+a = {45.0.sum3rand + 65}.dup(1000);
+::
+
+section:: Various measures to characterise the distribution
+
+code::
+a.geoMean // Geometric mean
+a.harmMean // Harmonic mean
+a.variance
+a.stdDev // Standard deviation
+a.skew
+a.kurtosis // Note: the formula needs checking
+a.trimedian
+::
+
+Measures such as variance and skewness are commonly calculated on the assumption that the data is a sample from the true (larger) population which we wish to know about. The above measures apply in this case. The following alternatives are used when the data represents the entire population:
+
+code::
+a.variancePop
+a.stdDevPop // Standard deviation
+a.skewPop
+::
+
+section:: percentile
+
+Finds the requested percentile(s) of the distributions, specified as float values from 0 to 1 - e.g. for the 90 percentile use 0.9.
+
+code::
+a.percentile  // By default you get the 25%/50%/75%ile
+a.percentile(0.25) // Just the 25%ile
+a.percentile([0.1, 0.9]) // 10 and 90 percentiles
+::
+
+
+section:: Histogramming
+
+histo partitions the distribution into a set of equal-width bins (default 100 bins):
+
+code::
+a.histo.plot
+a.histo(10).plot
+a.histo(1000).plot
+::
+
+histoBands gives you the corresponding bin centers (same arguments as histo; argument 'center' determines whether you get the center value (default 0.5), the left (0.0) or right (1.0) edge of the bin, or anything in between). This can be useful for creating an annotated plot.
+
+code::
+a.histoBands
+::
+
+The weighted mean and variance functions can be used to estimate the mean and variance if all you have is histogram-like data:
+
+code::
+[2, 4, 6].wmean([1,1,2]) // [2, 4, 6] is the bin positions, [1, 1, 2] the heights within each bin
+[2, 4, 6].wmean([1,1,4])
+::
+
+section:: Statistical measures of association
+
+subsection:: Pearson correlation
+code::
+corr(a, a) // Should be perfect correlation with self, i.e. 1!
+corr(a, {1.0.rand}.dup(a.size)) // Should be very small correlation with indpendent random stuff
+::
+
+subsection:: Kendall's W statistic
+
+A non-parametric correlation test between separate raters' rankings of a common set of objects.
+
+The input array should be an array-of-arrays, each of which is the same size and contains integer rankings. The output varies from 0 (no inter-rater agreement) to 1 (perfect inter-rater agreement). The list of rankings can range (0 .. N-1) or (1 .. N), that won't affect the statistic. The example used in Kendall's original paper (W value should be around 0.16):
+
+code::
+[ [5,4,1,6,3,2], [2,3,1,5,6,4], [4,1,6,3,2,5] ].kendallW
+// If we generate data in which there's perfect agreement we should always get 1 for the W-value:
+(0..10).scramble.dup(5).postcs.kendallW
+::
+
+subsection:: Principal Component Analysis
+
+The pc1 method finds the first principal component of a multidimensional data distribution. It doesn't calculate the full PCA, but finds the first PC via expectation-maximisation. The data must already be centred (mean removed) and any scaling issues dealt with appropriately. The termination threshold can be set via an argument to pc1.
+
+code::
+~data = 10000.collect{ if(0.5.coin){[-1, -0.5]}{[1, 0.5]}.collect{|v| v + 0.95.sum3rand} };
+GNUPlot.new.scatter(~data)
+~data.pc1
+::
+
+section:: Autocorrelation
+
+code::
+a.autocorr // Normalised autocorrelation
+::

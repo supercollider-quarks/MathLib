@@ -1,0 +1,5 @@
+INSTANCEMETHODS::
+
+subsection:: Extensions by MathLib
+
+copymethod:: SimpleNumber -thresh2

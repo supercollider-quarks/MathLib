@@ -1,0 +1,35 @@
+TITLE:: SystemNFunc
+summary:: a multi-dimensional function:  f:(R^n)^p -> (R^m)^p
+categories:: Math, Libraries>MathLib>Solvers
+related:: Classes/Solver, Classes/NFunc
+
+DESCRIPTION::
+
+Represents a multi-dimensional functions as an array of arrays of functions.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+
+INSTANCEMETHODS::
+
+
+EXAMPLES::
+
+code::
+(
+a = [
+	[{ |x,y| x+y },
+	{ |x,y| x-y }],
+	[{ |x,y| 2x },
+	{ |x,y| y+1 }]
+].as(SystemNFunc);
+
+a.value(1,2)
+)
+::
+
+section:: Authors
+Miguel Negro, 2009.

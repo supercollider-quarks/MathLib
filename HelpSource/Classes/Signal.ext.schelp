@@ -1,0 +1,25 @@
+INSTANCEMETHODS::
+
+subsection:: Extensions by MathLib
+
+method:: thresh2
+Bilateral thresholding.
+
+argument:: thresh
+
+When the code::input.abs < thresh::, the output is forced to code::0::.
+Should be a positive value.
+
+argument:: adverb
+
+Optional, for processing Collections. See link::Reference/Adverbs::.
+
+discussion::
+code::
+(
+var a = Signal.sineFill(1000, 1.0/(1..6));
+var b = a.thresh(0.3);
+var c = a.thresh2(0.3);
+[a, b, c].plot(minval: -1)
+)
+::
