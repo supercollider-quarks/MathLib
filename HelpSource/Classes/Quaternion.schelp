@@ -85,16 +85,16 @@ METHOD:: pitch
 Return the pitch (rotation about the y-axis) Euler angle in radians. Returns values between -0.5pi and 0.5pi (-90 and 90 degrees).
 
 
-METHOD: rotate
+METHOD:: rotate
 Return the rotate (rotation about the z-axis) Euler angle in radians. Returns values between -pi and pi (-180 and 180 degrees). Equivalent to link::#-yaw::.
 
 
-METHOD: tilt
-Return the tilt (rotation about the x-axis) Euler angle in radians. Returns values between -pi and pi (-180 and 180 degrees). Equivalent to link::#-roll:.
+METHOD:: tilt
+Return the tilt (rotation about the x-axis) Euler angle in radians. Returns values between -pi and pi (-180 and 180 degrees). Equivalent to link::#-roll::.
 
 
-METHOD: tumble
-Return the tumble (rotation about the y-axis) Euler angle in radians. Returns values between -0.5pi and 0.5pi (-90 and 90 degrees). Equivalent to link::#-pitch:.
+METHOD:: tumble
+Return the tumble (rotation about the y-axis) Euler angle in radians. Returns values between -0.5pi and 0.5pi (-90 and 90 degrees). Equivalent to link::#-pitch::.
 
 
 EXAMPLES::
