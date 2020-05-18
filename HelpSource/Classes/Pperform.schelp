@@ -1,0 +1,40 @@
+TITLE:: Pperform
+summary:: applies a selector to a list of patterns
+categories:: Streams-Patterns-Events>Patterns, Libraries>MathLib>Patterns
+related:: Classes/Pattern, Classes/Preduce
+
+DESCRIPTION::
+applies a selector to a list of patterns
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+
+ARGUMENT:: selectorPattern
+a pattern of symbols (binary operators) or functions of two arguments
+
+ARGUMENT::  ... arguments
+a pattern of objects, receiver and arguments
+
+
+
+EXAMPLES::
+
+code::
+// perform a sequence of addition and subtraction
+(
+a = Pperform(Pseq(['+', '-'], 16), Pseq([0, 1, 2, 3], inf), Pseq([3, 4, 5], inf));
+x = a.asStream;
+x.nextN(20);
+)
+
+// duplicate and multiply
+(
+a = Pperform(Pseq(['dup', '*'], 8), Pseq([0, 1, 2, 3], inf), Pseq([3, 4, 5, 6], inf));
+x = a.asStream;
+x.nextN(20);
+)
+::

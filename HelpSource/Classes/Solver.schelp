@@ -1,0 +1,462 @@
+TITLE:: Solver
+summary:: numerical solver of systems of Ordinary Differential Equations of any order
+categories:: Math, Libraries>MathLib>Solvers
+related:: Classes/Euler, Classes/RK2, Classes/RK3, Classes/RK4, Classes/NFunc, Classes/SystemNFunc
+
+DESCRIPTION::
+Solver is the base class to inherit from to implement numerical solving methods for ODEs.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+WARNING::
+This class can be quite cpu intensive and with small dt values can completly freeze supercollider.
+ODE's of higher order are solved by converting them to systems of equations of the first order.
+::
+
+
+subsection:: ODEs of the first order take the form:
+
+	y' = F(t,y)
+
+where F:RxR -> R and y = y(t) and y' the derivative of f.
+
+Systems of equations take the form:
+
+	dy1/dt = F1(t,y1)
+	...
+	dyn/dt = Fn(t,yn)
+
+ or in vector form:
+
+	DY = F^(t,Y)
+
+where F^ = { F1,...,Fn}, Y = { Y1,...,Yn}, and DY is the jacobian matrix of Y.
+
+subsection:: ODEs of order N take the form:
+
+	y = F(t,y,dy/dt,...,dNy/dtN)
+
+and Systems of M equation of order N take the form;
+
+	dNy1/dtN = F1(t,y,dy1/dt,...,dN-1y1/dtN-1)
+	...
+	dNyM/dtN = FM(t,y,dyM/dt,...,dN-1yM/dtN-1)
+
+or in vector form
+
+	DY = F^(t,Y,DY,...,DNY)
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Create a solver for a one dimensional equation or system of equations.
+
+code::
+(
+var time = 2.5, dt = 0.01, t0 = 1, y0 =1, min= 3.5.neg, max=2;
+f = { |t,y| ((2/t)+(y*y)).neg/(2*t*y) };
+d = RK4(f, dt, t0, y0);
+d.next
+)
+::
+
+ARGUMENT:: f
+see link::#-f:: below
+
+ARGUMENT:: dt
+calculation time step in seconds
+
+ARGUMENT:: t
+initial time
+
+ARGUMENT:: y
+initial position: a number or array of numbers
+
+
+METHOD:: newHO
+Create a solver for a higher dimensional equation or system of equations.
+
+code::
+(
+var time = 40, dt = 0.1, t0 = 0, y0 =2.5, dy0 = 0, min= 2.5.neg, max=2.5, k=3, mass=0.5, bcoef = 0.2;
+f = { |t,y,dydt| ((k*y)+(bcoef*dydt)).neg/mass }; // harmonic oscillator
+d = RK4.newHO(f,dt,t0,[y0,dy0]);
+d.next
+)
+::
+
+ARGUMENT:: f
+see link::#-f:: below
+
+ARGUMENT:: dt
+calculation time step in seconds
+
+ARGUMENT:: t
+initial time
+
+ARGUMENT:: y
+initial position: a number or array of numbers
+
+
+INSTANCEMETHODS::
+
+METHOD:: order
+Set or return the order of the ODE
+
+
+METHOD:: f
+f is the function F defining the equation DY = F^(t,Y,DY,...,DNY), and can take the following forms:
+
+table::
+	## D ODE || { |t,y| ... }
+	## System of 1D ODEs || [{ |t,y| ... },...,{ |t,y| ... }]
+	## N-order ODE || { |t,y,dy,..., dN-1y| ... }
+	## System of M, N-order ODEs || [{ |t,y,dy1,..., dN-1y1,...,dyM,..., dN-1yM| ... } ,...,{ |t,y,dy1,..., dN-1y1,...,dyM,..., dN-1yM| ... }]
+::
+
+
+METHOD:: dt
+Set or return calculation time step in seconds
+
+
+METHOD:: t
+Set or return time in seconds
+
+
+METHOD:: y
+It can take the following forms:
+
+table::
+	## 1D ODE || y
+	## System of 1D ODEs || [y1,...,yn]
+	## N-order ODE || [y,dy,..., dN-1y]
+	## System of M, N-order ODEs || [[y1,dy1,..., dN-1y1],...,[yM,dy1,..., dN-1yM]]
+::
+
+The value can be reset and the calculation will continue from there.
+
+
+METHOD:: next
+Get the next value from the solver.
+
+In general this will be: [[y1,y'1,...,y1^(n-1)],...,[yM,y'M,...,yM^(n-1)]]
+
+
+PRIVATE:: initHO
+
+
+EXAMPLES::
+
+NOTE::For the gui examples the link::https://github.com/supercollider-quarks/ixiViews##ixiViews:: and link::https://github.com/supercollider-quarks/wslib##wslib:: quarks are needed.::
+
+
+subsection:: First order ODE
+
+code::
+(
+var time = 2.5, dt = 0.01, t0 = 1, y0 =1, min= 3.5.neg,max=2;
+f = {|t,y| ((2/t)+(y*y)).neg/(2*t*y) };
+//f = {|t,y| y }; //exponential
+a = Euler(f,dt,t0,y0);
+b = RK2(f,dt,t0,y0);
+c = RK3(f,dt,t0,y0);
+d = RK4(f,dt,t0,y0);
+
+
+Window.closeAll;
+
+[a,b,c,d].do({ |i,j| (time/dt).asInteger.collect{ i.next }.plot(i.class.asString,bounds:Rect(0,200*j,600,200),minval:min,maxval:max)});
+r = 6.collect{ c.next.round(0.000001) };
+)
+
+//checks out with http://people.revoledu.com/kardi/tutorial/ODE/Comparison%20Runge%20Kutta.htm
+// problem with k3...
+::
+
+subsection:: Second order ODE
+
+code::
+// the spring
+(
+var time = 40, dt = 0.1, t0 = 0, y0 =2.5, dy0 = 0, min= 2.5.neg,max=2.5, k=3, mass=0.5, bcoef = 0.2;
+f = {|t,y,dydt| ((k*y)+(bcoef*dydt)).neg/mass }; // harmonic oscillator
+a = Euler.newHO(f,dt,t0,[y0,dy0]);
+b = RK2.newHO(f,dt,t0,[y0,dy0]);
+c = RK3.newHO(f,dt,t0,[y0,dy0]);
+d = RK4.newHO(f,dt,t0,[y0,dy0]);
+
+Window.closeAll;
+
+
+[a,b,c,d].do({ |i,j| (time/dt).asInteger.collect{ i.next[0] }.plot(i.class.asString,bounds:Rect(0,220*j,600,200),minval:min,maxval:max)});
+)
+
+//gui
+// you can drag the dot
+(
+var w, time = 40, dt = 0.1, t0 = 0, y0 =2.5, dy0 = 0, min= 2.5.neg,max=2.5, k=3, mass=0.5, bcoef = 0.2,task;
+var moving = false,zoom;
+
+w = Window("Gui",Rect(100,100,520,580),false);
+w.addFlowLayout( 10@10, 20@5 ); // a shortcut method
+
+k = EZSmoothSlider(w,200@20,"k",[0.1,10,\lin].asSpec,initVal:3);
+mass = EZSmoothSlider(w,200@20,"mass",[0.1,30,\lin].asSpec,initVal:0.5);
+w.view.decorator.nextLine;
+bcoef = EZSmoothSlider(w,200@20,"bcoef",[0,1,\lin].asSpec,initVal:0.2);
+zoom = EZSmoothSlider(w,200@20,"zoom",[0,0.1,\lin].asSpec,initVal:0.01);
+
+RoundButton.new(w,60@20)
+.states_([ [ \play, Color(1.0, 1.0, 1.0, 1.0),Color.grey ],
+	[ \stop , Color(1.0, 1.0, 1.0, 1.0), Color.red ] ])
+.canFocus_(false)
+.action_{|v|
+	switch (v.value)
+	{1} {task.start }
+	{0} {task.stop; a = RK4.newHO(f,dt,t0,[y0,dy0]) };
+
+
+};
+w.view.decorator.nextLine;
+p =  ParaSpace.new(w, bounds: Rect(0,0,500,500)).createNode1(0.5,0.5);
+f = {|t,y,dydt| ((k.value*y)+(bcoef.value*dydt)).neg/mass.value };
+a = RK4.newHO(f,dt,t0,[y0,dy0]);
+
+p.nodeTrackAction_({ |node|
+	moving = true;
+	postln("started moving node "++ node.spritenum);
+	a.y =  [(node.nodeLoc1[0]-0.5)/zoom.value,0];
+	p.setNodeLoc1_(0, p.getNodeLoc1(0)[0],0.5);
+	a.y.postln;
+});
+
+p.nodeUpAction_({|node|
+	postln("stoped moving node "++ node.spritenum);
+	moving = false; });
+
+task = Task.new({
+	loop{
+		if(moving.not){ p.setNodeLoc1_(0, 0.5+(a.next[0]*zoom.value), 0.5)};
+
+		dt.wait;
+	};
+});
+
+w.front;
+w.onClose_({ task.stop})
+)
+::
+
+subsection:: System of second order ODE
+
+code::
+// two springs
+//m1, m2 = mass of blocks
+//w1, w2 = width of blocks
+//k1, k2 = spring constants
+//R1, R2 = rest length of springs
+//m1 x1'' = −k1 (x1 − R1) + k2 (x2 − x1 − w1 − R2)
+//m2 x2'' = −k2 (x2 − x1 − w1 − R2)
+// from
+// http://www.myphysicslab.com/dbl_spring1.html
+
+(
+var time = 40, dt = 0.1, t0 = 0, min= 4.neg,max=4;
+var  y1_0 =  2.5, dy1_0 = 0, k1=3, mass1=0.5, bcoef1 = 0.2, r1 = -2, w1 = 0;
+var  y2_0 = -2.5, dy2_0 = 0, k2=3, mass2=0.5, bcoef2 = 0.2, r2 = 1, w2 = 0;
+
+f = [{|t,y1,dy1dt,y2,dy2dt| ((k1.neg*(y1-r1))+(k2*(y2-y1-w1-r2)))/mass1 },
+	{|t,y1,dy1dt,y2,dy2dt| (k2.neg*(y2-y1-w1-r2))/mass2 }];
+
+a = Euler.newHO(f,dt,t0,[[y1_0,dy1_0],[y2_0,dy2_0]]);
+b = RK2.newHO(f,dt,t0,[[y1_0,dy1_0],[y2_0,dy2_0]]);
+c = RK3.newHO(f,dt,t0,[[y1_0,dy1_0],[y2_0,dy2_0]]);
+d = RK4.newHO(f,dt,t0,[[y1_0,dy1_0],[y2_0,dy2_0]]);
+
+Window.closeAll;
+
+[a,b,c,d].do({ |i,j| (time/dt).asInteger.collect{ i.next[1][0] }
+	.plot(i.class.asString,bounds:Rect(0,200*j,600,200),minval:min,maxval:max)});
+)
+
+//Gui
+// drag the points
+(
+var w, time = 40, dt = 0.1, t0 = 0, min= 2.5.neg,max=2.5, task,zoom;
+var  y1_0 =  1, dy1_0 = 0, k1=3, mass1=0.5, bcoef1 = 0.2, r1 = 1, w1 =0;
+var  y2_0 = 2.2, dy2_0 = 0, k2=3, mass2=0.5, bcoef2 = 0.2, r2 = 1, w2 = 0;
+var moving = [false,false];
+w = Window("Gui",Rect(100,100,520,625),false);
+w.addFlowLayout( 10@10, 20@5 ); // a shortcut method
+
+k1 = EZSmoothSlider(w,200@20,"k1",[0.1,10,\lin].asSpec,initVal:3, labelWidth: 30);
+mass1 = EZSmoothSlider(w,200@20,"mass1",[0.1,10,\lin].asSpec,initVal:0.5, labelWidth: 40);
+bcoef1 = EZSmoothSlider(w,200@20,"bcoef1",[0,1,\lin].asSpec,initVal:0.2, labelWidth: 40);
+//w.view.decorator.nextLine;
+k2 = EZSmoothSlider(w,200@20,"k2",[0.1,10,\lin].asSpec,initVal:3, labelWidth:  40);
+mass2 = EZSmoothSlider(w,200@20,"mass2",[0.1,10,\lin].asSpec,initVal:0.5, labelWidth: 40);
+bcoef2 = EZSmoothSlider(w,200@20,"bcoef2",[0,1,\lin].asSpec,initVal:0.2, labelWidth: 40);
+w.view.decorator.nextLine;
+zoom = EZSmoothSlider(w,200@20,"zoom",[0,0.05,\lin].asSpec,initVal:0.01, labelWidth: 40);
+
+
+RoundButton.new(w,60@20)
+.states_([ [ \play, Color(1.0, 1.0, 1.0, 1.0),Color.grey ],
+	[ \stop , Color(1.0, 1.0, 1.0, 1.0), Color.red ] ])
+.canFocus_(false)
+.action_{|v|
+	switch (v.value)
+	{1} {task.start }
+	{0} {task.stop;
+		a = RK4.newHO(f,dt,t0,[[y1_0,dy1_0],[y2_0,dy2_0]]);
+	};
+
+
+};
+w.view.decorator.nextLine;
+p =  ParaSpace.new(w, bounds: Rect(0,0,500,500))
+.createNode1(0.25,0.5)
+.createNode1(0.75,0.5);
+p.paraNodes.do{ |node,i| node.string_(i.asString) };
+
+f = [{|t,y1,dy1dt,y2,dy2dt|
+	(((k1.value.neg*(y1-r1.value))+(k2.value*(y2-y1-w1.value-r2.value)))-(bcoef1.value*dy1dt))/mass1.value },
+{|t,y1,dy1dt,y2,dy2dt| ((k2.value.neg*(y2-y1-w1.value-r2.value))-(bcoef2.value*dy2dt))/mass2.value }];
+
+a = RK4.newHO(f,dt,t0,[[y1_0,dy1_0],[y2_0,dy2_0]]);
+
+p.nodeTrackAction_({|node|
+	moving[node.spritenum] = true;
+	postln("started moving node "++ node.spritenum);
+	a.y[node.spritenum] =  [(p.getNodeLoc1(node.spritenum)[0]-0.5)/zoom.value,0];
+	p.setNodeLoc1_(node.spritenum, p.getNodeLoc1(node.spritenum)[0],0.5);
+	a.y.postln;
+});
+
+p.nodeUpAction_({|node|
+	postln("stoped moving node "++ node.spritenum);
+	moving[node.spritenum] = false; });
+
+task = Task.new({
+	loop{
+		if(moving[0].not){ p.setNodeLoc1_(0, 0.5+(a.next[0][0]*zoom.value*3), 0.5)};
+		if(moving[1].not){ p.setNodeLoc1_(1, 0.5+(a.next[1][0]*zoom.value*3), 0.5)};
+
+		dt.wait;
+	};
+});
+w.front;
+w.onClose_({ task.stop})
+)
+::
+
+subsection:: Chaotic pendulum
+
+code::
+(
+var w, time = 40, dt = 0.01, t0 = 0, min= 2.5.neg,max=2.5, task;
+var r, mass=0.5, bcoef = 0.2, g = 9.8,drive,freq;
+var moving = false,zoom, deltat,dtslider,timewarp;
+var theta0 = pi, dtheta0 = 0;
+w = Window("A chaotic pendulum",Rect(100,100,520,640),false);
+w.addFlowLayout( 10@10, 20@5 ); // a shortcut method
+
+drive = EZSlider(w,200@20,"drive amp",[0.1,3,\lin].asSpec,initVal:1.150);
+freq = EZSlider(w,200@20,"drive freq",[0.0,3.0,\lin].asSpec,initVal:0.666);
+r = EZSlider(w,200@20,"lenght",[0.5,1.5,\exp].asSpec,initVal:1);
+mass = EZSlider(w,200@20,"mass",[0.1,30,\lin].asSpec,initVal:1);
+bcoef = EZSlider(w,200@20,"damp",[0,1,\lin].asSpec,initVal:0.5);
+zoom = EZSlider(w,200@20,"zoom",[0,0.7,\lin].asSpec,initVal:0.3);
+w.view.decorator.nextLine;
+z = deltat =  EZSlider(w,200@20,"screen dt",[0.01,0.9,\lin].asSpec,initVal:0.05);
+y = dtslider = EZSlider(w,200@20,"physics dt",[0.001,0.3,\lin].asSpec,initVal:0.01)
+.action_({ |ez|  a.dt = dtslider.value*timewarp.value});
+timewarp = EZSlider(w,200@20,"timewarp",[0.25,4,\lin].asSpec,initVal:1)
+.action_({ |ez| a.dt = dtslider.value*timewarp.value }) ;
+EZSlider(w,200@20,"lag",[0,1,\lin].asSpec,initVal:0.15)
+.action_({ |ez| ~synth.set(\lag,ez.value) });
+
+
+~synth = { |freq = 500,lag = 0.1| SyncSaw.ar(100, Lag.kr(freq,lag), 0.1) }.play;
+
+RoundButton.new(w,60@20)
+.states_([ [ \play, Color(1.0, 1.0, 1.0, 1.0),Color.grey ],
+	[ \stop , Color(1.0, 1.0, 1.0, 1.0), Color.red ] ])
+.canFocus_(false)
+.action_{|v|
+	switch (v.value)
+	{1} {task.start;  }
+	{0} {task.stop; ~synth.stop; a = RK4.newHO(f,dtslider.value*timewarp.value,t0,[theta0,dtheta0]); };
+
+
+};
+w.view.decorator.nextLine;
+p =  ParaSpace.new(w, bounds: Rect(0,0,500,500)).createNode1(0.5,0.5).createNode1(0.5,0.5);
+p.createConnection(0, 1);
+//--------FUNC-----------
+f = {|t,theta,dthetadt|
+	(g.neg/r.value*sin(theta)) +
+	(bcoef.value.neg*dthetadt+(drive.value*cos(freq.value*2*pi*t))/(mass.value*r.value*r.value))
+};
+//--------FUNC-----------
+a = RK4.newHO(f,dtslider.value,t0,[theta0,dtheta0]);
+
+p.nodeTrackAction_({ |node|
+	moving = true;
+	//postln("started moving node "++ node.spritenum);
+	a.y =  [(node.nodeLoc1.asPoint-Point(0.5,0.5)).theta.neg+(pi/2),0];
+	a.y.postln;
+});
+
+p.nodeUpAction_({|node|
+	//postln("stoped moving node "++ node.spritenum);
+	moving = false; });
+
+
+task = Task.new({
+	var accumulator = 0, angle =  a.next[0], alpha = 0, interpolateAngle, oldangle = a.y[0];
+
+	loop{
+
+		if(moving.not){ var temp;
+			accumulator = accumulator + deltat.value;
+			//("   increased accumulator to "++ accumulator++" screendt "++deltat.value).postln;
+
+
+
+			while({accumulator >= dtslider.value},{
+				oldangle = a.y[0];
+				angle = a.next[0];
+				//("********calculating physics accumulator: "++ accumulator++ " value: "++angle).postln;
+				accumulator = accumulator - dtslider.value;
+				//("   decreased accumulator to "++ accumulator).postln;
+				~synth.set(\freq, 50+(((angle+pi).mod(2*pi)*200)));
+				if(dtslider.value < deltat.value){dtslider.value.max(0.001).wait; ("   waiting physics "++[dtslider.value,deltat.value])};
+
+
+
+			});
+			alpha = accumulator/dtslider.value;
+			//("-------updating screen. accumulator: "++ accumulator++" alpha: "++alpha).postln;
+			interpolateAngle = angle*alpha + (oldangle*(1+alpha.neg));
+			temp = WFSPoint.newAZ( interpolateAngle.mod(2*pi)/(2*pi)*360,1).asPoint*zoom.value+Point(0.5,0.5);
+			p.setNodeLoc1_(0,temp.x,temp.y);
+			if(dtslider.value >= deltat.value){deltat.value.max(0.001).wait; "   waiting screen"};
+
+
+
+		}
+		{dtslider.value.max(0.001).wait };
+
+	};
+});
+
+w.front;
+w.onClose_({ task.stop; ~synth.free})
+)
+::
+
+
+section:: Authors
+Miguel Negro, 2009.

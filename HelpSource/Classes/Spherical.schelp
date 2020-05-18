@@ -1,16 +1,12 @@
-CLASS:: Spherical
+TITLE:: Spherical
 summary:: Spherical coordinates
-categories:: Math
+categories:: Math, Libraries>MathLib>Cartesian &c.
 related:: Classes/Cartesian, Classes/Polar, Classes/Point
 
 DESCRIPTION::
 Represents spherical coordinates.
 
-NOTE::
-Part of SpherCoords, a spherical and 3D cartesian coordinate support library.
-::
-subsection:: Credits
-Joseph Anderson, 2011 [j.anderson[at]ambisonictoolkit.net]
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
 
 
 CLASSMETHODS::
@@ -165,3 +161,6 @@ Convert to link::Classes/Point::, discarding z.
 METHOD:: asCartesian
 Convert to link::Classes/Cartesian::.
 
+
+section:: Authors
+Joseph Anderson, 2011.

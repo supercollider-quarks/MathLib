@@ -1,0 +1,62 @@
+title:: MathLib
+summary:: Some mathematical extensions to SuperCollider
+categories:: Libraries>MathLib
+keyword::MathLib
+
+link::https://github.com/supercollider-quarks/MathLib##MathLib:: is a diverse library of mathematical functions.
+
+
+section:: Components
+
+subsection:: Cartesian, Spherical & Quaternion
+
+Supported by link::Browse#Libraries>MathLib>Cartesian%20&c.#Cartesian &c.::
+
+
+subsection:: L-system
+
+emphasis::L-system:: support is offered by link::Guides/rewriteString##-rewriteString::.
+
+
+subsection:: LaTeX
+
+link::Classes/LaTeX:: supports integration with the link::https://www.latex-project.org##LaTeX typesetting system::.
+
+
+subsection:: Markov & Fuzzy Sets
+
+Supported for Markov and Fuzzy Sets is provided here: link::Browse#Libraries>MathLib>Markov%20&%20Fuzzy#Markov & Fuzzy::.
+
+
+subsection:: Matrix
+
+Matrix operations are provided by link::Classes/Matrix::.
+
+
+subsection:: Patterns
+
+Various link::Classes/Pattern:: operations are supported by link::Browse#Libraries>MathLib>Patterns#Patterns::.
+
+
+subsection:: Polynomials & Special Functions
+
+Support for polynomials is provided here: link::Browse#Libraries>MathLib>Polynomials%20&%20Special#Polynomials & Special::.
+
+
+subsection:: Scatter Views: 2D & 3D Views
+
+2D & 3D views are supported by link::Browse#Libraries>MathLib>ScatterViews#ScatterViews::.
+
+
+subsection:: Solvers
+
+Support for numerical solving and root finding is found here: link::Browse#Libraries>MathLib>Solvers#Solvers::.
+
+
+subsection:: Statistics
+
+link::Guides/extStatistics:: offers a guide to various operations.
+
+
+section:: Authors
+Julian Rohrhuber, et al.

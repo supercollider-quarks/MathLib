@@ -1,0 +1,98 @@
+TITLE:: GenLaguerre
+summary:: Generalized Laguerre polynomials
+categories:: Math, Libraries>MathLib>Polynomials & Special
+related:: Guides/Tour-of-Special-Functions#Laguerre%20(and%20Associated)%20Polynomials
+
+
+DESCRIPTION::
+Calculates the link::https://en.wikipedia.org/wiki/Laguerre_polynomials#Generalized_Laguerre_polynomials#Generalized Laguerre polynomials:: of degree n and order alpha. When alpha is set to zero it reduces to the normal Laguerre polynomials.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+NOTE::
+The functionality found here may be superseded by link::Classes/SimpleNumber#-laguerreAssoc::
+::
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Creates a new instance of GenLaguerre.
+
+ARGUMENT:: n
+The degree of the generalized Laguerre polynomial. An instance of link::Classes/Integer::.
+
+ARGUMENT:: a
+The order of the generalized Laguerre polynomial. An instance of link::Classes/SimpleNumber::.
+
+
+
+METHOD:: calc
+Calculates the generalized Laguerre polynomial of degree n and order alpha for x.
+
+ARGUMENT:: n
+The degree of the generalized Laguerre polynomial. An instance of link::Classes/Integer::.
+
+ARGUMENT:: a
+The order of the generalized Laguerre polynomial. An instance of link::Classes/SimpleNumber::.
+
+ARGUMENT:: x
+An instance of link::Classes/SimpleNumber::.
+
+
+
+INSTANCEMETHODS::
+
+METHOD:: setN
+Set the degree of the generalized Laguerre polynomial.
+
+METHOD:: getN
+Get the degree of the generalized Laguerre polynomial.
+
+
+METHOD:: setAlpha
+Set the order of the generalized Laguerre polynomial.
+
+NOTE::When alpha is set to zero, it reduces to a normal or simple Laguerre polynomial.::
+
+METHOD:: getAlpha
+Get the order of the generalized Laguerre polynomial.
+
+
+METHOD:: setNAlpha
+Set the degree n and order alpha of the generalized Laguerre polynomial.
+
+
+METHOD:: getNAlpha
+Get the degree n and order alpha of the generalized Laguerre polynomial.
+
+
+METHOD:: calc
+Calculate the generalized Laguerre polynomial for x.
+
+
+PRIVATE:: init, n, a
+
+
+EXAMPLES::
+
+code::
+// Create an instance of GenLaguerre with degree 4 and order 1.5 and calculate for x = 10
+a = GenLaguerre.new(4, 1.5);
+a.calc(10)
+
+// Also possible to calculate directly
+GenLaguerre.calc(4, 1.5, 10);
+
+// Graph the polynomial for x running from 0 to 12
+a = GenLaguerre.new(4, 1.5);
+1000.collect({ |i| i = (i / 999) * 12; a.calc(i) }).plot
+
+// Compare to BOOST
+GenLaguerre.calc(1, 3, 100);  // GenLaguerre.calc(n, a, x)
+laguerreAssoc(1, 3, 100);  // (receiver, m, x)
+::
+
+
+section:: Authors
+Michael Dzjaparidze, 2010. footnote::Original C code from http://mymathlib.webtrellis.net, 20-06-2010.::

@@ -1,0 +1,202 @@
+TITLE:: Trafo
+summary:: A geometrical basis
+categories:: Math, Geometry, Libraries>MathLib>Cartesian &c.
+related:: Classes/Matrix, Classes/Cartesian, Classes/Spherical
+
+DESCRIPTION::
+A geometrical basis.
+
+Part of link::Guides/MathLib::, a diverse library of mathematical functions.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Create new Basis from basis Vectors.
+
+code::
+// set basis and d
+(
+t = Trafo.new([
+	[0, 2, 0],
+	[0, 0, 6],
+	[5, 0, 0]
+], [3, 4, 5])
+)
+
+// set d, only
+t = Trafo.new(d: [0,0,0])
+::
+
+ARGUMENT:: basis
+Basic vector.
+
+default = [
+	[1, 0, 0],
+	[0, 1, 0],
+	[0, 0, 1]
+]
+
+ARGUMENT:: d
+Position-vector.
+
+default = 0
+
+
+METHOD:: basicNew
+Create new Basis from transformation.
+
+
+METHOD:: from3dPoints
+Create new Basis from 3d Points.
+
+code::
+(
+t = Trafo.from3dPoints(
+	[0, 2, 0],
+	[3, 3, 0],
+	[15, 2, 0]
+)
+)
+/* returns
+Trafo.basicNew( Matrix[
+	[ 0.94868329805051, 0.31622776601684, 0, 0 ],
+	[ 0.31622776601684, -0.94868329805051, 0, 2 ],
+	[ 0, 0, -1, 0 ],
+	[ 0, 0, 0, 1 ]
+ ] )
+*/
+
+// doesn't work, since basis is collinear...
+t = Trafo.from3dPoints(
+	[0, 2, 0],
+	[0, 2, 0],
+	[15, 2, 0]
+)
+::
+
+
+METHOD:: inverseFrom3dPoints
+Create new Basis from 3d Points.
+
+code::
+(
+t = Trafo.inverseFrom3dPoints(
+	[0, 2, 0],
+	[3, 3, 0],
+	[15, 2, 0]
+);
+u = Trafo.inverseFrom3dPoints(
+	[0, 2, 0],
+	[3, 3, 0],
+	[15, 2, 0]
+);
+)
+
+(
+{200.do{
+	Trafo.inverseFrom3dPoints(
+		[0, 2, 0],
+		[3, 3, 0],
+		[15, 2, 0]
+	);
+}}.bench;
+{200.do{
+	Trafo.from3dPoints(
+		[0, 2, 0],
+		[3, 3, 0],
+		[15, 2, 0]
+	).inverse;
+}}.bench;
+)
+::
+
+PRIVATE:: pr_cross, pr_Point3toBasis, pr_normVec
+
+
+INSTANCEMETHODS::
+
+METHOD:: rotMatrix
+Return the used rotation matrix
+
+code::
+(
+t = Trafo.from3dPoints(
+	[0, 0, 0],
+	[pi, 3, 0],
+	[15, 2, 0]
+);
+t.rotMatrix
+)
+(
+t = Trafo.new;
+t.rotMatrix
+)
+::
+
+
+METHOD:: basis
+Return the basis vectors as: [[x1, x2, x3],[y1, y2, y3],[z1, z2, z3]]
+
+code::
+(
+t = Trafo([
+	[0, 2, 0],
+	[3, 0, 0],
+	[0, 0, 15]
+]);
+t.basis
+)
+::
+
+
+METHOD:: position
+Return the translative part.
+
+code::
+(
+t = Trafo.new;
+t.position
+)
+::
+
+
+METHOD:: inverse
+Return a new instance where (t * t.inverse vmul: v) == v;
+
+code::
+(
+t = Trafo.new;
+t.inverse
+)
+::
+
+
+METHOD:: vmul
+Transform strong::aVec:: with scaling code::scale:: to the trafo-inherited basis.
+
+code::
+t = Trafo.new; // the identity
+t.vmul( [1, 0, 0]);
+(
+{2000.do{
+	t = Trafo.new({{1.0.rand}!3}!3, {1.0.rand}!3);
+	t vmul: ({1.0.rand}!3)
+}}.bench
+)
+
+t = Trafo.from3dPoints(
+	[0, 0, 0],
+	[pi, 3, 0],
+	[15, 2, 0]
+)
+t.vmul( [1, 0, 0])
+::
+
+
+PRIVATE:: init
+
+
+section:: Authors
+
+Till Bovermann, 2006.
