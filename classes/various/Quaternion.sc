@@ -111,19 +111,30 @@ Quaternion {
 	// conversion to euler angles
 	// Math taken from https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_Angles_Conversion
 
-	// roll
+
+	roll {
+		^atan2((2 * (a * b + (c * d))), (1 - (2 * (b.squared + c.squared))))
+	}
+
+	pitch {
+		^asin((2 * (a * c - (b * d))).clip(-1.0, 1.0));
+	}
+
+	yaw {
+		^atan2((2 * (a * d + (c * b))), (1 - (2 * (d.squared + c.squared))))
+	}
+
+	// for convenience with the naming convention
 	tilt {
-		^atan2((2 * (a * b - (c * d))), (1 - (2*(b.squared + c.squared))))
+		^this.roll
 	}
 
-	// pitch
 	tumble {
-		^asin((2 * (a * c + (b * d))).clip(-1.0, 1.0));
+		^this.pitch
 	}
 
-	// yaw
 	rotate {
-		^atan2((2 * (a * d - (c * b))), (1 - (2*(d.squared + c.squared))))
+		^this.yaw
 	}
 }
 
