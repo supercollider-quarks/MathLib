@@ -328,6 +328,14 @@ Matrix[slot] : Array {
 		});
 	}
 
+	rowsDo { |func|
+		(this.rows).do({ |row, ri| func.(this.getRow(row), ri) })
+	}
+
+	colsDo { |func|
+		(this.cols).do({ |col, ci| func.(this.getCol(col), ci) })
+	}
+
 	sub { arg row, col; // return submatrix to element(row,col)
 		^this.removeRow(row).removeCol(col);
 	}

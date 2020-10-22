@@ -179,6 +179,20 @@ function is passed three arguments: item, row,col;
 ARGUMENT::
 function
 
+method::colsDo
+Iterate over the columns. Each column will be passed to strong::func:: in turn.
+code::
+a = Matrix.newIdentity(4);
+a.colsDo({ |item, i| format("Col %: ", i).post; (item * i).postln;});
+::
+
+method::rowsDo
+Iterate over the rows. Each row will be passed to strong::func:: in turn.
+code::
+a = Matrix.newIdentity(4);
+a.rowsDo({ |item, i| format("Row %: ", i).post; (item * i).postln;});
+::
+
 
 subsection:: Changing Matrices
 
@@ -441,6 +455,30 @@ mean
 
 RETURNS:: a matrix centred around the mean vector (which will be calculated for you if not supplied)
 
+METHOD:: thresh2
+Bilateral thresholding.
+
+ARGUMENT::thresh
+
+When the code::input.abs < thresh::, the output is forced to code::0::.
+Should be a positive value.
+
+ARGUMENT::adverb
+
+Optional, for processing Collections. See link::Reference/Adverbs::.
+
+DISCUSSION::
+code::
+(
+var m = Matrix.with(Array.rand(9, -9, 9).clump(3));
+var t = m.thresh(3);
+var t2 = m.thresh2(3);
+" original".postln; m.postmln;
+" thresh".postln;   t.postmln;
+" thresh2".postln;  t2.postmln;
+"";
+)
+::
 
 subsection:: Return Characteristic Values
 
