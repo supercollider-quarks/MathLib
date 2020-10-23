@@ -267,7 +267,8 @@ Polynomial[slot] : ArrayedCollection {
 				a2 = coefs[2] * 2.0;
 				d = (coefs[1]*coefs[1]) - (4*coefs[2]*coefs[0]);
 				if(d.isKindOf(SimpleNumber) and: { d < 0 }, { 
-					d = sqrt(Complex(d, 0)) 
+					// d = sqrt(Complex(d, 0))
+					d = Complex.new(d, 0).pow(0.5)  // replace w/ above when Complex:-sqrt is included in common library
 				}, { 
 					d = sqrt(d)
 				});
@@ -310,7 +311,8 @@ Polynomial[slot] : ArrayedCollection {
 			ca = beta.neg / alpha;
 			ca2 = ca * ca;
 			cb = ca2 - (2.0 * gamma / alpha);
-			c1 = sqrt((n-1) * ((n*cb) - ca2));
+			// c1 = sqrt((n-1) * ((n*cb) - ca2));
+			c1 = ((n-1) * ((n*cb) - ca2)).pow(0.5);  // replace w/ above when Complex:-sqrt is included in common library
 			cc1 = ca + c1;
 			cc2 = ca - c1;
 			if(cc1.magnitude > cc2.magnitude, { cc = cc1 }, { cc = cc2 });
