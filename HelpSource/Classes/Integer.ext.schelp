@@ -1,0 +1,90 @@
+INSTANCEMETHODS::
+
+
+subsection:: Perfect Powers
+
+method:: perfectPower
+perfect power decomposition
+
+returns::
+
+if the receiver can be decomposed into an integer base raised to an integer
+power, return the base and power as an array, otherwise return NaN.
+
+discussion::
+
+the returned decomposition is in minimal exponent form
+
+code::
+4.perfectPower.postln;
+5.perfectPower.postln;
+8.perfectPower.postln;
+1000.perfectPower.postln;
+
+// minimal exponent form
+12.pow(6).asInteger.perfectPower.postln;
+1728.pow(2).asInteger.perfectPower.postln;
+::
+
+
+method:: perfectSqrt
+the perfect square root of the number
+
+returns::
+
+if an integer square root can be found, return, otherwise return NaN.
+
+discussion::
+
+code::
+3.squared.perfectSqrt.postln;
+
+// compare to
+3.squared.sqrt.postln;
+::
+
+
+method:: perfectCbrt
+the perfect cube root of the number
+
+returns::
+
+if an integer cube root can be found, return, otherwise return NaN.
+
+discussion::
+
+code::
+3.cubed.perfectCbrt.postln;
+
+// compare to
+3.cubed.cbrt.postln;
+::
+
+
+method:: perfectRootOf
+the perfect root of the number
+
+returns::
+
+if an integer root can be found, return, otherwise return NaN.
+
+discussion::
+
+code::
+6.pow(5).asInteger.perfectRootOf(5).postln;
+10.pow(4).asInteger.perfectRootOf(4).postln;
+10.pow(4).asInteger.perfectRootOf(2).postln;
+10.pow(4).asInteger.perfectRootOf(3).postln;
+::
+
+
+method:: isPerfectPower
+
+answer if the receiver can be decomposed into an integer base raised to an
+integer power
+
+discussion::
+
+observes the
+link::https://en.wikipedia.org/wiki/Perfect_power#Examples_and_sums#convention::
+ where the first perfect power is 4
