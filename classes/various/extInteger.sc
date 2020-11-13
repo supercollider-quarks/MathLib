@@ -40,11 +40,7 @@
 
 	// perfect power: detection - unknown base, exponent
 	isPerfectPower {
-		^if( this.isPowerOfTwo and: { this > 3 }, {  // use builtin: -isPowerOfTwo
-			true
-		}, { // else test...
-			this.perfectPower.notNil
-		})
+		^if(this.isPowerOfTwo) { this > 3 } { this.perfectPower.notNil }
 	}
 
 	// perfect power: decomposition - known base
