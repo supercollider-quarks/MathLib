@@ -9,7 +9,7 @@ perfect power decomposition
 returns::
 
 if the receiver can be decomposed into an integer base raised to an integer
-power, return the base and power as an array, otherwise return NaN.
+power, return the base and power as an array, otherwise return nil.
 
 discussion::
 
@@ -32,7 +32,7 @@ the perfect square root of the number
 
 returns::
 
-if an integer square root can be found, return, otherwise return NaN.
+if an integer square root can be found, return, otherwise return nil.
 
 discussion::
 
@@ -49,7 +49,7 @@ the perfect cube root of the number
 
 returns::
 
-if an integer cube root can be found, return, otherwise return NaN.
+if an integer cube root can be found, return, otherwise return nil.
 
 discussion::
 
@@ -66,7 +66,7 @@ the perfect root of the number
 
 returns::
 
-if an integer root can be found, return, otherwise return NaN.
+if an integer root can be found, return, otherwise return nil.
 
 discussion::
 

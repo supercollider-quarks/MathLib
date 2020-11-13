@@ -40,10 +40,10 @@
 
 	// perfect power: detection - unknown base, exponent
 	isPerfectPower {
-		^if( this.isPowerOfTwo && (this > 2), {  // use builtin: -isPowerOfTwo
+		^if( this.isPowerOfTwo and: { this > 3 }, {  // use builtin: -isPowerOfTwo
 			true
 		}, { // else test...
-			this.perfectPower.class == Array
+			this.perfectPower.notNil
 		})
 	}
 
@@ -69,7 +69,7 @@
 			0, { ^inf },
 			1, { ^this },
 			{
-				if( (this == 0) || (this == 1), {
+				if( this == 0 or: { this == 1 }, {
 						^this
 					}, {
 						// (this >= 2) && (aNumber >= 2)
@@ -81,9 +81,9 @@
 							c = this;
 
 							while({
-								((c - a) >= 2)  // halt iteration
+								(c - a) >= 2  // halt iteration
 							}, {
-								m = ((a + c) / 2).floor.asInteger;
+								m = (a + c).div(2);
 								p = m.pow(b).min(this + 1).asInteger;
 
 								// found perfect power?
@@ -99,7 +99,7 @@
 							})
 						});
 
-						^(0 * inf)  // not found! return nan (Float)
+						^nil  // not found! return nil
 					}
 				)
 			}
@@ -129,9 +129,9 @@
 
 			// inner loop
 			while({
-				((c - a) >= 2)  // halt iteration
+				(c - a) >= 2  // halt iteration
 			}, {
-				m = ((a + c) / 2).floor.asInteger;
+				m = (a + c).div(2);
 				p = m.pow(b).min(this + 1).asInteger;
 
 				// found perfect power?
@@ -152,7 +152,7 @@
 			cp = cp * 2;
 		});
 
-		^(0 * inf)  // not found! return nan (Float)
+		^nil  // not found! return nil
 	}
 
 }
