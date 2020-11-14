@@ -40,7 +40,8 @@
 
 	// perfect power: detection - unknown base, exponent
 	isPerfectPower {
-		^if(this.isPowerOfTwo) { this > 3 } { this.perfectPower.notNil }
+		if(this < 4) { ^false };
+		^this.isPowerOfTwo or: { this.perfectPower.notNil }
 	}
 
 	// perfect power: decomposition - known base
@@ -77,7 +78,7 @@
 							c = this;
 
 							while({
-								(c - a) >= 2  // halt iteration
+								(c - a) >= 2
 							}, {
 								m = (a + c).div(2);
 								p = m.pow(b).min(this + 1).asInteger;
@@ -125,7 +126,7 @@
 
 			// inner loop
 			while({
-				(c - a) >= 2  // halt iteration
+				(c - a) >= 2
 			}, {
 				m = (a + c).div(2);
 				p = m.pow(b).min(this + 1).asInteger;
