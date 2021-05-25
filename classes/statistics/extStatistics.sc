@@ -480,6 +480,42 @@ oscorr(x,y);
 		};
 		^p
 	}
+
+	// Simple Linear Regression (Least Squares) - Linear Fit
+	linearFit {
+		var tmpThis;
+		var size, x, y;
+		var xMean, yMean, sSxy, sSxx, b0, b1;
+		var errStr = "Support is only provided for 2D line fitting. Supply y or x, y pairs only.";
+		var err = Error.new(errStr);
+
+		size = this.size;
+		this.rank.switch(
+			1, { x = Array.series(size); y = this },
+			2, {
+				(this.first.size == 2).if({
+					tmpThis = this.flop; x = tmpThis.at(0); y = tmpThis.at(1)
+				}, {
+					err.throw
+				})
+			},
+			{ err.throw },
+		);
+
+		// mean
+		xMean = x.mean;
+		yMean = y.mean;
+
+		// cross-deviation and deviation about x
+		sSxy = (x * y).sum - (size * xMean * yMean);
+		sSxx = (x.squared).sum - (size * xMean.squared);
+
+		// coefficients
+		b1 = sSxy / sSxx;
+		b0 = yMean - (b1 * xMean);
+
+		^Array.with(b0, b1)
+	}
 }
 
 
