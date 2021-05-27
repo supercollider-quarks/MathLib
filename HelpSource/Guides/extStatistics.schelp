@@ -116,3 +116,17 @@ b.plot("b", minval: 20, maxval: 120);
 Array.series(1000, ~aFit.at(0), ~aFit.at(1)).plot("a fit", minval: 20, maxval: 120);
 Array.series(1000, ~bFit.at(0), ~bFit.at(1)).plot("b fit", minval: 20, maxval: 120)
 ::
+
+theilSenFit offers offers a robust linear regression by finding the median slope of all data pairs.
+
+code::
+b = a.deepCopy.sort;  // sort
+
+~aFit = a.theilSenFit;  // fit
+~bFit = b.theilSenFit;
+
+a.plot("a", minval: 20, maxval: 120);
+b.plot("b", minval: 20, maxval: 120);
+Array.series(1000, ~aFit.at(0), ~aFit.at(1)).plot("a fit", minval: 20, maxval: 120);
+Array.series(1000, ~bFit.at(0), ~bFit.at(1)).plot("b fit", minval: 20, maxval: 120)
+::

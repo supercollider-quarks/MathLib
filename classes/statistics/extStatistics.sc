@@ -516,6 +516,47 @@ oscorr(x,y);
 
 		^Array.with(b0, b1)
 	}
+
+	// Theil-Sen Linear Regression - Linear Fit
+	theilSenFit {
+		var tmpThis;
+		var size, x, y;
+		var tuples, slopes, b0, b1;
+		var errStr = "Support is only provided for 2D line fitting. Supply y or x, y pairs only.";
+		var err = Error.new(errStr);
+
+		size = this.size;
+		this.rank.switch(
+			1, { x = Array.series(size); y = this },
+			2, {
+				(this.first.size == 2).if({
+					tmpThis = this.flop; x = tmpThis.at(0); y = tmpThis.at(1)
+				}, {
+					err.throw
+				})
+			},
+			{ err.throw },
+		);
+
+		// indexing tuples
+		tuples = size.collect({ |i|
+			((size - 1) - i).collect({ |j|
+				Array.with(i, (j + i) + 1)
+			})
+		}).flatten;
+
+		// slopes
+		/* assume NO duplicate x vals */
+		slopes = tuples.collect({ |tuple|
+			(y.at(tuple.at(1)) - y.at(tuple.at(0))) / (x.at(tuple.at(1)) - x.at(tuple.at(0)))
+		});
+
+		// coefficients
+		b1 = slopes.median;
+		b0 = y.median - (b1 * x.median);
+
+		^Array.with(b0, b1)
+	}
 }
 
 

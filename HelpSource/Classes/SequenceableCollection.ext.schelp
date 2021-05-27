@@ -37,3 +37,38 @@ var coeffs = xy.linearFit;
 Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
 )
 ::
+
+
+METHOD:: theilSenFit
+Linear fit via Theil-Sen linear regression
+
+returns:: [ b0, b1 ]
+
+discussion::
+
+If this is a rank 1 collection, intrepret these values as y and the indices as x:
+
+code::
+(
+var size = 25;
+var y = Array.fill(size, { size.rand }).sort;
+var coeffs = y.theilSenFit;
+
+y.plot("random vals", discrete: true, minval: 0.0, maxval: size);
+Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
+)
+::
+
+If this is a rank 2 collection, intrepret these values as x, y pairs:
+
+code::
+(
+var size = 25;
+var x = Array.fill(size, { size.rand }).sort;
+var y = Array.fill(size, { size.rand }).sort;
+var xy = Array.with(x, y).flop;
+var coeffs = xy.theilSenFit;
+
+Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
+)
+::
