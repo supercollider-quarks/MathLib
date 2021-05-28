@@ -502,6 +502,10 @@ oscorr(x,y);
 			{ err.throw },
 		);
 
+		// cast as DoubleArray for precision
+		x = x.as(DoubleArray);
+		y = y.as(DoubleArray);
+
 		// mean
 		xMean = x.mean;
 		yMean = y.mean;
@@ -537,6 +541,10 @@ oscorr(x,y);
 			},
 			{ err.throw },
 		);
+
+		// cast as DoubleArray for precision
+		x = x.as(DoubleArray);
+		y = y.as(DoubleArray);
 
 		// indexing tuples
 		tuples = size.collect({ |i|
