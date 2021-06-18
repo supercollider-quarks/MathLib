@@ -482,36 +482,31 @@ oscorr(x,y);
 	}
 
 	// Simple Linear Regression (Least Squares) - Linear Fit
-	linearFit {
-		var size, x, y;
+	linearFit { |x|
+		var size, yFloat, xFloat;
 		var xMean, yMean, sSxy, sSxx, b0, b1;
-		var errStr = "Support is only provided for 2D line fitting. Supply y or x, y pairs only.";
-		var err = Error.new(errStr);
 
 		size = this.size;
-		this.rank.switch(
-			1, { x = Array.series(size); y = this },
-			2, {
-				(this.first.size == 2).if({
-					#x, y = this.flop
-				}, {
-					err.throw
-				})
-			},
-			{ err.throw },
-		);
 
-		// cast as DoubleArray for precision
-		x = x.as(DoubleArray);
-		y = y.as(DoubleArray);
+		// cast as Float for precision
+		yFloat = (this.class != Signal).if({
+			this.asFloat
+		}, {
+			this    // Signal elements already Floats. May want to collect as Array(?)
+		});
+		xFloat = (x.isNil).if({
+			Array.series(size, 0.0)
+		}, {
+			x.asFloat  // NOTE: we're not catching x as Signal
+		});
 
 		// mean
-		xMean = x.mean;
-		yMean = y.mean;
+		xMean = xFloat.mean;
+		yMean = yFloat.mean;
 
 		// cross-deviation and deviation about x
-		sSxy = (x * y).sum - (size * xMean * yMean);
-		sSxx = (x.squared).sum - (size * xMean.squared);
+		sSxy = (xFloat * yFloat).sum - (size * xMean * yMean);
+		sSxx = (xFloat.squared).sum - (size * xMean.squared);
 
 		// coefficients
 		b1 = sSxy / sSxx;
@@ -521,45 +516,40 @@ oscorr(x,y);
 	}
 
 	// Theil-Sen Linear Regression - Linear Fit
-	theilSenFit {
-		var size, x, y;
+	theilSenFit { |x|
+		var size, yFloat, xFloat;
 		var tuples, slopes, b0, b1;
-		var errStr = "Support is only provided for 2D line fitting. Supply y or x, y pairs only.";
-		var err = Error.new(errStr);
 
 		size = this.size;
-		this.rank.switch(
-			1, { x = Array.series(size); y = this },
-			2, {
-				(this.first.size == 2).if({
-					#x, y = this.flop
-				}, {
-					err.throw
-				})
-			},
-			{ err.throw },
-		);
 
-		// cast as DoubleArray for precision
-		x = x.as(DoubleArray);
-		y = y.as(DoubleArray);
+		// cast as Float for precision
+		yFloat = (this.class != Signal).if({
+			this.asFloat
+		}, {
+			this    // Signal elements already Floats. May want to collect as Array(?)
+		});
+		xFloat = (x.isNil).if({
+			Array.series(size, 0.0)
+		}, {
+			x.asFloat  // NOTE: we're not catching x as Signal
+		});
 
 		// indexing tuples
 		tuples = size.collect({ |i|
 			((size - 1) - i).collect({ |j|
-				Array.with(i, (j + i) + 1)
+				[i, (j + i) + 1]
 			})
 		}).flatten;
 
 		// slopes
 		/* assume NO duplicate x vals */
 		slopes = tuples.collect({ |tuple|
-			(y.at(tuple.at(1)) - y.at(tuple.at(0))) / (x.at(tuple.at(1)) - x.at(tuple.at(0)))
+			(yFloat[tuple[1]] - yFloat[tuple[0]]) / (xFloat[tuple[1]] - xFloat[tuple[0]])
 		});
 
 		// coefficients
 		b1 = slopes.median;
-		b0 = y.median - (b1 * x.median);
+		b0 = yFloat.median - (b1 * xFloat.median);
 
 		^[b0, b1]
 	}

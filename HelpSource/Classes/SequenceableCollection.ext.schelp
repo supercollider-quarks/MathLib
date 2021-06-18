@@ -7,11 +7,14 @@ copymethod:: SimpleNumber -thresh2
 METHOD:: linearFit
 Linear fit via simple linear regression (least squares)
 
+argument:: x
+x-axis values. If nil, use indices.
+
 returns:: [ b0, b1 ]
 
 discussion::
 
-If this is a rank 1 collection, intrepret these values as y and the indices as x:
+Use indices as x:
 
 code::
 (
@@ -24,15 +27,14 @@ Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, m
 )
 ::
 
-If this is a rank 2 collection, intrepret these values as x, y pairs:
+Supply x:
 
 code::
 (
 var size = 25;
 var x = Array.fill(size, { size.rand }).sort;
 var y = Array.fill(size, { size.rand }).sort;
-var xy = Array.with(x, y).flop;
-var coeffs = xy.linearFit;
+var coeffs = y.linearFit(x);
 
 Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
 )
@@ -42,11 +44,14 @@ Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, m
 METHOD:: theilSenFit
 Linear fit via Theil-Sen linear regression
 
+argument:: x
+x-axis values. If nil, use indices.
+
 returns:: [ b0, b1 ]
 
 discussion::
 
-If this is a rank 1 collection, intrepret these values as y and the indices as x:
+Use indices as x:
 
 code::
 (
@@ -59,15 +64,14 @@ Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, m
 )
 ::
 
-If this is a rank 2 collection, intrepret these values as x, y pairs:
+Supply x:
 
 code::
 (
 var size = 25;
 var x = Array.fill(size, { size.rand }).sort;
 var y = Array.fill(size, { size.rand }).sort;
-var xy = Array.with(x, y).flop;
-var coeffs = xy.theilSenFit;
+var coeffs = y.theilSenFit(x);
 
 Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
 )
