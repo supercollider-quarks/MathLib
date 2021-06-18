@@ -483,7 +483,6 @@ oscorr(x,y);
 
 	// Simple Linear Regression (Least Squares) - Linear Fit
 	linearFit {
-		var tmpThis;
 		var size, x, y;
 		var xMean, yMean, sSxy, sSxx, b0, b1;
 		var errStr = "Support is only provided for 2D line fitting. Supply y or x, y pairs only.";
@@ -494,7 +493,7 @@ oscorr(x,y);
 			1, { x = Array.series(size); y = this },
 			2, {
 				(this.first.size == 2).if({
-					tmpThis = this.flop; x = tmpThis.at(0); y = tmpThis.at(1)
+					#x, y = this.flop
 				}, {
 					err.throw
 				})
@@ -518,12 +517,11 @@ oscorr(x,y);
 		b1 = sSxy / sSxx;
 		b0 = yMean - (b1 * xMean);
 
-		^Array.with(b0, b1)
+		^[b0, b1]
 	}
 
 	// Theil-Sen Linear Regression - Linear Fit
 	theilSenFit {
-		var tmpThis;
 		var size, x, y;
 		var tuples, slopes, b0, b1;
 		var errStr = "Support is only provided for 2D line fitting. Supply y or x, y pairs only.";
@@ -534,7 +532,7 @@ oscorr(x,y);
 			1, { x = Array.series(size); y = this },
 			2, {
 				(this.first.size == 2).if({
-					tmpThis = this.flop; x = tmpThis.at(0); y = tmpThis.at(1)
+					#x, y = this.flop
 				}, {
 					err.throw
 				})
@@ -563,7 +561,7 @@ oscorr(x,y);
 		b1 = slopes.median;
 		b0 = y.median - (b1 * x.median);
 
-		^Array.with(b0, b1)
+		^[b0, b1]
 	}
 }
 
