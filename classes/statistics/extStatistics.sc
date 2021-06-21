@@ -535,11 +535,7 @@ oscorr(x,y);
 		});
 
 		// indexing tuples
-		tuples = size.collect({ |i|
-			((size - 1) - i).collect({ |j|
-				[i, (j + i) + 1]
-			})
-		}).flatten;
+		tuples = all { :[i, j], i<-(0..size-2), j<-(i+1..size-1) };
 
 		// slopes
 		/* assume NO duplicate x vals */
