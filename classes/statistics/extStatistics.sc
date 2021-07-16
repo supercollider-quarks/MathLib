@@ -492,12 +492,12 @@ oscorr(x,y);
 		yFloat = (this.class != Signal).if({
 			this.asFloat
 		}, {
-			this    // Signal elements already Floats. May want to collect as Array(?)
+			this    // Signal elements already Floats. May want to recast as Array(?)
 		});
 		xFloat = (x.isNil).if({
 			Array.series(size, 0.0)
 		}, {
-			x.asFloat  // NOTE: we're not catching x as Signal
+			x.asFloat  // NOTE: x may not be a Signal
 		});
 
 		// mean
@@ -526,12 +526,12 @@ oscorr(x,y);
 		yFloat = (this.class != Signal).if({
 			this.asFloat
 		}, {
-			this    // Signal elements already Floats. May want to collect as Array(?)
+			this    // Signal elements already Floats. May want to recast as Array(?)
 		});
 		xFloat = (x.isNil).if({
 			Array.series(size, 0.0)
 		}, {
-			x.asFloat  // NOTE: we're not catching x as Signal
+			x.asFloat  // NOTE: x may not be a Signal
 		});
 
 		// indexing tuples
