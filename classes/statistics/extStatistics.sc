@@ -480,6 +480,75 @@ oscorr(x,y);
 		};
 		^p
 	}
+
+	// Simple Linear Regression (Least Squares) - Linear Fit
+	linearFit { |x|
+		var size, yFloat, xFloat;
+		var xMean, yMean, sSxy, sSxx, b0, b1;
+
+		size = this.size;
+
+		// cast as Float for precision
+		yFloat = (this.class != Signal).if({
+			this.asFloat
+		}, {
+			this    // Signal elements already Floats. May want to recast as Array(?)
+		});
+		xFloat = (x.isNil).if({
+			Array.series(size, 0.0)
+		}, {
+			x.asFloat  // NOTE: x may not be a Signal
+		});
+
+		// mean
+		xMean = xFloat.mean;
+		yMean = yFloat.mean;
+
+		// cross-deviation and deviation about x
+		sSxy = (xFloat * yFloat).sum - (size * xMean * yMean);
+		sSxx = (xFloat.squared).sum - (size * xMean.squared);
+
+		// coefficients
+		b1 = sSxy / sSxx;
+		b0 = yMean - (b1 * xMean);
+
+		^[b0, b1]
+	}
+
+	// Theil-Sen Linear Regression - Linear Fit
+	theilSenFit { |x|
+		var size, yFloat, xFloat;
+		var tuples, slopes, b0, b1;
+
+		size = this.size;
+
+		// cast as Float for precision
+		yFloat = (this.class != Signal).if({
+			this.asFloat
+		}, {
+			this    // Signal elements already Floats. May want to recast as Array(?)
+		});
+		xFloat = (x.isNil).if({
+			Array.series(size, 0.0)
+		}, {
+			x.asFloat  // NOTE: x may not be a Signal
+		});
+
+		// indexing tuples
+		tuples = all { :[i, j], i<-(0..size-2), j<-(i+1..size-1) };
+
+		// slopes
+		/* assume NO duplicate x vals */
+		slopes = tuples.collect({ |tuple|
+			(yFloat[tuple[1]] - yFloat[tuple[0]]) / (xFloat[tuple[1]] - xFloat[tuple[0]])
+		});
+
+		// coefficients
+		b1 = slopes.median;
+		b0 = yFloat.median - (b1 * xFloat.median);
+
+		^[b0, b1]
+	}
 }
 
 

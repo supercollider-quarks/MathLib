@@ -3,3 +3,76 @@ INSTANCEMETHODS::
 subsection:: Extensions by MathLib
 
 copymethod:: SimpleNumber -thresh2
+
+METHOD:: linearFit
+Linear fit via simple linear regression (least squares)
+
+argument:: x
+x-axis values. If nil, use indices.
+
+returns:: [ b0, b1 ]
+
+discussion::
+
+Use indices as x:
+
+code::
+(
+var size = 25;
+var y = Array.fill(size, { size.rand }).sort;
+var coeffs = y.linearFit;
+
+y.plot("random vals", discrete: true, minval: 0.0, maxval: size);
+Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
+)
+::
+
+Supply x:
+
+code::
+(
+var size = 25;
+var x = Array.fill(size, { size.rand }).sort;
+var y = Array.fill(size, { size.rand }).sort;
+var coeffs = y.linearFit(x);
+
+Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
+)
+::
+
+
+METHOD:: theilSenFit
+Linear fit via Theil-Sen linear regression
+
+argument:: x
+x-axis values. If nil, use indices.
+
+returns:: [ b0, b1 ]
+
+discussion::
+
+Use indices as x:
+
+code::
+(
+var size = 25;
+var y = Array.fill(size, { size.rand }).sort;
+var coeffs = y.theilSenFit;
+
+y.plot("random vals", discrete: true, minval: 0.0, maxval: size);
+Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
+)
+::
+
+Supply x:
+
+code::
+(
+var size = 25;
+var x = Array.fill(size, { size.rand }).sort;
+var y = Array.fill(size, { size.rand }).sort;
+var coeffs = y.theilSenFit(x);
+
+Array.series(size, coeffs.at(0), coeffs.at(1)).plot("linear fit", minval: 0.0, maxval: size)
+)
+::
