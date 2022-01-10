@@ -93,7 +93,6 @@ ScatterView {
 		};
 		
 		plot = GUI.userView.new(parent, bounds)
-			.relativeOrigin_(false)
 			.drawFunc_({|w|
 				var width, height, rect, pad = 10;
 				if (drawAxis) { pad = 60 };
