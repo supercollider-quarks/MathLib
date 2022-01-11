@@ -102,19 +102,16 @@ ScatterView {
 
 				GUI.pen.use{
 					// clipping into the boundingbox
-					GUI.pen.moveTo((w.bounds.left)@(w.bounds.top));
-					GUI.pen.lineTo(((w.bounds.left)@(w.bounds.top)) 
-							+ (w.bounds.width@0));
-					GUI.pen.lineTo(((w.bounds.left)@(w.bounds.top)) 
-							+ (w.bounds.width@w.bounds.height));
-					GUI.pen.lineTo(((w.bounds.left)@(w.bounds.top)) 
-							+ (0@w.bounds.height));
-					GUI.pen.lineTo((w.bounds.left)@(w.bounds.top));
+					GUI.pen.moveTo(0@0);
+					GUI.pen.lineTo(w.bounds.width@0);
+					GUI.pen.lineTo(w.bounds.width@w.bounds.height);
+					GUI.pen.lineTo(0@w.bounds.height);
+					GUI.pen.lineTo(0@0);
 					GUI.pen.clip;
 					
 					// draw Background
 					GUI.pen.color = background;
-					GUI.pen.addRect(w.bounds);
+					GUI.pen.addRect(Rect(0, 0, w.bounds.width, w.bounds.height));
 					GUI.pen.fill;
 					
 					// draw data
@@ -129,7 +126,7 @@ ScatterView {
 							);
 							GUI.pen.perform(
 								drawMethod,
-								(Rect(w.bounds.left, w.bounds.top, 0, 0) + rect)
+								rect
 							);
 						}
 					},{ // else draw lines
@@ -140,8 +137,6 @@ ScatterView {
 								((adjustedData[0][0]  * width) + (pad/2))
 								 @
 								 (((1-adjustedData[0][1]) * height) + (pad/2))
-							   	  + 
-								  (w.bounds.left@w.bounds.top)
 							);
 						};
 						// draw lines
@@ -149,9 +144,7 @@ ScatterView {
 							GUI.pen.lineTo(
 								((item[0]  * width) + (pad/2))
 								 @
-								 (((1-item[1]) * height) + (pad/2)) 
-							 	  + 
-							 	  (w.bounds.left@w.bounds.top)
+								 (((1-item[1]) * height) + (pad/2))
 							)
 						};
 						if(drawMethod == \fill, {GUI.pen.fill},{GUI.pen.stroke});
@@ -170,8 +163,7 @@ ScatterView {
 								  + 
 								  (pad/2), 
 								highlightSize.x, highlightSize.y) 
-								  + 
-								  Rect(w.bounds.left, w.bounds.top, 0, 0)),
+								  ), 
 								symbolSize,
 								highlightColor
 							);
@@ -179,33 +171,34 @@ ScatterView {
 					};
 						// draw axis
 					if (drawAxis) {
-						GUI.pen.moveTo((w.bounds.left+(pad/2))@(w.bounds.top+(pad/2)));
-						GUI.pen.lineTo((w.bounds.left+(pad/2))@(w.bounds.top+w.bounds.height-(pad/2)));
+						GUI.pen.fillColor = Color.black;
+						GUI.pen.moveTo((pad/2)@(pad/2));
+						GUI.pen.lineTo((pad/2)@(w.bounds.height-(pad/2)));
 						GUI.pen.lineTo(
-							(w.bounds.left-(pad/2)+w.bounds.width)@(w.bounds.top+w.bounds.height-(pad/2)));
+							(0-(pad/2)+w.bounds.width)@(w.bounds.height-(pad/2)));
 						specX.minval.round(0.001).asString
 							.drawAtPoint(
-								(w.bounds.left+(pad/2)+10)@
-								(w.bounds.height-(pad/2)+10));
+								((pad/2)+10)@
+								(w.bounds.height-(pad/2)));
 						xAxisName
 							.drawAtPoint(
-								(w.bounds.left+(w.bounds.width/2))@
-								(w.bounds.height-(pad/2)+10));
+								(w.bounds.width/2)@
+								(w.bounds.height-(pad/2)));
 						specX.maxval.round(0.001).asString
 							.drawAtPoint(
-								(w.bounds.left+10+w.bounds.width-20-(pad/2))@
-								(w.bounds.height-(pad/2)+10));
+								(10+w.bounds.width-20-(pad/2))@
+								(w.bounds.height-(pad/2)));
 
 
 
 						GUI.pen.rotate(-pi/2); 
 						GUI.pen.translate(w.bounds.height.neg, 0);
 						specY.minval.round(0.001).asString
-							.drawAtPoint((pad/2)@(w.bounds.left+(pad/2) -20));
+							.drawAtPoint((pad/2)@((pad/2) -20));
 						yAxisName.
-							drawAtPoint((w.bounds.height/2)@(w.bounds.left+(pad/2) -20));
+							drawAtPoint((w.bounds.height/2)@((pad/2) -20));
 						specY.maxval.round(0.001).asString
-							.drawAtPoint((w.bounds.height - (pad/2))@(w.bounds.left+(pad/2) -20));
+							.drawAtPoint((w.bounds.height - (pad/2))@((pad/2) -20));
 						GUI.pen.translate(w.bounds.height, 0);
 						GUI.pen.rotate(pi/2);
 						GUI.pen.stroke;
