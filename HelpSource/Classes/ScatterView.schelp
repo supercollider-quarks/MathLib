@@ -92,14 +92,10 @@ PRIVATE:: initPlot
 EXAMPLES::
 
 code::
-// you may want to use Swing or Cocoa
-SwingOSC.default.boot
-GUI.swing
-
 
 (
 var data = 1000.collect{ [1.0.rand, exprand(0.01, 1)]};
-w = GUI.window.new(bounds: Rect(40, 40, 800, 800)).front;
+w = Window.new(bounds: Rect(40, 40, 800, 800)).front;
 a = ScatterView(w, Rect(10, 10, 760, 760), data, [0,1].asSpec, [0,1].asSpec);
 a.drawAxis_(true).drawMethod_(\fillOval)
 .symbolColor_(Color.blue(0.5, 0.5)).symbolSize_(5)
@@ -108,10 +104,10 @@ a.drawAxis_(true).drawMethod_(\fillOval)
 
 (
 var numItems = 630;
-w = GUI.window.new(bounds: Rect(40, 40, 800, 150)).front;
+w = Window.new(bounds: Rect(40, 40, 800, 150)).front;
 a = ScatterView(w, Rect(10, 10, 760, 100), {|i| [sin(i/50), sin(0.05*i)]}!numItems, [-1,1].asSpec, [-1,1].asSpec);
 a.isHighlight = true;
-GUI.slider.new(w, Rect(10, 120, 760, 20)).action_{|me|
+Slider.new(w, Rect(10, 120, 760, 20)).action_{|me|
 	a.highlightItemRel = me.value;
 	a.refresh;
 	// a.highlightItem = (me.value*numItems).asInteger.min(numItems-1);
@@ -176,12 +172,13 @@ w.refresh
 // use two views stacked
 (
 var numItems = 630;
-w = SCWindow.new(bounds: Rect(40, 40, 800, 150)).front;
+w = Window.new(bounds: Rect(40, 40, 800, 150)).front;
 a = ScatterView(w, Rect(10, 10, 760, 100), {|i| [sin(i/50), sin(0.05*i)]}!numItems, [-1,1].asSpec, [-1,1].asSpec);
 b = ScatterView(w, Rect(10, 10, 760, 100), {|i| [sin(i/21), sin(0.05*i)]}!numItems, [-1,1].asSpec, [-1,1].asSpec);
 a.background = Color.gray(0, 0);
+b.background = Color.clear;
 a.isHighlight = true;
-SCSlider(w, Rect(10, 120, 760, 10)).action_{|me|
+Slider(w, Rect(10, 120, 760, 10)).action_{|me|
 	a.highlightItemRel = me.value;
 	w.refresh;
 	//a.highlightItem = (me.value*numItems).asInteger.min(numItems-1);
@@ -197,10 +194,10 @@ w.refresh;
 
 (
 var numItems = 630;
-w = SCWindow.new(bounds: Rect(40, 40, 800, 150)).front;
+w = Window.new(bounds: Rect(40, 40, 800, 150)).front;
 a = ScatterView(w, Rect(10, 10, 760, 100), {|i| [sin(i/50), sin(0.05*i)]}!numItems, [-1,1].asSpec, [-1,1].asSpec);
 a.isHighlight = true;
-SCRangeSlider(w, Rect(10, 120, 760, 10)).action_{|me|
+RangeSlider(w, Rect(10, 120, 760, 10)).action_{|me|
 	a.highlightRangeRel(me.lo, me.hi);
 	w.refresh;
 	// a.highlightItem = (me.value*numItems).asInteger.min(numItems-1);

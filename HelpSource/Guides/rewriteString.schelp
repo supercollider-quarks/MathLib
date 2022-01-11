@@ -276,7 +276,7 @@ SynthDef("sinegrain",
 		var env;
 		env = EnvGen.kr(Env.perc(0.01, dur, 0.2), doneAction:2);
 		Out.ar(out, SinOsc.ar(freq, 0, env))
-}).memStore;
+}).add;
 )
 
 
@@ -445,18 +445,18 @@ k.asStream.rewriteString(c, 6).all.join.postcs; // "bbbbbbab"
 (
 var w, b, u, f, z, level=0;
 
-w = SCWindow("test", Rect(40, 240, 200, 200)).front;
+w = Window("test", Rect(40, 240, 200, 200)).front;
 w.view.decorator = FlowLayout(w.bounds.copy.left_(30).top_(30));
 b = { |i| { |j|
 	var c = ({ "abcd".choose } ! 3).join;
-	SCButton(w, Rect(0,0, 30,25))
+	Button(w, Rect(0,0, 30,25))
 	.states_([[c, Color.black]])
 	.action_({ f.(c) })
 	.font_(Font(\Georgia, 11))
 } ! 4; w.view.decorator.nextLine } ! 4;
 
 w.view.decorator.nextLine;
-SCButton(w, Rect(0,0, 30,25))
+Button(w, Rect(0,0, 30,25))
 .states_({ |i| [i.asString, Color.black]} ! 16)
 .action_({ |b| level = b.value });
 
@@ -474,7 +474,7 @@ SynthDef(\p, { |out = 0, freq=400, amp=0.4, sustain=0.04|
 		SinOsc.ar(freq)
 		* XLine.ar(amp, amp * 0.001, sustain, doneAction: 2)
 	);
-}).memStore;
+}).add;
 );
 
 u = { |str|
