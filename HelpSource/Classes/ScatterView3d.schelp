@@ -158,7 +158,7 @@ code::
 (
 var data;
 data = {{2.0.rand2}!3}!150;
-w = Window.new("3D Scatterplot", Rect(40,40, 500, 500)).front;
+w = Window("3D Scatterplot", Rect(40,40, 500, 500)).front;
 a = ScatterView3d(w, Rect(10,10, 450, 450), data, [-2, 2].asSpec);
 a.drawMethod = \fillRect;
 a.symbolSize = 3;
