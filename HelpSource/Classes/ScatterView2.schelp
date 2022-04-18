@@ -64,7 +64,7 @@ code::
 // three dimensional dataset
 d = ({1.0.rand}!9000).clump(3);
 
-w = SCWindow.new("ScatterView Example");
+w = Window.new("ScatterView Example");
 v = ScatterView2(w, Rect(10, 10, 380, 380), d);
 v.selectionMode = \nextNeighbour;
 v.background = Color.black;

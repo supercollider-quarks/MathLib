@@ -20,7 +20,7 @@ ScatterView2 {
 	var selectionRect;
 	var <>action;
 
-	var <>mouseDownAction, <>mouseUpAction, <>mouseMoveAction, <mouseOverAction;	
+	var <>mouseDownAction, <>mouseUpAction, <>mouseMoveAction, <mouseOverAction;
 
 	*new {|parent, bounds, data, specX, specY|
 		^super.new.initPlot(
@@ -68,7 +68,7 @@ ScatterView2 {
 		};
 	}
 	initPlot {|parent, bounds, data, argSpecX, argSpecY|
-		
+
 		specX = argSpecX ? [0,1].asSpec;
 		specY = argSpecY ? specX.copy;
 		this.data_(data);
@@ -98,59 +98,59 @@ ScatterView2 {
 
 		selected = false!numItems;
 
-		plot = GUI.userView.new(parent,bounds).relativeOrigin_(true);
+		plot = UserView.new(parent,bounds);
 
 		plot.drawFunc = {|view|
 			var mult = view.bounds.extent.asArray;
 
 			// clipping into the boundingbox
-			GUI.pen.addRect( view.bounds.moveTo( 0, 0 ));
-			GUI.pen.clip;
+			Pen.addRect( view.bounds.moveTo( 0, 0 ));
+			Pen.clip;
 			// draw Background
-			GUI.pen.color = background;
-			GUI.pen.addRect( view.bounds.moveTo( 0, 0 ));
-			GUI.pen.fill;
+			Pen.color = background;
+			Pen.addRect( view.bounds.moveTo( 0, 0 ));
+			Pen.fill;
 
 
 			normedData.do{|pos, i|
-				GUI.pen.color = colorFunc.value(i, selected[i]);
-				GUI.pen.fillRect(((pos * mult  - (itemSize*0.5)) ++ (itemSize!2)).asRect)
+				Pen.color = colorFunc.value(i, selected[i]);
+				Pen.fillRect(((pos * mult  - (itemSize*0.5)) ++ (itemSize!2)).asRect)
 			};
 
 			// draw selection
 			selectionRect.notNil.if{
-				GUI.pen.color = Color.gray(1, 0.3);
-				GUI.pen.fillRect(selectionRect);
-				GUI.pen.color = Color.blue(0.3, 0.6);
-				GUI.pen.strokeRect(selectionRect);
+				Pen.color = Color.gray(1, 0.3);
+				Pen.fillRect(selectionRect);
+				Pen.color = Color.blue(0.3, 0.6);
+				Pen.strokeRect(selectionRect);
 			}
 		};
 		plot.mouseDownAction = {|view, x, y, modifiers, buttonNumber, clickCount|
 			var rMult, pos, normedPos, normedItemSize, threshold, index;
-	
+
 			(clickCount == 1).if{
 				pos = [x, y]-view.bounds.leftTop.asArray;
-				
+
 				rMult = view.bounds.extent.asArray.reciprocal;
 				normedPos = pos * rMult;
 				normedItemSize = itemSize * rMult;
 				normedItemSize = min(normedItemSize[0], normedItemSize[1]);
-	
+
 				this.prSelect(selectModes[selectionMode].value(
-					view, 
-					normedData, 
-					normedPos, 
+					view,
+					normedData,
+					normedPos,
 					normedItemSize,
 					selectRegion
 				));
-			};			
+			};
 			mouseDownAction.value(this, x, y, modifiers, buttonNumber, clickCount);		};
 		// draw a rect
 		plot.mouseMoveAction = {|view, x, y, modifiers|
 			var pos;
-			
+
 			pos = [x, y]-view.bounds.leftTop.asArray;
-	
+
 			selectionRect.isNil.if({
 				selected = false!numItems;
 				selectionRect = (pos++[0, 0]).asRect;
@@ -167,7 +167,7 @@ ScatterView2 {
 		};
 		plot.mouseUpAction = {|view, x, y, modifiers|
 			var mult = view.bounds.extent.asArray;
-	
+
 			selectionRect.notNil.if{
 				if(selectionRect.width<0){
 					selectionRect.left = selectionRect.left + selectionRect.width;
@@ -177,7 +177,7 @@ ScatterView2 {
 					selectionRect.top = selectionRect.top + selectionRect.height;
 					selectionRect.height = selectionRect.height.neg;
 				};
-	
+
 				selected = normedData.collect{|dat|
 					selectionRect.containsPoint((dat*mult).asPoint)
 				};
