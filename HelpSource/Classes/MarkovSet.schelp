@@ -4,8 +4,7 @@ categories:: Collections>Unordered, Libraries>MathLib>Markov & Fuzzy
 related:: Classes/MarkovSetN, Classes/ShannonMarkovSet, Classes/ShannonFinger
 
 DESCRIPTION::
-MarkovSet is a Dictionary that contains keys pointing to WeighBags that contain objects and their probabilities. By parsing in a stream the Set "learns" what element can possibly follow another.footnote::See: http://www.taygeta.com/rwalks/rwalks.html::
-
+MarkovSet is a Dictionary that contains keys pointing to WeighBags that contain objects and their probabilities. By parsing in a stream the Set "learns" what element can possibly follow another (see random walk).
 
 Part of link::Guides/MathLib::, a diverse library of mathematical functions.
 
@@ -30,7 +29,10 @@ If args is code::nil::, the set is created and may be trained by the other metho
 ARGUMENT:: updateSeeds
 If set to code::true::, each element is always added to the seeds
 
-
+ARGUMENT:: remanence
+Allows a dynamic Markov chain in the field of remanence as maximun order.
+NOTE:: The remanence is effective only in a dynamic Markov chain context, which requires strong::element:: as an Array. In that case only the method code::nextProb::, code::nextIncludes:: and code::parseSeq:: are operative. Otherwise remanence is simply ignored.
+::
 
 METHOD:: fill
 
@@ -194,6 +196,16 @@ x = Pfsm2(m, inf).asStream;
 )
 ::
 
+subsection:: Dynamic Markov Chain
+
+code::
+d = Array.with(seq1.asArray, seq2.asArray...seqN.asArray);
+m = MarkovSet.new(remanence: 3, updateSeeds: true);
+m.parseSeq(d, { "Parsing data completed!".postln });
+m.nextProb;
+::
 
 section:: Authors
 Julian Rohrhuber, 2004, 2007.
+
+Yann Ics, 2022 (Dynamic Markov Chain).
