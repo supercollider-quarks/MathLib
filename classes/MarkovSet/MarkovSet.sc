@@ -460,9 +460,20 @@ MarkovSetN : LookupMarkovSet {
 		pk = if(prevKey.isNil.not) { prevKey.reverse.copyFromStart(this.remanence-1).reverse };
 		bag = this.dict.at(pk);
 		case
-		{ bag.isNil && (pk.size < 2) } { if (this.updateSeeds && prob.asBoolean.not) { ^this.next.choose } { ^nil} }
-		{ bag.isNil && (pk.size > 1) } { ^this.nextProb(pk[1..], prob) }
-		{ bag.weights.size == 1 } { ^this.nextProb(pk[1..], prob) }
+		{ bag.isNil && (pk.size < 2) }
+		{
+			if (this.updateSeeds && prob.asBoolean.not)
+			{ ^this.next.choose }
+			{ ^nil}
+		}
+		{ bag.isNil && (pk.size > 1) }
+		{
+			^this.nextProb(pk[1..], prob)
+		}
+		{ bag.weights.size == 1 }
+		{
+			^this.nextProb(pk[1..], prob)
+		}
 		{ true }
 		{
 			if (prob.asBoolean)
