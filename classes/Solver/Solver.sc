@@ -58,7 +58,7 @@ Solver : Object  {
 		} {	//order is order of the equation with higher order
 			//"system of equations mode".postln;
 			//af.postln;
-			order = ((af[0].def.numArgs-1) / af.size).asInteger.postln;
+			order = ((af[0].def.numArgs-1) / af.size).asInteger;
 			f = af.collect { |func, k|
 				//postln("function: "++ k);
 				(((order-1).collect { |i|  { |... args| args[i+2+(k*order)]} })
