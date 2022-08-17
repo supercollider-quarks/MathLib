@@ -88,9 +88,9 @@ RK : Solver  {
 		postln("args: "++[initial_y, t, dt, dydt]);
 		*/
 
-		if(f.size == 0)
-		{ ^f.(*([t+dt.value]++newy.asArray)) }
-		{ ^f.(*([t+dt.value]++newy.flatten)) }
+		^if(f.size == 0)
+		{ f.(*([t+dt.value]++newy.asArray)) }
+		{ f.(*([t+dt.value]++newy.flatten)) }
 
 	}
 
@@ -145,10 +145,9 @@ RK2 : RK  {
 Euler : Solver  {
 
 	dydt  {
-		//^f.(*([t+dt.value]++y.asArray))
-		if( f.size ==0 )
-		{ ^f.(*([t+dt.value]++y.asArray)) }
-		{ ^f.(*([t+dt.value]++y.flatten)) }
+		^if( f.size == 0 )
+		{ f.(*([t+dt.value]++y.asArray)) }
+		{ f.(*([t+dt.value]++y.flatten)) }
 
 	}
 
