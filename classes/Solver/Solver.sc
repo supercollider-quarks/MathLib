@@ -21,7 +21,7 @@
 // into this system of equations
 // with X=(t, x0, ..., xn-1)
 //
-// x_0' = x1 = { |t, x0, ..., xn-1| x1}.(X)
+// x_0' = x1 =  { |t, x0, ..., xn-1| x1}.(X)
 // x_1' = x2
 // ...
 // x_n-2' = x_n-1
@@ -35,38 +35,40 @@
 // y^(n-1) -> x_n-1
 //-----------------------------------------------------------------------------------------------//
 
-Solver : Object {
+Solver : Object  {
 	var <>f, <>dt, <>t=0, <>y=0, <>order = 1;
 
-	*new { arg f, dt, t=0, y=0; ^super.newCopyArgs(f, dt, t, y) }
+	*new  { |f, dt, t=0, y=0|
+		^super.newCopyArgs(f, dt, t, y)
+	}
 
-	*newHO { |f, dt, t, y| ^super.new.initHO(f, dt, t, y) }
+	*newHO  { |f, dt, t, y|
+		^super.new.initHO(f, dt, t, y)
+	}
 
-	initHO { |af, adt, at, ay|
+	initHO  { |af, adt, at, ay|
 		dt = adt;
 		t = at;
 		y = ay;
-		if(af.size == 0)
-		{
+		if(af.size == 0) {
 			order = (af.def.numArgs-1);
-			f = ((order-1).collect{ |i| { arg... args; args[i+2]} })
-				++ [{ arg... args; af.(*args) }];
+			f = ((order-1).collect { |i|  { |... args| args[i+2]} })
+			++ [{ |... args| af.(*args) }];
 			f = f.as(NFunc);
-		}
-		{	//order is order of the equation with higher order
+		} {	//order is order of the equation with higher order
 			//"system of equations mode".postln;
 			//af.postln;
-			order = ((af[0].def.numArgs-1)/af.size).asInteger.postln;
-			f = af.collect{ |func, k|
+			order = ((af[0].def.numArgs-1) / af.size).asInteger.postln;
+			f = af.collect { |func, k|
 				//postln("function: "++ k);
-				(((order-1).collect{ |i| { arg... args; args[i+2+(k*order)]} })
-				++ [{ arg... args; func.(*args) }])
+				(((order-1).collect { |i|  { |... args| args[i+2+(k*order)]} })
+					++ [{ |... args| func.(*args) }])
 			}.as(SystemNFunc);
 		}
 
 	}
 
-	next {
+	next  {
 		//postln("calculating t = "++t);
 		y = y + (this.dydt*dt.value);
 		t = t + dt.value;
@@ -76,25 +78,27 @@ Solver : Object {
 
 }
 
-RK : Solver {
+RK : Solver  {
 
-	evaluate { |initial_y, t, dt, dydt|
+	evaluate  { |initial_y, t, dt, dydt|
 		var newy = initial_y + (dydt*dt.value);
+
 		/*postln("newy for time "++t++" : "++newy);
 		postln("newy size: "++newy.size);
 		postln("args: "++[initial_y, t, dt, dydt]);
 		*/
-		if( f.size ==0 )
-			{ ^f.(*([t+dt.value]++newy.asArray)) }
-			{ ^f.(*([t+dt.value]++newy.flatten)) }
+
+		if(f.size == 0)
+		{ ^f.(*([t+dt.value]++newy.asArray)) }
+		{ ^f.(*([t+dt.value]++newy.flatten)) }
 
 	}
 
 }
 
-RK4 : RK {
+RK4 : RK  {
 
-	dydt {
+	dydt  {
 
 		var k1, k2, k3, k4;
 		k1 = this.evaluate(y, t, 0, 0);
@@ -109,9 +113,9 @@ RK4 : RK {
 
 }
 
-RK3 : RK {
+RK3 : RK  {
 
-	dydt {
+	dydt  {
 
 		var k1, k2, k3;
 		k1 = this.evaluate(y, t, 0, 0);
@@ -123,9 +127,9 @@ RK3 : RK {
 	}
 }
 
-RK2 : RK {
+RK2 : RK  {
 
-	dydt {
+	dydt  {
 
 		var k1, k2;
 		k1 = this.evaluate(y, t, 0, 0);
@@ -138,31 +142,33 @@ RK2 : RK {
 
 }
 
-Euler : Solver {
+Euler : Solver  {
 
-	dydt {
+	dydt  {
 		//^f.(*([t+dt.value]++y.asArray))
 		if( f.size ==0 )
-			{ ^f.(*([t+dt.value]++y.asArray)) }
-			{ ^f.(*([t+dt.value]++y.flatten)) }
+		{ ^f.(*([t+dt.value]++y.asArray)) }
+		{ ^f.(*([t+dt.value]++y.flatten)) }
 
 	}
 
 }
 
 // NFunc f:R^n -> R^n
-NFunc[slot] : Array {
+NFunc[slot] : Array  {
 
-	value { arg... args;
-		^this.collect{ |func| func.(*args) }
+	value  { arg... args;
+		^this.collect { |func| func.(*args) }
 	}
 }
 
 // SystemNFunc f:(R^n)^m -> (R^n)^m
-SystemNFunc[slot] : Array {
+SystemNFunc[slot] : Array  {
 
-	value { arg... args;
-		^this.collect{ |arrayfunc, i| arrayfunc.collect {|func| func.(*args) } }
+	value  { arg... args;
+		^this.collect { |arrayfunc, i|
+			arrayfunc.collect {|func| func.(*args) }
+		}
 	}
 }
 
