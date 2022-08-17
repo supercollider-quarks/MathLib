@@ -4,7 +4,7 @@
 
 
 //-----------------------------------------------------------------------------------------------//
-//  Solver - Abstract Class
+// Solver - Abstract Class
 //-----------------------------------------------------------------------------------------------//
 // Solves
 // y'=f(t, y)
@@ -38,7 +38,7 @@
 Solver : Object {
 	var <>f, <>dt, <>t=0, <>y=0, <>order = 1;
 
-	*new { arg f, dt,  t=0, y=0; ^super.newCopyArgs(f, dt, t, y) }
+	*new { arg f, dt, t=0, y=0; ^super.newCopyArgs(f, dt, t, y) }
 
 	*newHO { |f, dt, t, y| ^super.new.initHO(f, dt, t, y) }
 
