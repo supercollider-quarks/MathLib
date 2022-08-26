@@ -504,20 +504,22 @@ Matrix[slot] : Array {
 	adjoint { // return the adjoint of the matrix
 		var adjoint;
 		adjoint = Matrix.newClear(this.rows, this.cols);
-		this.rows.do({ arg i;
-			this.cols.do({ arg j;
-				adjoint.put(i,j,this.cofactor(i,j));
-			});
-		});
-		^adjoint.flop;
+		this.rows.do { arg i;
+			this.cols.do { arg j;
+				adjoint.put(i, j, this.cofactor(i, j))
+			}
+		};
+		^adjoint.flop
 	}
 	inverse { // return the inverse matrix
-		if(this.det != 0.0,{
-			^(this.adjoint / (this.det) );
-		},{error("matrix singular in Matrix-inverse");this.halt;});
+		var det = this.det;
+		if(this.det == 0) {
+			Error("matrix singular in Matrix-inverse").throw
+		};
+		^this.adjoint / this.det
 	}
 	gram { // the gram matrix
-		^(this.flop * this);
+		^this.flop * this
 	}
 	grammian { // the grammian of a matrix
 		^(this.gram.det);
