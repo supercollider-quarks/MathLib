@@ -7,6 +7,7 @@
 
 Matrix[slot] : Array {
 
+
 	*newClear { arg rows=1, cols=1; // return (rows x cols) - zero matrix
 		^super.fill(rows, { Array.newClear(cols).fill(0) });
 	}
@@ -15,27 +16,22 @@ Matrix[slot] : Array {
 
 		shapes = (array.asArray).collect(_.shape).flatten;
 		shapeTest = shapes.every(_ == shapes[0]);
-		numTest = { array.flatten.every(_.isNumber) };
+		if(shapeTest.not) { Error("Wrong shape.").throw };
 
-		if((shapeTest and: numTest), {
-			rows = array.size;
-			^super.fill(rows, { |col| array[col] })
-			}, {
-				error("wrong type of argument in Meta_Matrix-with");this.halt
-		})
+		rows = array.size;
+		^super.fill(rows, { |col| array[col] })
+
 	}
 	*withFlatArray { arg rows, cols, array; // return (rows x cols) - matrix from one slot array
-		if((array.size == (rows*cols) )
-		.and(array.every({arg element; element.isNumber})) ,{
-			^super.fill(rows, {arg col; array.copyRange(col*cols, (col+1)*cols -1) });
-		},{
-			error("wrong type of argument in Meta_Matrix-withFlatArray");this.halt
-		});
+		if(array.size != (rows*cols)) {
+			Error("Mismatch in shape: (%, %) and array size of %".format(rows, cols, array.size)).throw
+		};
+		^super.fill(rows, { arg col; array.copyRange(col*cols, (col+1)*cols -1) });
 	}
 	*newIdentity { arg n; // return an (n x n) identity matrix
 		var ident;
 		ident = super.fill(n, { Array.newClear(n).fill(0) });
-			n.do({ arg i; ident.put(i,i,1) });
+		n.do({ arg i; ident.put(i,i,1) });
 		^ident;
 	}
 	*fill { arg rows, cols, func;
@@ -86,12 +82,12 @@ Matrix[slot] : Array {
 	}
 
 	/* Class method: *mul
-	   Matrix multiplication
-	   Parameter:
-	   	m1: Matrix 1
-	   	m2: Matrix 2
-	   Return:
-	   	out = m1 * m2
+	Matrix multiplication
+	Parameter:
+	m1: Matrix 1
+	m2: Matrix 2
+	Return:
+	out = m1 * m2
 	*/
 	*mul { arg m1=0, m2=0;
 
@@ -155,12 +151,7 @@ Matrix[slot] : Array {
 		^super.at(row).at(col);
 	}
 	put { arg row, col, val;
-		if( val.isNumber,{
-			super.at(row).put(col, val)
-		},{
-			error("not a number in Matrix-put");this.halt
-		});
-	// put an Array of elements
+		super.at(row).put(col, val)
 	}
 	putRow { arg row, vals;
 		if(vals.size == this.cols,{
@@ -218,54 +209,45 @@ Matrix[slot] : Array {
 	}
 
 	addRow { arg rowVals;
-		var res;
-		if( (rowVals.flat.size == this.cols)
-		.and(rowVals.every({arg element; element.isNumber}) ),{
-			res = this.copy;
-			res = res.add(rowVals);
-			^res},{
-			error("wrong type or size in Matrix-addRow");this.halt;
-		});
+		if(rowVals.flat.size != this.cols) {
+			Error("Mismatch in format: % and %".format(rowVals.flat.size, this.cols)).throw
+		};
+		^this.copy.add(rowVals)
 	}
 	insertRow { arg col, rowVals;
-		var res;
-		if( (rowVals.flat.size == this.cols)
-		.and(rowVals.every({arg element; element.isNumber}) ),{
-			res = this.copy;
-			res = res.insert(col, rowVals);
-			^res},{
-			error("wrong type or size in Matrix-addRow");this.halt;
-		});
+		if(rowVals.flat.size != this.cols) {
+			Error("Mismatch in format: % and %".format(rowVals.flat.size, this.cols)).throw
+		};
+		^this.copy.insert(col, rowVals)
 	}
 	addCol { arg colVals;
 		var res;
-		if( (colVals.flat.size == this.rows)
-		.and(colVals.every({arg element; element.isNumber}) ),{
-			res = Matrix.newClear(this.rows, this.cols+1);
-			res.rows.do({ arg row;
-				var rowArray;
-				rowArray = this.getRow(row).copy;
-				rowArray = rowArray.add(colVals.at(row));
-				res.putRow( row, rowArray);
-			});
-			^res},{
-			error("wrong type or size in Matrix-addCol");this.halt;
-		});
+		if(colVals.flat.size != this.rows) {
+			Error("Mismatch in format: % and %".format(colVals.flat.size, this.rows)).throw
+		};
+
+		res = Matrix.newClear(this.rows, this.cols + 1);
+		res.rows.do { arg row;
+			var rowArray;
+			rowArray = this.getRow(row).copy;
+			rowArray = rowArray.add(colVals.at(row));
+			res.putRow( row, rowArray);
+		};
+		^res
 	}
 	insertCol { arg row, colVals;
 		var res;
-		if( (colVals.flat.size == this.rows)
-		.and(colVals.every({arg element; element.isNumber}) ),{
-			res = Matrix.newClear(this.rows, this.cols+1);
-			res.rows.do({ arg row;
-				var rowArray;
-				rowArray = this.getRow(row).copy;
-				rowArray = rowArray.insert(row, colVals.at(row));
-				res.putRow( row, rowArray);
-			});
-			^res},{
-			error("wrong type or size in Matrix-addCol");this.halt;
-		});
+		if(colVals.flat.size != this.rows) {
+			Error("Mismatch in format: % and %".format(colVals.flat.size, this.rows)).throw
+		};
+		res = Matrix.newClear(this.rows, this.cols+1);
+		res.rows.do { arg row;
+			var rowArray;
+			rowArray = this.getRow(row).copy;
+			rowArray = rowArray.insert(row, colVals.at(row));
+			res.putRow( row, rowArray);
+		}
+		^res
 	}
 	// returns arrays
 	getRow { arg row;
@@ -281,11 +263,11 @@ Matrix[slot] : Array {
 	}
 	getDiagonal {
 		var diagonal;
-			diagonal = Array.new;
-			(this.rows).min(this.cols).do({arg i;
-				diagonal = diagonal.add(this.at(i,i));
-			});
-			^diagonal;
+		diagonal = Array.new;
+		(this.rows).min(this.cols).do({arg i;
+			diagonal = diagonal.add(this.at(i,i));
+		});
+		^diagonal;
 	}
 	// returns matrizes
 	fromRow { arg row;
@@ -297,10 +279,10 @@ Matrix[slot] : Array {
 	// returns matrix without row(row)/col(col)
 	removeRow { arg row;
 		var array;
-			array = Array.new;
-			this.rows.do({ arg i;
-				if( i != row, { array = array.add( this.getRow(i) ) });
-			});
+		array = Array.new;
+		this.rows.do({ arg i;
+			if( i != row, { array = array.add( this.getRow(i) ) });
+		});
 		^Matrix.with(array);
 	}
 	removeAt { arg row; ^this.removeRow(row); }
@@ -318,7 +300,7 @@ Matrix[slot] : Array {
 			var item;
 			item = this.at(i, col);
 			func.value(item, i);
-			})
+		})
 	}
 	doMatrix { arg function;
 		this.rows.do({ arg row;
@@ -398,28 +380,25 @@ Matrix[slot] : Array {
 
 
 
-
-
 	// math
 	mul { arg multplier2; // return matrix A(m,n) * B(n,r) = AB(m,r)
 		var result;
-		if ( multplier2.isNumber, {
-			^this.mulNumber(multplier2);
-		},{ if( this.rows == multplier2.cols, {
+		^if (multplier2.isNumber) {
+			this.mulNumber(multplier2);
+		} {
+			if(this.rows != multplier2.cols) {
+				Error("The number of rows of the receiver must equal the number of columns of the multiplier").throw
+			};
 			result = Matrix.newClear(this.cols, multplier2.rows);
 			this.cols.do({ arg j;
-				multplier2.rows.do({ arg i;
+				multplier2.rows.do { arg i;
 					result.put(i, j, (
-						multplier2.getRow(i) * (this.getCol(j))
-					).sum );
-				});
+						multplier2.getRow(i) * this.getCol(j)
+					).sum )
+				}
 			});
-			^result
-		},{
-			error("cols and rows don't fit in Matrix-*");
-			this.dumpBackTrace;
-			this.halt;
-		})});
+			result
+		}
 	}
 
 
@@ -435,26 +414,20 @@ Matrix[slot] : Array {
 
 	mulMatrix { arg aMatrix;
 		var result;
+		if(this.rows != aMatrix.cols) {
+			Error("The number of columns of the receiver must equal the number of rows of the multiplier").throw
+		};
+		result = Matrix.newClear(this.rows, aMatrix.cols);
 
-		if( this.cols == aMatrix.rows, {
-			result = Matrix.newClear(this.rows, aMatrix.cols);
-
-			this.rows.do({ arg rowI;
-				aMatrix.cols.do({ arg colI;
-					result.put(
-						rowI, colI,
-						(this.getRow(rowI) * aMatrix.getCol(colI)).sum;
-					);
-				});
-			});
-			^result
-		},{
-			error("Matrix-mulMatrix: cols and rows don't fit. Matrix shapes: (%) (%)".format(this.shape, aMatrix.shape));
-			this.dump;
-			this.dumpBackTrace;
-			this.halt;
-		});
+		this.rows.do { arg i;
+			aMatrix.cols.do { arg j;
+				var value = (this.getRow(i) * aMatrix.getCol(j)).sum;
+				result.put(i, j, value)
+			}
+		};
+		^result
 	}
+
 
 
 	mulNumber { arg aNumber;
@@ -462,57 +435,71 @@ Matrix[slot] : Array {
 	}
 	+ { arg summand2;
 		var result;
-		if ( summand2.isNumber, {^this.addNumber(summand2);},{
-			if( this.shape == summand2.shape,{
-				result = Matrix.newClear(this.rows, this.cols);
-				this.rows.do({ arg i;
-					this.cols.do({ arg j;
-						result.put(i, j, (this.at(i,j) + summand2.at(i,j)) );
-					});
-				});
-				^result;
-			},{error("sizes don't fit in Matrix-plus");this.halt;});
-		});
+		^if(summand2.isNumber) {
+			this.addNumber(summand2)
+		} {
+			if(this.shape == summand2.shape) {
+				Error("The shape of receiver must be the same as that of the operand").throw
+			};
+			result = Matrix.newClear(this.rows, this.cols);
+			this.rows.do { arg i;
+				this.cols.do { arg j;
+					result.put(i, j, (this.at(i,j) + summand2.at(i,j)) );
+				}
+			};
+			result
+		}
 	}
+
 	addNumber { arg aNumber;
-		^(super + aNumber);
+		^super + aNumber
 	}
+
 	- { arg summand2;
 		var result;
-		if ( summand2.isNumber, {^this.subNumber(summand2);},{
-			if( this.shape == summand2.shape,{
-				result = Matrix.newClear(this.rows, this.cols);
-				this.rows.do({ arg i;
-					this.cols.do({ arg j;
-						result.put(i, j, (this.at(i,j) - summand2.at(i,j)) );
-					});
-				});
-				^result;
-			},{error("sizes don't fit in Matrix-plus");this.halt;});
-		});
+		^if (summand2.isNumber) {
+			this.subNumber(summand2)
+		} {
+			if(this.shape == summand2.shape) {
+				Error("The shape of receiver must be the same as that of the operand").throw
+			};
+			result = Matrix.newClear(this.rows, this.cols);
+			this.rows.do { arg i;
+				this.cols.do { arg j;
+					result.put(i, j, (this.at(i,j) - summand2.at(i,j)) );
+				}
+			};
+			result
+		}
 	}
+
 	subNumber { arg aNumber;
-		^(super - aNumber);
+		^super - aNumber
 	}
 	== { arg matrix2;
-		^(this.flat == matrix2.flat);
+		^this.flat == matrix2.flat
 	}
 	det { // return the determinant as float
 		var elements, detSum = 0;
-		if( this.rows == this.cols,{
-			if( (this.rows * this.cols) == 1,{^this.at(0,0)},{
-				elements = this.getRow(0);
-				elements.size.do({ arg i; var sub;
-					detSum = detSum + ( elements.at(i) * ((-1) ** (i)) * this.sub(0,i).det );
-				});
-				^detSum;
-			});
-		},{error("matrix not square in Matrix-det");this.halt;});
+		if(this.rows != this.cols) {
+			Error("Determinant requires a square matrix.").throw
+		};
+		^if(this.rows * this.cols == 1) {
+			this.at(0,0)
+		} {
+			elements = this.getRow(0);
+			elements.size.do { arg i;
+				detSum = detSum + ( elements.at(i) * ((-1) ** (i)) * this.sub(0,i).det );
+			};
+			detSum
+		}
+
 	}
 	cofactor { arg row, col; // return the cofactor to element (row, col)
-		if( this.rows == this.cols,{
-			^( ((-1) ** (row+col)) * this.sub(row, col).det)
-		},{error("matrix not square in Matrix-cofactor");this.halt;});
+		if(this.rows != this.cols) {
+			Error("Cofactor requires a square matrix.").throw
+		};
+		^(-1 ** (row + col)) * this.sub(row, col).det
 	}
 	adjoint { // return the adjoint of the matrix
 		var adjoint;
@@ -527,7 +514,7 @@ Matrix[slot] : Array {
 	inverse { // return the inverse matrix
 		if(this.det != 0.0,{
 			^(this.adjoint / (this.det) );
-			},{error("matrix singular in Matrix-inverse");this.halt;});
+		},{error("matrix singular in Matrix-inverse");this.halt;});
 	}
 	gram { // the gram matrix
 		^(this.flop * this);
@@ -543,10 +530,10 @@ Matrix[slot] : Array {
 		});
 	}
 	trace {
-		if( this.rows == this.cols, {
-			^this.getDiagonal.sum;
-			},{error("matrix not square in Matrix-trace");this.halt;
-		});
+		if(this.rows != this.cols) {
+			Error("Trace requires a square matrix.").throw
+		};
+		^this.getDiagonal.sum
 	}
 	norm { // the euclidean norm
 		^(this * (this.flop)).trace.sqrt;
@@ -592,17 +579,18 @@ Matrix[slot] : Array {
 		^(this.flat.frac.every({arg element; element == 0}));
 	}
 	isIdentity {
-		if( this.rows == this.cols,{
-			^(this.every({arg row,i;
-				row.every({ arg colElement,j;
-					if( i == j ,{
-						(colElement == 1)
-					},{
-						(colElement == 0)
-					})
-				});
-			});)
-		},{error("matrix not square in Matrix-isIdentity");this.halt;});
+		if(this.rows != this.cols) {
+			Error("Identity test requires a square matrix.").throw // shouldn't we just return false?
+		};
+		^this.every { arg row,i;
+			row.every { arg colElement,j;
+				if( i == j) {
+					(colElement == 1)
+				} {
+					(colElement == 0)
+				}
+			}
+		}
 	}
 	isDiagonal {
 		^(this.every({arg row,i;
