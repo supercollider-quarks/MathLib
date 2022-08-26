@@ -438,8 +438,8 @@ Matrix[slot] : Array {
 		^if(summand2.isNumber) {
 			this.addNumber(summand2)
 		} {
-			if(this.shape == summand2.shape) {
-				Error("The shape of receiver must be the same as that of the operand").throw
+			if(this.shape != summand2.shape) {
+				Error("Operand shapes do not match: % and %".format(this.shape, summand2.shape)).throw
 			};
 			result = Matrix.newClear(this.rows, this.cols);
 			this.rows.do { arg i;
@@ -460,8 +460,8 @@ Matrix[slot] : Array {
 		^if (summand2.isNumber) {
 			this.subNumber(summand2)
 		} {
-			if(this.shape == summand2.shape) {
-				Error("The shape of receiver must be the same as that of the operand").throw
+			if(this.shape != summand2.shape) {
+				Error("Operand shapes do not match: % and %".format(this.shape, summand2.shape)).throw
 			};
 			result = Matrix.newClear(this.rows, this.cols);
 			this.rows.do { arg i;
