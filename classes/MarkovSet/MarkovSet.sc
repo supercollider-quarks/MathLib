@@ -9,16 +9,17 @@ ________________________________________________________________________________
 	By parsing in a stream the Set 'learns' what element can possibly follow another.
 	for reference see: http://www.taygeta.com/rwalks/rwalks.html
 ______________________________________________________________________________________	version 3.5, Julian Rohrhuber, 12/2004, 3/2007
+version 3.5.1, contribution Yann Ics, Summer 2022
 */
 
 
 MarkovSet  {
 
-	var <seeds, <>updateSeeds, <dict;
+	var <seeds, <>updateSeeds, <dict, remanence;
 
 
-	*new { arg args, updateSeeds=false;
-		^super.new.init.updateSeeds_(updateSeeds).putAll(args);
+	*new { arg args, updateSeeds=false, remanence=3;
+		^super.new.init(remanence).updateSeeds_(updateSeeds).putAll(args);
 	}
 
 	*fill { arg length, stream;
@@ -29,15 +30,19 @@ MarkovSet  {
 
 	////////////////////////initializing
 
-	init {
-			dict = Dictionary.new;
-			this.makeSeeds;
+	init { arg argRemanence;
+		remanence = argRemanence;
+		dict = Dictionary.new;
+		this.makeSeeds;
 	}
 
+	remanence { ^remanence }
 	nodeClass { ^WeighBag }
 	order { ^1 }
 	size { ^dict.size }
 
+	dmc { ^seeds.select{|seed| seed.asArray.size == 1}.collect{|key| [key.asArray.first, dict.at(key).counts.sum]} }
+	// dmc returns [[seed1, countSeed1], [seed2, countSeed2] ... [seedN, countSeedN]]
 
 	makeSeeds {
 			seeds = List.newFrom(dict.keys);
@@ -439,4 +444,120 @@ MarkovSetN : LookupMarkovSet {
 
 	 }
 }
+
+//--------------------------------------------------
+// Dynamic Markoc Chain
+//  Allows n-order Markov chain avoiding 100%
+//  if so returns NIL or a random key according to updateSeeds
+//  This supposes a MarkovSet understood as a no constant order set
+//  and satisfying with 1-order, 2-order, ... n-order
+//  with n as some kind of remanence or short term memory.
+//  /!\ currently works only if each element of the Markov chain is an Array
+//--------------------------------------------------
++ MarkovSet	{
+	nextProb { arg prevKey, prob;
+		var pk, bag;
+		pk = if(prevKey.isNil.not) { prevKey.reverse.copyFromStart(this.remanence-1).reverse };
+		bag = this.dict.at(pk);
+		case
+		{ bag.isNil && (pk.size < 2) }
+		{
+			if (this.updateSeeds && prob.asBoolean.not)
+			{ ^this.next.choose }
+			{ ^nil}
+		}
+		{ bag.isNil && (pk.size > 1) }
+		{
+			^this.nextProb(pk[1..], prob)
+		}
+		{ bag.weights.size == 1 }
+		{
+			^this.nextProb(pk[1..], prob)
+		}
+		{ true }
+		{
+			if (prob.asBoolean)
+			{ ^[bag.items, bag.counts] }
+			{ ^bag.wchoose }
+		}
+	}
+
+	nextIncludes { arg prevKey, includes;
+		var ins, tmp;
+		var prob = this.nextProb(prevKey, true);
+		if (prob.isNil.not)
+		{
+			// [TODO] when includes.size > 1
+			// (it.asArray.asSet & includes.asArray.asSet)
+			// should respect their respective order as indices
+			// and be optimised ...
+			// e.g. [0, 7, 0, 5] should match only with [0, 7], [0, 0], [0, 5], [7, 0], [7, 5], [0, 7, 0], [0, 7, 5], [0, 0, 5], [7, 0, 5] or [0, 7, 0, 5] as includes
+			ins = prob[0].selectIndices{|it| (it.asArray.asSet & includes.asArray.asSet) == includes.asArray.asSet};
+			if (ins.isEmpty && this.updateSeeds)
+			{
+				ins = prob[0].selectIndices{|it| (it.asArray.asSet & includes.asArray.asSet).isEmpty.not};
+				if (ins.size > 0) { "partial match".postln }
+			}
+		};
+		if (ins.size == 0)
+		{
+			if (this.updateSeeds)
+			{
+				tmp = this.dmc.select{|it| (it[0].asArray.asSet & includes.asArray.asSet) == includes.asArray.asSet};
+				if (tmp.isEmpty)
+				{
+					tmp = this.dmc.select{|it| (it[0].asArray.asSet & includes.asArray.asSet).isEmpty.not};
+					if (tmp.isEmpty)
+					{ ^this.nextProb }
+					{ ^tmp.flopChoose }
+				}
+				{ ^tmp.flopChoose }
+			}
+			{ ^nil }
+		}
+		{
+			^ins.collect{|ind| [prob[0][ind], prob[1][ind]]}.flopChoose;
+		}
+	}
+
+	parseSeq { arg data, completionFunc;
+		// data is a list of sequence(s)
+		// e.g. Array.with(seq1.asArray, seq2.asArray...seqN.asArray)
+		data.do{|seq|
+			seq.windloop(this.remanence).do{|len|
+				len.do{|it| this.read(it[..it.size-2], it.last)}}};
+		this.makeSeeds;
+		completionFunc.value;
+	}
+}
+
+// get weighted array for method nextProb in MarkovSet
++ ArrayedCollection {
+	windloop { arg order;
+		var ord;
+		// order is an integer strictly superior to zero
+		if (order > this.size) { order = this.size };
+		^(2..order+1).collect
+		{
+			|k|
+			(this.size-k+1).collect
+			{
+				|i|
+				this[i..i+k-1]
+			}
+		}
+	}
+
+	flopChoose {
+		// this = [[item1, countItem1], [item2, countItem2] ... [itemN, countItemN]]
+		var tmp = this.flop;
+		^tmp[0].wchoose(tmp[1].normalizeSum)
+	}
+}
+//--------------------------------------------------
+// ref: https://yannics.github.io/
+//  - Journal of Generative Sonic Art
+//  - Neuromuse3
+//--------------------------------------------------
+
 
